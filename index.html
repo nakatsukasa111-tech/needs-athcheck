@@ -22,51 +22,85 @@ body{
   font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
   font-size:15px; line-height:1.7; -webkit-font-smoothing:antialiased;
 }
-.num{font-family:"Archivo",sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.num{font-family:"Archivo","Zen Kaku Gothic New",sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 button{font-family:inherit;font-size:inherit;cursor:pointer}
 input,select{font-family:inherit;font-size:inherit}
+[hidden]{display:none!important}
 
 /* ---------- 骨格 ---------- */
 header{
-  background:var(--ink); color:#fff; padding:14px 20px;
-  display:flex; align-items:baseline; gap:18px; flex-wrap:wrap;
+  background:var(--ink); color:#fff; padding:12px 20px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
 }
 header h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.04em}
-header .sub{font-size:12px;color:#9AA7B4}
-nav{display:flex;gap:2px;background:var(--ink);padding:0 20px 0}
+header .sub{font-size:12px;color:#9AA7B4;flex:1;min-width:180px}
+header .sub.ng{color:#F0A9A5}
+header .sub.ok{color:#8FD0B2}
+.hbtn{
+  background:none;border:1px solid #3C4A58;color:#C8D2DC;border-radius:4px;
+  padding:8px 14px;font-size:12px;min-height:38px;
+}
+.hbtn:hover{background:#243141}
+nav{display:flex;gap:2px;background:var(--ink);padding:0 12px}
 nav button{
-  background:none;border:0;color:#9AA7B4;padding:9px 18px;border-bottom:3px solid transparent;
-  font-weight:500;
+  background:none;border:0;color:#9AA7B4;padding:11px 18px;border-bottom:3px solid transparent;
+  font-weight:500;min-height:46px;
 }
 nav button.on{color:#fff;border-bottom-color:var(--amber)}
 nav button:disabled{opacity:.35;cursor:not-allowed}
-main{max-width:1080px;margin:0 auto;padding:24px 20px 80px}
+main{max-width:1080px;margin:0 auto;padding:24px 20px 96px}
 .view{display:none}
 .view.on{display:block}
 
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:18px}
+.panel.warn{border-color:#E4C9A2;background:#FFFBF3}
 h2{font-size:16px;margin:0 0 14px;font-weight:700}
 h3{font-size:13px;margin:22px 0 10px;font-weight:700;color:var(--ink-2)}
+h3:first-child{margin-top:0}
 p.help{color:var(--ink-2);font-size:13px;margin:0 0 14px}
+.panel .head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.panel .head h2{margin:0}
+.panel .head .sp{margin-left:auto}
 
 /* ---------- フォーム ---------- */
 .row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.row:last-child{margin-bottom:0}
 .f{display:flex;flex-direction:column;gap:4px}
+.f.wide{flex:1;min-width:240px}
 .f label{font-size:12px;color:var(--ink-2)}
 .f input,.f select{
-  border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:#fff;width:150px;
+  border:1px solid var(--line);border-radius:4px;padding:10px;background:#fff;width:150px;min-height:44px;
 }
+.f.wide input{width:100%}
 .f input:focus,.f select:focus{outline:2px solid var(--ink);outline-offset:1px}
 .btn{
-  background:var(--ink);color:#fff;border:0;border-radius:4px;padding:10px 20px;font-weight:700;
+  background:var(--ink);color:#fff;border:0;border-radius:4px;padding:12px 22px;font-weight:700;min-height:46px;
 }
 .btn:hover{background:#0d1620}
 .btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:#F5F6F8}
+.btn.sm{padding:8px 14px;font-size:13px;min-height:40px;font-weight:500}
 .btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- 接続設定 ---------- */
+.diag{border-radius:4px;padding:12px 14px;font-size:13px;margin:14px 0 0;line-height:1.75}
+.diag.info{background:#F1F3F5;border-left:3px solid var(--line)}
+.diag.ok{background:var(--green-bg);border-left:3px solid var(--green)}
+.diag.ng{background:var(--red-bg);border-left:3px solid var(--red)}
+.diag.warn{background:var(--amber-bg);border-left:3px solid var(--amber)}
+.diag b{display:block;margin-bottom:4px}
+.diag ul{margin:6px 0 0;padding-left:1.2em}
+.diag code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-size:12px;word-break:break-all}
+details.hint{margin-top:14px;font-size:13px;color:var(--ink-2)}
+details.hint summary{cursor:pointer;font-weight:700;color:var(--ink)}
+details.hint ol{padding-left:1.3em}
+.cur{font-size:12px;color:var(--ink-2);word-break:break-all;margin:0 0 14px}
+.cur b{color:var(--ink)}
 
 /* ---------- 会員リスト ---------- */
-.mlist{border:1px solid var(--line);border-radius:4px;max-height:320px;overflow:auto}
-.mrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.mlist{border:1px solid var(--line);border-radius:4px;max-height:340px;overflow:auto}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer;min-height:52px}
 .mrow:last-child{border-bottom:0}
 .mrow:hover{background:#F5F6F8}
 .mrow .meta{font-size:12px;color:var(--ink-2)}
@@ -74,54 +108,81 @@ p.help{color:var(--ink-2);font-size:13px;margin:0 0 14px}
 /* ---------- 測定入力 ---------- */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .tabs button{
-  border:1px solid var(--line);background:#fff;border-radius:100px;padding:7px 16px;color:var(--ink-2);
+  border:1px solid var(--line);background:#fff;border-radius:100px;padding:9px 18px;color:var(--ink-2);min-height:44px;
 }
 .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tabs button .n{font-size:11px;color:inherit;opacity:.75;margin-left:6px}
 .grp{display:none}
 .grp.on{display:block}
-.item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #E7E9EC;flex-wrap:wrap}
+.item{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #E7E9EC;flex-wrap:wrap}
 .item:last-child{border-bottom:0}
-.item .nm{flex:1;min-width:160px}
-.item .side{font-size:12px;color:var(--ink-2);width:20px}
+.item .nm{flex:1;min-width:170px;font-weight:500}
+.item .nm small{display:block;font-weight:400;font-size:11px;color:var(--ink-2)}
+.sides{display:flex;gap:18px;flex-wrap:wrap}
+.sd{display:flex;align-items:center;gap:8px}
+.sd .side{font-size:12px;color:var(--ink-2);width:16px;text-align:center}
 .pts{display:flex;gap:4px}
 .pts button{
-  width:38px;height:34px;border:1px solid var(--line);background:#fff;border-radius:4px;font-weight:700;
+  min-width:46px;height:46px;border:1px solid var(--line);background:#fff;border-radius:4px;font-weight:700;color:var(--ink);
 }
+.pts button.clr{min-width:40px;font-weight:400;color:var(--ink-2);font-size:12px}
 .pts button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.item input[type=number]{width:92px;border:1px solid var(--line);border-radius:4px;padding:7px 9px;text-align:right}
-.unit{font-size:12px;color:var(--ink-2);width:42px}
-.est{font-size:12px;color:var(--ink-2);display:flex;align-items:center;gap:4px}
+.item input[type=number]{width:104px;border:1px solid var(--line);border-radius:4px;padding:10px;text-align:right;min-height:46px}
+.unit{font-size:12px;color:var(--ink-2);min-width:40px}
+.est{font-size:12px;color:var(--ink-2);display:flex;align-items:center;gap:5px;cursor:pointer}
+.est input{width:20px;height:20px}
+.ratio{font-size:12px;color:var(--ink-2);min-width:96px}
 
 /* ---------- 結果 ---------- */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px}
-@media(max-width:820px){.hero{grid-template-columns:1fr}}
-.who{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.opts{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);align-items:center}
+.opts label{display:flex;align-items:center;gap:5px}
+.opts select{border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:#fff;min-height:36px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+.hero .side{min-width:0}
+.hero[data-hero="total"]{grid-template-columns:300px minmax(0,1fr)}
+.hero[data-hero="total"] .chartCell{order:2}
+.hero[data-hero="total"] .side{order:1}
+.hero[data-hero="total"] .total .v{font-size:76px}
+@media(max-width:820px){
+  .hero,.hero[data-hero="total"]{grid-template-columns:1fr}
+  .hero[data-hero="total"] .chartCell{order:0}
+  .hero[data-hero="total"] .side{order:0}
+}
+.who{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:10px}
 .who .name{font-size:24px;font-weight:700}
 .who .tag{font-size:12px;color:var(--ink-2)}
-.total{border-left:4px solid var(--ink);padding-left:14px;margin:18px 0}
-.total .v{font-size:46px;font-weight:700;line-height:1}
+.total{border-left:4px solid var(--ink);padding-left:14px;margin:0 0 18px}
+.total .v{font-size:48px;font-weight:700;line-height:1.05}
 .total .l{font-size:12px;color:var(--ink-2)}
-.bars{margin-top:6px}
-.bar{margin-bottom:12px}
-.bar .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.bars .bar{margin-bottom:12px}
+.bar .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;gap:8px}
 .bar .track{height:8px;background:#E3E5E9;border-radius:100px;overflow:hidden}
 .bar .fill{height:100%;border-radius:100px}
-.chip{display:inline-block;padding:1px 9px;border-radius:100px;font-size:11px;font-weight:700}
+.bar.sub{margin-left:14px}
+.bar.sub .top{font-size:12px;color:var(--ink-2)}
+.chip{display:inline-block;padding:2px 10px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
 .c-red{background:var(--red-bg);color:var(--red)}
 .c-amber{background:var(--amber-bg);color:#A9760D}
 .c-green{background:var(--green-bg);color:var(--green)}
+.c-gray{background:#EDEFF1;color:var(--ink-2)}
 table.res{width:100%;border-collapse:collapse;font-size:14px}
 table.res th{text-align:left;font-size:12px;color:var(--ink-2);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line)}
-table.res td{padding:7px 8px;border-bottom:1px solid #E7E9EC}
-table.res td.v{text-align:right;width:110px}
-.flags li{margin-bottom:6px}
-.flags .lv{font-weight:700;margin-right:6px}
+table.res td{padding:9px 8px;border-bottom:1px solid #E7E9EC;vertical-align:top}
+table.res td.v{text-align:right;width:190px}
+table.res tr:last-child td{border-bottom:0}
+.flags{list-style:none;padding:0;margin:0}
+.flags li{margin-bottom:9px;display:flex;gap:9px;align-items:flex-start}
 .note{background:#F5F6F8;border-left:3px solid var(--line);padding:12px 14px;font-size:14px;margin-bottom:10px;border-radius:0 4px 4px 0}
+.note:last-child{margin-bottom:0}
+.note.red{background:var(--red-bg);border-left-color:var(--red)}
+.note.amber{background:var(--amber-bg);border-left-color:var(--amber)}
+.note.green{background:var(--green-bg);border-left-color:var(--green)}
+.note b{display:block;font-size:13px;margin-bottom:2px}
 .empty{color:var(--ink-2);font-size:14px}
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
-  background:var(--ink);color:#fff;padding:11px 22px;border-radius:4px;font-size:14px;
-  opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;
+  background:var(--ink);color:#fff;padding:12px 24px;border-radius:4px;font-size:14px;
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;max-width:90vw;
 }
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -132,41 +193,76 @@ table.res td.v{text-align:right;width:110px}
 <header>
   <h1>NeeDS フィジカルチェック</h1>
   <span class="sub" id="apiState">接続中…</span>
-  <button onclick="showSetup();go(1)" style="margin-left:auto;background:none;border:1px solid #3C4A58;color:#9AA7B4;border-radius:4px;padding:4px 12px;font-size:12px">接続設定</button>
+  <button class="hbtn" id="btnSetup">接続設定</button>
 </header>
 <nav>
-  <button id="nav1" class="on" onclick="go(1)">選手を選ぶ</button>
-  <button id="nav2" onclick="go(2)" disabled>測定を入力</button>
-  <button id="nav3" onclick="go(3)" disabled>結果を見る</button>
+  <button id="nav1" class="on">選手を選ぶ</button>
+  <button id="nav2" disabled>測定を入力</button>
+  <button id="nav3" disabled>結果を見る</button>
 </nav>
 
 <main>
 
-<!-- ============ 1. 会員 ============ -->
+<!-- ============ 1. 選手を選ぶ ============ -->
 <section id="v1" class="view on">
-  <div class="panel" id="setup" style="display:none">
-    <h2>最初に接続先を設定する</h2>
-    <p class="help">1回だけの作業です。このブラウザに保存されるので、次回からは入力不要です。</p>
+
+  <div class="panel" id="setup" hidden>
+    <div class="head">
+      <h2>接続設定</h2>
+      <button class="btn ghost sm sp" id="s_close">閉じる</button>
+    </div>
+    <p class="help">
+      接続先は最初から入っています。ふだんは触る必要はありません。<br>
+      Apps Script を作り直したときや、合言葉を変えたときだけ、ここを書き換えてください。
+    </p>
+    <p class="cur">いま使っている接続先：<b id="s_cur">—</b></p>
+
     <div class="row">
-      <div class="f" style="flex:1"><label for="s_url">Apps Script のデプロイURL（末尾が /exec）</label><input id="s_url" style="width:100%" placeholder="https://script.google.com/macros/s/.../exec"></div>
+      <div class="f wide">
+        <label for="s_url">Apps Script のウェブアプリURL（末尾が /exec）</label>
+        <input id="s_url" placeholder="https://script.google.com/macros/s/AKfycb.../exec" spellcheck="false">
+      </div>
     </div>
     <div class="row">
-      <div class="f"><label for="s_token">合言葉（ACCESS_TOKEN）</label><input id="s_token" style="width:280px"></div>
+      <div class="f">
+        <label for="s_token">合言葉（Apps Script の ACCESS_TOKEN）</label>
+        <input id="s_token" style="width:280px" spellcheck="false">
+      </div>
     </div>
-    <button class="btn" onclick="saveConfig()">保存して接続する</button>
+    <div class="btns">
+      <button class="btn" id="s_save">保存して接続する</button>
+      <button class="btn ghost" id="s_test">接続テストだけする</button>
+      <button class="btn ghost" id="s_reset">最初の設定に戻す</button>
+    </div>
+    <div id="s_diag"></div>
+
+    <details class="hint">
+      <summary>接続できないときに見るところ</summary>
+      <ol>
+        <li><b>URL の種類</b>：<code>AKfycb…</code> だけの文字列は「デプロイID」です。使うのは <code>https://script.google.com/macros/s/AKfycb…/exec</code> という形のウェブアプリURLです。</li>
+        <li><b>URL の末尾</b>：<code>?token=…</code> が付いていたら消してください（この画面では自動で消します）。<code>/dev</code> ではなく <code>/exec</code> です。</li>
+        <li><b>デプロイのし直し</b>：Apps Script のコードを直しただけでは反映されません。［デプロイを管理］→ 鉛筆マーク →［バージョン］を「新しいバージョン」にして［デプロイ］を押してください。</li>
+        <li><b>アクセスできるユーザー</b>：「全員」にしてください。「Googleアカウントを持つ全員」だと、このアプリからは弾かれます。</li>
+        <li><b>合言葉</b>：Apps Script の <code>ACCESS_TOKEN</code> と、この画面の合言葉が同じ文字列である必要があります。</li>
+      </ol>
+    </details>
   </div>
 
   <div class="panel">
     <h2>選手を探す</h2>
     <p class="help">名前の一部を入れると候補が出ます。初めての選手は下から登録してください。</p>
     <div class="row">
-      <div class="f"><label for="q">名前・かな・会員番号</label><input id="q" oninput="doSearch()" placeholder="なかつか"></div>
+      <div class="f wide" style="max-width:320px">
+        <label for="q">名前・かな・会員番号</label>
+        <input id="q" placeholder="なかつか" autocomplete="off">
+      </div>
     </div>
     <div class="mlist" id="mlist"><div class="mrow"><span class="empty">読み込み中…</span></div></div>
   </div>
 
   <div class="panel">
     <h2>新しい選手を登録する</h2>
+    <p class="help">同姓同名や改姓があっても履歴が分かれないよう、内部では会員番号（NDS0001 形式）で管理します。</p>
     <div class="row">
       <div class="f"><label for="n_name">氏名</label><input id="n_name"></div>
       <div class="f"><label for="n_kana">かな</label><input id="n_kana"></div>
@@ -174,47 +270,60 @@ table.res td.v{text-align:right;width:110px}
       <div class="f"><label for="n_bd">生年月日</label><input id="n_bd" type="date"></div>
       <div class="f"><label for="n_sport">競技種目</label><input id="n_sport" placeholder="野球"></div>
     </div>
-    <button class="btn" onclick="addMember()">登録する</button>
+    <button class="btn" id="btnAdd">登録する</button>
   </div>
 </section>
 
-<!-- ============ 2. 測定入力 ============ -->
+<!-- ============ 2. 測定を入力 ============ -->
 <section id="v2" class="view">
   <div class="panel">
     <h2 id="inputWho">測定を入力</h2>
-    <p class="help">測っていない項目は空欄のままにしてください。空欄は採点の対象から外れます。</p>
+    <p class="help">測っていない項目は空欄のままにしてください。空欄は採点の対象から外れます（0点にはなりません）。</p>
     <div class="row">
       <div class="f"><label for="m_date">測定日</label><input id="m_date" type="date"></div>
-      <div class="f"><label for="m_h">身長</label><input id="m_h" type="number" step="0.1" placeholder="cm"></div>
-      <div class="f"><label for="m_w">体重</label><input id="m_w" type="number" step="0.1" placeholder="kg"></div>
-      <div class="f"><label for="m_bf">体脂肪率</label><input id="m_bf" type="number" step="0.1" placeholder="%"></div>
+      <div class="f"><label for="m_h">身長（cm）</label><input id="m_h" type="number" step="0.1" inputmode="decimal"></div>
+      <div class="f"><label for="m_w">体重（kg）</label><input id="m_w" type="number" step="0.1" inputmode="decimal"></div>
+      <div class="f"><label for="m_bf">体脂肪率（%）</label><input id="m_bf" type="number" step="0.1" inputmode="decimal"></div>
       <div class="f"><label for="m_tr">担当</label><input id="m_tr"></div>
     </div>
     <div class="row">
-      <div class="f" style="flex:1"><label for="m_inj">怪我・障害</label><input id="m_inj" style="width:100%" placeholder="右膝に違和感 など"></div>
+      <div class="f wide"><label for="m_inj">怪我・障害</label><input id="m_inj" placeholder="右膝に違和感 など"></div>
     </div>
+    <p class="help" id="m_wnote" style="margin:10px 0 0" hidden>体重が未入力です。1RM系（BP／SQ／DL）は体重比で採点するため、このままだと採点対象から外れます。</p>
   </div>
 
   <div class="panel">
     <div class="tabs" id="tabs"></div>
     <div id="groups"></div>
-    <div style="margin-top:22px;display:flex;gap:10px">
-      <button class="btn" onclick="saveMeasurement()">採点して保存する</button>
-      <button class="btn ghost" onclick="scoreOnly()">保存せず結果を見る</button>
+    <div class="btns" style="margin-top:24px">
+      <button class="btn" id="btnSave">採点して保存する</button>
+      <button class="btn ghost" id="btnScore">保存せず結果を見る</button>
+      <button class="btn ghost" id="btnClear">入力をすべて消す</button>
     </div>
   </div>
 </section>
 
-<!-- ============ 3. 結果 ============ -->
+<!-- ============ 3. 結果を見る ============ -->
 <section id="v3" class="view">
   <div class="panel">
     <div class="who">
       <span class="name" id="r_name">—</span>
       <span class="tag" id="r_tag"></span>
     </div>
-    <div class="hero">
-      <div><canvas id="radar" height="330"></canvas></div>
-      <div>
+    <div class="opts" style="margin-bottom:16px">
+      <label>主役
+        <select id="o_hero"><option value="radar">レーダーチャート</option><option value="total">総合スコア</option></select>
+      </label>
+      <label>レーダーの軸
+        <select id="o_radar"><option value="all">5軸すべて</option><option value="measured">測定した軸だけ</option></select>
+      </label>
+      <label>解説の書き方
+        <select id="o_tone"><option value="fact">事実ベース</option><option value="growth">伸びしろ重視</option></select>
+      </label>
+    </div>
+    <div class="hero" id="hero" data-hero="radar">
+      <div class="chartCell"><canvas id="radar" height="340"></canvas><p class="help" id="r_radarNote" style="margin:8px 0 0;text-align:center"></p></div>
+      <div class="side">
         <div class="total">
           <div class="v num" id="r_total">—</div>
           <div class="l">総合スコア（100点満点）</div>
@@ -239,9 +348,15 @@ table.res td.v{text-align:right;width:110px}
     <div id="r_items"></div>
   </div>
 
-  <div class="panel" id="trendPanel">
-    <h2>これまでの推移</h2>
-    <div id="r_trendWrap"><canvas id="trend" height="220"></canvas></div>
+  <div class="panel">
+    <div class="head">
+      <h2>これまでの推移</h2>
+      <label class="opts sp" style="font-size:12px">表示する内容
+        <select id="o_trend"></select>
+      </label>
+    </div>
+    <div id="r_trendWrap"></div>
+    <p class="help" id="r_trendNote" style="margin:10px 0 0"></p>
   </div>
 </section>
 
@@ -249,51 +364,102 @@ table.res td.v{text-align:right;width:110px}
 <div class="toast" id="toast"></div>
 
 <script>
+"use strict";
 /* ==================================================================
-   設定 — 画面から入力する。ファイルの書き換えは不要。
+   0. 接続先の初期値
+   --------------------------------------------------------------
+   ここに書いた値が最初から入っている。画面の「接続設定」で
+   上書きすると、そのブラウザではそちらが優先される。
    ================================================================== */
-var API_URL = localStorage.getItem('needs_api_url') || '';
-var TOKEN   = localStorage.getItem('needs_token')   || '';
+var DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbz64uN931ICMCP9Ery1SYQ0D39a-rv9VMX6DvM2J41WBNZgUzXMXJ6CbfAxSsrC3407/exec';
+var DEFAULT_TOKEN   = 'NeeDS2026';
 
-function showSetup(){
-  $('setup').style.display='block';
-  $('s_url').value = API_URL;
-  $('s_token').value = TOKEN;
-  $('apiState').textContent = '接続先が未設定です';
-}
-function saveConfig(){
-  var u=$('s_url').value.trim(), t=$('s_token').value.trim();
-  if(!u || !t){ toast('URLと合言葉の両方を入れてください'); return; }
-  if(u.indexOf('/exec')<0){ toast('URLの末尾が /exec になっているか確認してください'); return; }
-  localStorage.setItem('needs_api_url', u);
-  localStorage.setItem('needs_token', t);
-  API_URL=u; TOKEN=t;
-  $('setup').style.display='none';
-  boot();
-}
+var LS = {url:'needs_api_url', token:'needs_token', disp:'needs_display'};
+
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+
+var API_URL = lsGet(LS.url)   || DEFAULT_API_URL;
+var TOKEN   = lsGet(LS.token) || DEFAULT_TOKEN;
 
 /* ==================================================================
-   項目定義
+   1. 見せ方の切り替え（未確定事項。ここを変えれば入れ替わる）
+   ================================================================== */
+var DISPLAY = {
+  hero: 'radar',          // 'radar' = レーダーを主役 / 'total' = 総合点を主役
+  radarAxes: 'all',       // 'all' = 5軸固定 / 'measured' = 測定した軸だけで描く
+  tone: 'fact'            // 'fact' = 事実ベース / 'growth' = 伸びしろ重視
+};
+try{
+  var savedDisp = JSON.parse(lsGet(LS.disp) || '{}');
+  for(var dk in savedDisp){ if(DISPLAY[dk]!==undefined) DISPLAY[dk] = savedDisp[dk]; }
+}catch(e){}
+
+// 総合スコアの重み。等重み平均が既定。ここを変えれば配分が変わる。
+var CATEGORY_WEIGHTS = {flex:1, balance:1, strength:1, jump:1, quality:1};
+
+/* ==================================================================
+   2. 解説文（差し替えやすいよう定数として外に出す）
+   ================================================================== */
+var TEXTS = {
+  fact: {
+    sscLow:  '反動をほとんど使えていません。伸張反射（SSC）が機能しておらず、筋力をそのまま跳躍に変換している状態です。',
+    sscMid:  '反動と筋力のバランスは標準的です。',
+    sscHigh: '反動の使い方は上手いものの、筋力そのものが不足しています。SQJを引き上げれば、CMJも連動して伸びます。',
+    armLow:  '腕振りと上半身の連動が機能していません。上半身の力を下半身に伝えられていない状態です。',
+    armMid:  '腕振りの連動は標準的です。',
+    armHigh: '腕振りの連動は良好です。同時に、CMJ側にはまだ伸びしろがあります。',
+    slOk:    function(s,v,t){ return '片脚CMJ '+s+' は '+v+'cm。目標の '+t+'cm に届いています。'; },
+    slNear:  function(s,v,t,p){ return '片脚CMJ '+s+' は '+v+'cm で、目標 '+t+'cm の '+p+'%です。あと少し足りません。'; },
+    slRed:   function(s,v,t,p){ return '片脚CMJ '+s+' が '+v+'cm で、目標 '+t+'cm の '+p+'%しかありません。その側の片脚筋力、または片脚での伸張反射が不十分です。'; },
+    flexAmber: function(n,R,L){ return n+'に左右差があります（右 '+R+' / 左 '+L+'）。'; },
+    flexRed:   function(n,R,L,d){ return n+'の左右差が'+d+'点あります（右 '+R+' / 左 '+L+'）。硬い側から改善してください。'; },
+    asym:      function(n,R,L,p){ return n+'の左右差が '+p+'%あります（右 '+R+' / 左 '+L+'）。数値そのものが高くても、この差は改善が必要です。'; },
+    rsiDiff:   function(h,d,p){ return 'ホップテストとドロップジャンプのRSIに '+p+'%の差があります（'+h+' / '+d+'）。'; },
+    rsiGood:   function(n,v){ return n+'のRSIが '+v+'。非常に良い数値です。'; }
+  },
+  growth: {
+    sscLow:  '反動を使う余地がまるまる残っています。いまは筋力だけで跳んでいる状態なので、伸張反射（SSC）を使えるようになるだけで跳躍高は大きく変わります。',
+    sscMid:  '反動と筋力のバランスは取れています。両方を同時に引き上げていける状態です。',
+    sscHigh: '反動の使い方は上手です。ここに筋力が乗れば、いまの跳び方のまま数字が伸びます。SQJが伸びしろです。',
+    armLow:  '腕振りと上半身の連動が、いちばん大きな伸びしろです。上半身の力を下半身に伝えられるようになると、跳躍高がまとめて上がります。',
+    armMid:  '腕振りの連動は取れています。ここを保ったまま下半身を伸ばしていけます。',
+    armHigh: '腕振りの連動は武器になっています。次はCMJ側を伸ばせば、全体がもう一段上がります。',
+    slOk:    function(s,v,t){ return '片脚CMJ '+s+' は '+v+'cm。目標の '+t+'cm をクリアしています。'; },
+    slNear:  function(s,v,t,p){ return '片脚CMJ '+s+' は '+v+'cm、目標 '+t+'cm の '+p+'%。目標まであと少しです。'; },
+    slRed:   function(s,v,t,p){ return '片脚CMJ '+s+' は '+v+'cm、目標 '+t+'cm の '+p+'%。ここが伸びれば両脚の跳躍も一緒に変わります。'; },
+    flexAmber: function(n,R,L){ return n+'に少し左右差があります（右 '+R+' / 左 '+L+'）。硬い側をそろえると動きやすくなります。'; },
+    flexRed:   function(n,R,L,d){ return n+'の左右差が'+d+'点。硬い側をそろえるのが、いちばん早く体感が変わるところです（右 '+R+' / 左 '+L+'）。'; },
+    asym:      function(n,R,L,p){ return n+'の左右差が '+p+'%（右 '+R+' / 左 '+L+'）。弱い側を引き上げると、全体の数字も上がります。'; },
+    rsiDiff:   function(h,d,p){ return 'ホップとドロップのRSIに '+p+'%の差があります（'+h+' / '+d+'）。跳ね方をそろえる余地があります。'; },
+    rsiGood:   function(n,v){ return n+'のRSIが '+v+'。非常に良い数値です。ここは強みとして伸ばせます。'; }
+  }
+};
+function T(){ return TEXTS[DISPLAY.tone] || TEXTS.fact; }
+
+/* ==================================================================
+   3. 測定項目の定義
    ================================================================== */
 
-// 柔軟性：部位ごとに3種目。左右がある種目は低いほうを採用する。
-var FLEX = {
-  upper: {label:'上半身', items:[
+// 柔軟性：部位ごとに3種目・9点満点。左右がある種目は低いほうを採用する。
+var FLEX = [
+  {part:'upper', label:'上半身', items:[
     {key:'banzai',      name:'バンザイ',   pair:true},
     {key:'kettai',      name:'結帯動作',   pair:true},
     {key:'shoulder_er', name:'肩関節外旋', pair:true}
   ]},
-  core: {label:'体幹部', items:[
+  {part:'core', label:'体幹部', items:[
     {key:'trunk_rot',  name:'体幹回旋', pair:true},
     {key:'trunk_side', name:'体幹側屈', pair:true},
     {key:'bridge',     name:'ブリッジ', pair:false}
   ]},
-  lower: {label:'下半身', items:[
-    {key:'split',             name:'開脚',     pair:false},
-    {key:'aslr',              name:'ASLR',     pair:true},
-    {key:'ground_touch_flex', name:'地面タッチ', pair:false}
+  {part:'lower', label:'下半身', items:[
+    {key:'split',             name:'開脚',       pair:false},
+    {key:'aslr',              name:'ASLR',       pair:true},
+    {key:'ground_touch_flex', name:'地面タッチ', pair:false, note:'柔軟の地面タッチ'}
   ]}
-};
+];
 
 var QUALITY = [
   {key:'sq_quality',   name:'スクワット'},
@@ -303,37 +469,37 @@ var QUALITY = [
   {key:'rot_drill_low',name:'ローテーションドリル 下'}
 ];
 
-// 実測系：thresholds シートの item_key と一致させる
-var MEASURED = {
-  balance: {label:'バランス', items:[
-    {key:'sl_stance',        name:'片脚立位',         unit:'秒', pair:true},
-    {key:'ground_touch_bal', name:'地面タッチ',       unit:'回', pair:true}
+// 実測系：key は thresholds シートの item_key と一致させる
+var BALANCE = [
+  {key:'sl_stance',        name:'片脚立位',   unit:'秒', pair:true},
+  {key:'ground_touch_bal', name:'地面タッチ', unit:'回', pair:true, note:'バランスの地面タッチ'}
+];
+
+var STRENGTH = [
+  {sub:'体幹部', part:'str_core', items:[
+    {key:'ab30s',    name:'30秒腹筋',       unit:'回'},
+    {key:'pl_basic', name:'PLベーシック',   unit:'回', note:'プランク3種目連続。棒を落とさずできた回数（30回で満点）'},
+    {key:'pushup',   name:'プッシュアップ', unit:'回'}
   ]},
-  strength: {label:'筋力', groups:[
-    {sub:'体幹部', items:[
-      {key:'ab30s',    name:'30秒腹筋',      unit:'回'},
-      {key:'pl_basic', name:'PLベーシック',  unit:'回'},
-      {key:'pushup',   name:'プッシュアップ', unit:'回'}
-    ]},
-    {sub:'上半身', items:[
-      {key:'chinup', name:'懸垂',           unit:'回'},
-      {key:'bp_1rm', name:'ベンチプレス 1RM', unit:'kg', bw:true, est:true}
-    ]},
-    {sub:'下半身', items:[
-      {key:'sq_1rm', name:'スクワット 1RM',   unit:'kg', bw:true, est:true},
-      {key:'dl_1rm', name:'デッドリフト 1RM', unit:'kg', bw:true, est:true},
-      {key:'sl_sq',  name:'SLスクワット',    unit:'回', pair:true}
-    ]}
+  {sub:'上半身', part:'str_upper', items:[
+    {key:'chinup', name:'懸垂',             unit:'回'},
+    {key:'bp_1rm', name:'ベンチプレス 1RM', unit:'kg', bw:true, est:true}
   ]},
-  jump: {label:'ジャンプ', items:[
-    {key:'sqj',      name:'スクワットジャンプ', unit:'cm'},
-    {key:'cmj',      name:'CMJ',              unit:'cm'},
-    {key:'abj',      name:'ABJ',              unit:'cm'},
-    {key:'sl_cmj',   name:'SLCMJ',            unit:'cm', pair:true},
-    {key:'hop_rsi',  name:'ホップテスト',      unit:'RSI'},
-    {key:'drop_rsi', name:'ドロップジャンプ',   unit:'RSI'}
+  {sub:'下半身', part:'str_lower', items:[
+    {key:'sq_1rm', name:'スクワット 1RM',   unit:'kg', bw:true, est:true},
+    {key:'dl_1rm', name:'デッドリフト 1RM', unit:'kg', bw:true, est:true},
+    {key:'sl_sq',  name:'SLスクワット',     unit:'回', pair:true}
   ]}
-};
+];
+
+var JUMP = [
+  {key:'sqj',      name:'スクワットジャンプ', unit:'cm',  note:'反動なし。筋力そのものの強さ'},
+  {key:'cmj',      name:'CMJ',                unit:'cm',  note:'反動あり腕振りなし。伸張反射の活用度'},
+  {key:'abj',      name:'ABJ',                unit:'cm',  note:'腕振りあり。上半身からの連動性'},
+  {key:'sl_cmj',   name:'SLCMJ',              unit:'cm',  pair:true},
+  {key:'hop_rsi',  name:'ホップテスト',       unit:'RSI', note:'両足実施。機器が出したRSI値をそのまま入力'},
+  {key:'drop_rsi', name:'ドロップジャンプ',   unit:'RSI', note:'機器が出したRSI値をそのまま入力'}
+];
 
 var CATS = [
   {key:'flex',     label:'柔軟性'},
@@ -343,485 +509,1282 @@ var CATS = [
   {key:'quality',  label:'動きの質'}
 ];
 
+// 左右差（%）を見る実測項目
+var ASYM_ITEMS = ['sl_cmj','sl_sq','sl_stance','ground_touch_bal'];
+
+// 全40項目のフィールド名（保存・履歴の読み込みに使う）
+var FIELDS = (function(){
+  var out = [];
+  function push(it){ if(it.pair){ out.push(it.key+'_R', it.key+'_L'); } else { out.push(it.key); } }
+  FLEX.forEach(function(g){ g.items.forEach(push); });
+  BALANCE.forEach(push);
+  STRENGTH.forEach(function(g){ g.items.forEach(push); });
+  JUMP.forEach(push);
+  QUALITY.forEach(push);
+  return out;
+})();
+
+// 項目定義の逆引き（フィールド名 → 定義）
+var FIELD_DEF = (function(){
+  var map = {};
+  function reg(it, cat, sub){
+    var d = {key:it.key, name:it.name, unit:it.unit||'点', cat:cat, sub:sub||'',
+             pair:!!it.pair, bw:!!it.bw, est:!!it.est, kind:it.unit?'num':'pts'};
+    if(it.pair){ map[it.key+'_R'] = d; map[it.key+'_L'] = d; } else { map[it.key] = d; }
+  }
+  FLEX.forEach(function(g){ g.items.forEach(function(it){ reg(it,'flex',g.label); }); });
+  BALANCE.forEach(function(it){ reg(it,'balance'); });
+  STRENGTH.forEach(function(g){ g.items.forEach(function(it){ reg(it,'strength',g.sub); }); });
+  JUMP.forEach(function(it){ reg(it,'jump'); });
+  QUALITY.forEach(function(it){ reg(it,'quality'); });
+  return map;
+})();
+
 /* ==================================================================
-   状態
+   4. 状態と小道具
    ================================================================== */
-var TH = {};     // "item|sex|band" -> {red, green, unit, name}
-var RULES = {};  // rule_key -> value
-var member = null, history = [], form = {}, est = {}, result = null;
+var TH = {};        // "item_key|sex|age_band" -> 閾値
+var RULES = {};     // rule_key -> value
+var API_VERSION = '';
+var member = null, sessions = [], vals = {}, est = {}, result = null;
 var radarChart = null, trendChart = null;
 
-function $(id){return document.getElementById(id)}
-function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},2200)}
-function rule(k,d){return RULES[k]!==undefined?Number(RULES[k]):d}
-
-/* ==================================================================
-   通信
-   ================================================================== */
-function fail(where, e){
-  console.error(where, e);
-  var msg = String(e && e.message ? e.message : e);
-  $('apiState').textContent = where+'に失敗：'+msg;
-  toast(where+'に失敗しました。画面上部の表示を確認してください。');
-}
-
-function api(action, params){
-  var u = API_URL+'?token='+encodeURIComponent(TOKEN)+'&action='+action;
-  for(var k in params){ u += '&'+k+'='+encodeURIComponent(params[k]); }
-  return fetch(u).then(function(r){return r.json()});
-}
-function post(body){
-  body.token = TOKEN;
-  return fetch(API_URL,{
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'}, // CORS対策
-    body:JSON.stringify(body)
-  }).then(function(r){return r.json()});
-}
-
-function boot(){
-  if(location.protocol === 'file:'){
-    $('apiState').textContent = 'ファイルを直接開いています。この状態では通信できません。';
-    return;
-  }
-  if(!API_URL || !TOKEN){ showSetup(); return; }
-  api('bootstrap',{}).then(function(d){
-    if(!d.ok){ $('apiState').textContent='接続できません：'+(d.error||''); return; }
-    d.thresholds.forEach(function(t){
-      TH[t.item_key+'|'+t.sex+'|'+t.age_band] = {
-        red:Number(t.red_max), green:Number(t.green_min), unit:t.unit, name:t.item_name
-      };
-    });
-    d.rules.forEach(function(r){ RULES[r.rule_key] = r.value; });
-    $('apiState').textContent = '基準 '+d.thresholds.length+'件を読み込みました';
-    doSearch();
-  }).catch(function(e){
-    $('apiState').textContent = '接続できません。URLと合言葉を確認してください。';
+function $(id){ return document.getElementById(id); }
+function on(id, ev, fn){ var el = $(id); if(el) el.addEventListener(ev, fn); }
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
 }
-
-/* ==================================================================
-   画面1：会員
-   ================================================================== */
-function go(n){
-  [1,2,3].forEach(function(i){
-    $('v'+i).classList.toggle('on', i===n);
-    $('nav'+i).classList.toggle('on', i===n);
-  });
-  window.scrollTo(0,0);
+function r1(n){ return Math.round(n*10)/10; }
+function r2(n){ return Math.round(n*100)/100; }
+function toast(m){
+  var t = $('toast'); t.textContent = m; t.classList.add('on');
+  clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove('on'); }, 2600);
 }
-
-var searchTimer=null;
-function doSearch(){
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(function(){
-    api('searchMembers',{q:$('q').value}).then(function(d){
-      var el=$('mlist');
-      if(!d.ok || !d.members.length){
-        el.innerHTML='<div class="mrow"><span class="empty">該当する選手がいません。下から登録してください。</span></div>';
-        return;
-      }
-      el.innerHTML = d.members.map(function(m){
-        return '<div class="mrow" onclick="pick(\''+m.member_id+'\')">'
-             + '<span><strong>'+esc(m.name)+'</strong> <span class="meta">'+esc(m.sport||'')+'</span></span>'
-             + '<span class="meta num">'+esc(m.member_id)+'</span></div>';
-      }).join('');
-    }).catch(function(e){ fail('選手の検索', e); });
-  }, 250);
+function rule(k, d){
+  var v = RULES[k];
+  if(v===undefined || v==='' || isNaN(Number(v))) return d;
+  return Number(v);
 }
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-
-function addMember(){
-  var name=$('n_name').value.trim();
-  if(!name){ toast('氏名を入れてください'); return; }
-  post({action:'createMember', member:{
-    name:name, kana:$('n_kana').value.trim(), sex:$('n_sex').value,
-    birth_date:$('n_bd').value, sport:$('n_sport').value.trim()
-  }}).then(function(d){
-    if(!d.ok){ fail('選手の登録', d.error||'不明なエラー'); return; }
-    ['n_name','n_kana','n_bd','n_sport'].forEach(function(i){$(i).value=''});
-    toast(d.member.name+' さんを登録しました');
-    pick(d.member.member_id);
-  }).catch(function(e){ fail('選手の登録', e); });
+function num(v){
+  if(v===undefined || v===null || v==='') return undefined;
+  var n = Number(v);
+  return isNaN(n) ? undefined : n;
 }
+var COLOR = {green:'#3B8F68', amber:'#D89A1F', red:'#C7453F', gray:'#8A94A0'};
+var LABEL = {green:'良好', amber:'普通', red:'要改善', gray:'—'};
 
-function pick(id){
-  $('apiState').textContent = '読み込み中…';
-  api('history',{member_id:id}).then(function(d){
-    if(!d.ok){ fail('履歴の読み込み', d.error||'不明なエラー'); return; }
-    if(!d.member){ fail('履歴の読み込み', '会員 '+id+' が見つかりません'); return; }
-    member = d.member; history = d.measurements || [];
-    form = {}; est = {};
-    $('nav2').disabled=false; $('nav3').disabled=false;
-    $('inputWho').textContent = member.name+' さんの測定（'+(history.length+1)+'回目）';
-    $('m_date').value = new Date().toISOString().slice(0,10);
-    var last = history[history.length-1];
-    if(last){ $('m_h').value=last.height||''; }
-    buildInput();
-    $('apiState').textContent = member.name+' さんを読み込みました';
-    go(2);
-  }).catch(function(e){ fail('履歴の読み込み', e); });
-}
-
-/* ==================================================================
-   画面2：入力
-   ================================================================== */
-function band(){
-  if(!member || !member.birth_date) return 'adult';
-  var b=new Date(member.birth_date), d=new Date($('m_date').value||new Date());
-  var a=d.getFullYear()-b.getFullYear();
-  var m=d.getMonth()-b.getMonth();
-  if(m<0||(m===0&&d.getDate()<b.getDate())) a--;
-  return a >= rule('age_band_border',17) ? 'adult' : 'junior';
-}
-function th(key){ return TH[key+'|'+(member?member.sex:'M')+'|'+band()] || null; }
-
-function buildInput(){
-  var tabs=[
-    {id:'g_flex',  label:'柔軟性'},
-    {id:'g_bal',   label:'バランス'},
-    {id:'g_str',   label:'筋力'},
-    {id:'g_jmp',   label:'ジャンプ'},
-    {id:'g_qua',   label:'動きの質'}
-  ];
-  $('tabs').innerHTML = tabs.map(function(t,i){
-    return '<button class="'+(i===0?'on':'')+'" onclick="tab(\''+t.id+'\',this)">'+t.label+'</button>';
-  }).join('');
-
-  var h='';
-  // 柔軟性
-  h+='<div class="grp on" id="g_flex">';
-  for(var p in FLEX){
-    h+='<h3>'+FLEX[p].label+'</h3>';
-    FLEX[p].items.forEach(function(it){ h+=ptsRow(it); });
-  }
-  h+='</div>';
-  // バランス
-  h+='<div class="grp" id="g_bal">';
-  MEASURED.balance.items.forEach(function(it){ h+=numRow(it); });
-  h+='</div>';
-  // 筋力
-  h+='<div class="grp" id="g_str">';
-  MEASURED.strength.groups.forEach(function(g){
-    h+='<h3>'+g.sub+'</h3>';
-    g.items.forEach(function(it){ h+=numRow(it); });
-  });
-  h+='</div>';
-  // ジャンプ
-  h+='<div class="grp" id="g_jmp">';
-  MEASURED.jump.items.forEach(function(it){ h+=numRow(it); });
-  h+='</div>';
-  // 動きの質
-  h+='<div class="grp" id="g_qua">';
-  QUALITY.forEach(function(it){ h+=ptsRow({key:it.key,name:it.name,pair:false}); });
-  h+='</div>';
-
-  $('groups').innerHTML=h;
-}
-function tab(id,btn){
-  document.querySelectorAll('.grp').forEach(function(g){g.classList.toggle('on', g.id===id)});
-  document.querySelectorAll('#tabs button').forEach(function(b){b.classList.toggle('on', b===btn)});
-}
-
-function ptsRow(it){
-  function one(field,side){
-    var b='';
-    [0,1,2,3].forEach(function(v){
-      b+='<button onclick="setPt(\''+field+'\','+v+',this)">'+v+'</button>';
-    });
-    return '<div class="item"><span class="nm">'+it.name+'</span>'
-         + '<span class="side">'+(side||'')+'</span><div class="pts" data-f="'+field+'">'+b+'</div></div>';
-  }
-  return it.pair ? one(it.key+'_R','右')+one(it.key+'_L','左') : one(it.key,'');
-}
-function setPt(field,v,btn){
-  form[field]=v;
-  var wrap=btn.parentNode;
-  wrap.querySelectorAll('button').forEach(function(b){b.classList.toggle('on', b===btn)});
-}
-
-function numRow(it){
-  function one(field,side){
-    var e = it.est ? '<label class="est"><input type="checkbox" onchange="est[\''+field+'\']=this.checked">推定</label>' : '';
-    return '<div class="item"><span class="nm">'+it.name+'</span>'
-         + '<span class="side">'+(side||'')+'</span>'
-         + '<input type="number" step="0.01" oninput="form[\''+field+'\']=this.value===\'\'?undefined:Number(this.value)">'
-         + '<span class="unit">'+it.unit+'</span>'+e+'</div>';
-  }
-  return it.pair ? one(it.key+'_R','右')+one(it.key+'_L','左') : one(it.key,'');
-}
-
-/* ==================================================================
-   採点
-   ================================================================== */
+// 得点率 → 色（rules シートの値を使う）
 function bandColor(pct){
-  if(pct>=rule('flex_green_min',88.9)) return 'green';
-  if(pct>=rule('flex_yellow_min',66.7)) return 'amber';
+  if(pct===undefined || pct===null) return 'gray';
+  if(pct >= rule('flex_green_min', 88.9)) return 'green';
+  if(pct >= rule('flex_yellow_min', 66.7)) return 'amber';
   return 'red';
 }
-function pointOf(key, value){
-  var t = th(key);
-  if(!t || value===undefined || value===null || value==='') return null;
-  var v = Number(value);
-  if(isNaN(v)) return null;
+// 1〜3点 → 色
+function ptColor(pt){ return pt===3 ? 'green' : (pt===2 ? 'amber' : 'red'); }
+// 0〜3点 → 色（0点は「測定不能／病的な硬さ」なので赤）
+function rawColor(v){ return v>=3 ? 'green' : (v>=2 ? 'amber' : 'red'); }
+</script>
+
+<script>
+"use strict";
+/* ==================================================================
+   5. 採点エンジン
+   --------------------------------------------------------------
+   画面から切り離した純粋な関数にしてある。今回の入力にも、
+   過去の測定にも同じ関数を通すので、閾値を変えれば
+   推移グラフも含めて現行の基準で引き直される。
+   ================================================================== */
+
+function calcAge(birth, onDate){
+  if(!birth) return null;
+  var b = new Date(birth), o = new Date(onDate || new Date());
+  if(isNaN(b.getTime()) || isNaN(o.getTime())) return null;
+  var a = o.getFullYear() - b.getFullYear();
+  var m = o.getMonth() - b.getMonth();
+  if(m < 0 || (m === 0 && o.getDate() < b.getDate())) a--;
+  return a;
+}
+
+// 年齢区分。将来 elementary を足すときは rules に age_band_border_elementary を追加する。
+function bandOf(age){
+  if(age === null || age === undefined) return 'adult';
+  var el = RULES['age_band_border_elementary'];
+  if(el !== undefined && el !== '' && !isNaN(Number(el)) && age < Number(el)) return 'elementary';
+  return age >= rule('age_band_border', 17) ? 'adult' : 'junior';
+}
+var BAND_LABEL = {adult:'17歳以上', junior:'16歳以下', elementary:'小学生'};
+
+// 閾値の取得。その区分の行がなければ、隣の区分に落として探す。
+function thOf(itemKey, ctx){
+  var order = ctx.band === 'elementary' ? ['elementary','junior','adult']
+            : ctx.band === 'junior'     ? ['junior','adult']
+            : ['adult','junior'];
+  for(var i=0;i<order.length;i++){
+    var hit = TH[itemKey+'|'+ctx.sex+'|'+order[i]];
+    if(hit) return hit;
+  }
+  return null;
+}
+
+/* 実測値 → 1〜3点
+   direction=high : red_max 以下=1点 / green_min 以上=3点 / その間=2点
+   direction=low  : 逆向き（タイム系など「小さいほど良い」項目を将来足せるように） */
+function pointOf(itemKey, value, ctx){
+  var t = thOf(itemKey, ctx);
+  var v = num(value);
+  if(!t || v === undefined) return null;
+  if(t.direction === 'low'){
+    if(v >= t.red) return 1;
+    if(v <= t.green) return 3;
+    return 2;
+  }
   if(v <= t.red) return 1;
   if(v >= t.green) return 3;
   return 2;
 }
-function bwRatio(key){
-  var w = Number($('m_w').value);
-  if(!w || form[key]===undefined) return null;
-  return Math.round(form[key]/w*100)/100;
-}
 
-function score(){
-  var d = {cats:{}, parts:{}, items:[], flags:[], jump:{}};
+function sideOf(field){ return /_R$/.test(field) ? '右' : (/_L$/.test(field) ? '左' : ''); }
 
-  // --- 柔軟性 ---
-  var fSum=0, fMax=0;
-  for(var p in FLEX){
-    var s=0,m=0;
-    FLEX[p].items.forEach(function(it){
-      var v;
+/* ------------------------------------------------------------------
+   computeScore(v, ctx)
+     v   : {フィールド名: 値}
+     ctx : {sex:'M'|'F', band:'adult'|…, weight:Number|undefined, est:{field:true}}
+   ------------------------------------------------------------------ */
+function computeScore(v, ctx){
+  v = v || {};
+  ctx = ctx || {};
+  ctx.est = ctx.est || {};
+  ctx.sex = ctx.sex || 'M';
+  ctx.band = ctx.band || 'adult';
+  var t = T();
+  var d = {cats:{}, parts:{}, items:[], flags:[], jump:{}, notes:[], total:0, measured:0};
+
+  /* ---------- 柔軟性（左右がある種目は低いほうを採用） ---------- */
+  var fSum = 0, fMax = 0;
+  FLEX.forEach(function(g){
+    var s = 0, m = 0;
+    g.items.forEach(function(it){
+      var sc, R, L;
       if(it.pair){
-        var R=form[it.key+'_R'], L=form[it.key+'_L'];
-        if(R===undefined||L===undefined) v=(R!==undefined?R:L); else v=Math.min(R,L);
-        if(R!==undefined && L!==undefined){
-          var diff=Math.abs(R-L);
-          if(diff>=rule('flex_lr_red',2)) d.flags.push({lv:'red', t:it.name+'の左右差が'+diff+'点あります（右'+R+'／左'+L+'）'});
-          else if(diff>=rule('flex_lr_yellow',1)) d.flags.push({lv:'amber', t:it.name+'に左右差があります（右'+R+'／左'+L+'）'});
+        R = num(v[it.key+'_R']); L = num(v[it.key+'_L']);
+        if(R !== undefined && L !== undefined){
+          sc = Math.min(R, L);
+          var diff = Math.abs(R - L);
+          if(diff >= rule('flex_lr_red', 2)){
+            d.flags.push({lv:'red', code:'flex_lr_'+it.key, t:t.flexRed(it.name, R, L, diff)});
+          }else if(diff >= rule('flex_lr_yellow', 1)){
+            d.flags.push({lv:'amber', code:'flex_lr_'+it.key, t:t.flexAmber(it.name, R, L)});
+          }
+        }else{
+          sc = (R !== undefined) ? R : L;
         }
-      } else { v=form[it.key]; }
-      if(v!==undefined){ s+=v; m+=3;
-        d.items.push({cat:'柔軟性', name:it.name, val:v+' 点', pt:Math.max(1,Math.round(v/3*3)||1), raw:v, isFlex:true});
+      }else{
+        sc = num(v[it.key]);
       }
+      if(sc === undefined) return;
+      s += sc; m += 3;
+      d.items.push({
+        cat:'柔軟性', sub:g.label, name:it.name, kind:'pts', raw:sc, color:rawColor(sc),
+        val: sc + ' 点' + (R !== undefined && L !== undefined ? '（右 '+R+' / 左 '+L+'）' : '')
+      });
     });
-    if(m>0){ d.parts[p]=Math.round(s/m*1000)/10; fSum+=s; fMax+=m; }
-  }
-  if(fMax>0) d.cats.flex = Math.round(fSum/fMax*1000)/10;
-
-  // --- 動きの質 ---
-  var qs=0,qm=0;
-  QUALITY.forEach(function(it){
-    var v=form[it.key];
-    if(v!==undefined){ qs+=v; qm+=3; d.items.push({cat:'動きの質', name:it.name, val:v+' 点', raw:v, isFlex:true}); }
+    if(m > 0){ d.parts[g.part] = {label:'柔軟性・'+g.label, pct:r1(s/m*100)}; fSum += s; fMax += m; }
   });
-  if(qm>0) d.cats.quality = Math.round(qs/qm*1000)/10;
+  if(fMax > 0) d.cats.flex = r1(fSum/fMax*100);
 
-  // --- 実測系の共通処理 ---
-  function runItems(list, bucket){
-    var s=0,n=0;
+  /* ---------- 動きの質 ---------- */
+  var qs = 0, qm = 0;
+  QUALITY.forEach(function(it){
+    var sc = num(v[it.key]);
+    if(sc === undefined) return;
+    qs += sc; qm += 3;
+    d.items.push({cat:'動きの質', sub:'', name:it.name, kind:'pts', raw:sc, color:rawColor(sc), val:sc+' 点'});
+  });
+  if(qm > 0) d.cats.quality = r1(qs/qm*100);
+
+  /* ---------- 実測系（バランス・筋力・ジャンプ） ---------- */
+  function runMeasured(list, catLabel, sub){
+    var sum = 0, n = 0;
     list.forEach(function(it){
       var fields = it.pair ? [it.key+'_R', it.key+'_L'] : [it.key];
       fields.forEach(function(f){
-        var raw = form[f];
-        if(raw===undefined) return;
-        var v = it.bw ? bwRatio(f) : raw;
-        var pt = pointOf(it.key, v);
-        if(pt===null) return;
-        s+=pt; n++;
-        d.items.push({
-          cat:bucket, name:it.name+(it.pair?(f.slice(-1)==='R'?'（右）':'（左）'):''),
-          val: raw+' '+it.unit + (it.bw ? '（体重比 '+v+'）':'') + (est[f]?' ※推定':''),
-          pt:pt
-        });
+        var raw = num(v[f]);
+        if(raw === undefined) return;
+        var name = it.name + (it.pair ? '（'+sideOf(f)+'）' : '');
+        var mark = ctx.est[f] ? ' ※推定' : '';
+        var judge = raw, extra = '';
+
+        if(it.bw){
+          if(!ctx.weight){
+            d.items.push({cat:catLabel, sub:sub||'', name:name, kind:'num', color:'gray',
+                          val: raw+' '+it.unit+mark+'（体重未入力のため採点対象外）'});
+            if(!d._wNote){ d._wNote = true; d.notes.push('体重が入力されていないため、1RM系（BP／SQ／DL）は体重比に直せず採点対象から外れています。'); }
+            return;
+          }
+          judge = r2(raw / ctx.weight);
+          extra = '（体重比 ' + judge.toFixed(2) + '）';
+        }
+
+        var pt = pointOf(it.key, judge, ctx);
+        if(pt === null){
+          d.items.push({cat:catLabel, sub:sub||'', name:name, kind:'num', color:'gray',
+                        val: raw+' '+it.unit+extra+mark+'（基準が未設定です）'});
+          return;
+        }
+        sum += pt; n++;
+        d.items.push({cat:catLabel, sub:sub||'', name:name, kind:'num', pt:pt, color:ptColor(pt),
+                      val: raw+' '+it.unit+extra+mark});
       });
-      // 左右差
-      if(it.pair){
-        var R=form[it.key+'_R'], L=form[it.key+'_L'];
-        if(R!==undefined && L!==undefined && Math.max(R,L)>0){
-          var diff = Math.round(Math.abs(R-L)/Math.max(R,L)*1000)/10;
-          if(diff >= rule('asym_flag',10)){
-            d.flags.push({lv:'red', t:it.name+'の左右差が'+diff+'%あります（右'+R+'／左'+L+'）。数値が高くても改善が必要です。'});
+
+      // 左右差（高いほうを100とした差）
+      if(it.pair && ASYM_ITEMS.indexOf(it.key) >= 0){
+        var R = num(v[it.key+'_R']), L = num(v[it.key+'_L']);
+        if(R !== undefined && L !== undefined && Math.max(R, L) > 0){
+          var p = r1(Math.abs(R - L) / Math.max(R, L) * 100);
+          if(p >= rule('asym_flag', 10)){
+            d.flags.push({lv:'red', code:'asym_'+it.key, t:t.asym(it.name, R, L, p)});
           }
         }
       }
     });
-    return n>0 ? Math.round(s/(n*3)*1000)/10 : undefined;
+    return {sum:sum, n:n};
   }
 
-  d.cats.balance = runItems(MEASURED.balance.items, 'バランス');
+  var b = runMeasured(BALANCE, 'バランス');
+  if(b.n > 0) d.cats.balance = r1(b.sum/(b.n*3)*100);
 
-  var ss=0, sn=0;
-  MEASURED.strength.groups.forEach(function(g){
-    var before = d.items.length;
-    runItems(g.items, '筋力・'+g.sub);
-    var added = d.items.slice(before);
-    added.forEach(function(a){ if(a.pt){ ss+=a.pt; sn++; } });
-    var gs=0, gn=0;
-    added.forEach(function(a){ if(a.pt){ gs+=a.pt; gn++; } });
-    if(gn>0) d.parts['str_'+g.sub] = Math.round(gs/(gn*3)*1000)/10;
+  var sSum = 0, sN = 0;
+  STRENGTH.forEach(function(g){
+    var r = runMeasured(g.items, '筋力', g.sub);
+    if(r.n > 0){
+      d.parts[g.part] = {label:'筋力・'+g.sub, pct:r1(r.sum/(r.n*3)*100)};
+      sSum += r.sum; sN += r.n;
+    }
   });
-  if(sn>0) d.cats.strength = Math.round(ss/(sn*3)*1000)/10;
+  if(sN > 0) d.cats.strength = r1(sSum/(sN*3)*100);
 
-  d.cats.jump = runItems(MEASURED.jump.items, 'ジャンプ');
+  var j = runMeasured(JUMP, 'ジャンプ');
+  if(j.n > 0) d.cats.jump = r1(j.sum/(j.n*3)*100);
 
-  // --- ジャンプの中身 ---
-  var sqj=form.sqj, cmj=form.cmj, abj=form.abj;
-  if(sqj && cmj){
-    var r1 = Math.round((cmj-sqj)/sqj*1000)/10;
-    d.jump.sscRate = r1;
-    var tgt = rule('sqj_to_cmj_target',10);
-    d.jump.ssc = r1 < tgt*0.3
-      ? '反動をほとんど使えていません。伸張反射（SSC）が機能しておらず、筋力をそのまま跳躍に変換している状態です。'
-      : (r1 > tgt*1.5
-        ? '反動の使い方は非常に上手いものの、筋力そのものが不足しています。SQJを引き上げれば、CMJも連動して伸びます。'
-        : '反動と筋力のバランスは標準的です。');
+  /* ---------- ジャンプの種目間分析 ---------- */
+  var sqj = num(v.sqj), cmj = num(v.cmj), abj = num(v.abj);
+  if(sqj > 0 && cmj !== undefined){
+    var g1 = r1((cmj - sqj) / sqj * 100);
+    var tgt = rule('sqj_to_cmj_target', 10);
+    d.jump.ssc = {rate:g1, text: g1 < tgt*0.3 ? t.sscLow : (g1 > tgt*1.5 ? t.sscHigh : t.sscMid),
+                  lv: g1 < tgt*0.3 ? 'red' : (g1 > tgt*1.5 ? 'amber' : 'green')};
   }
-  if(cmj && abj){
-    var r2 = Math.round((abj-cmj)/cmj*1000)/10;
-    d.jump.armRate = r2;
-    var lo = rule('cmj_to_abj_low',5), hi = rule('cmj_to_abj_high',11);
-    d.jump.arm = r2 < lo
-      ? '腕振りと上半身の連動が機能していません。上半身の力を下半身に伝えられていない状態です。'
-      : (r2 > hi
-        ? '腕振りの連動は良好です。同時に、CMJ側にはまだ伸びしろがあります。'
-        : '腕振りの連動は標準的です。');
+  if(cmj > 0 && abj !== undefined){
+    var g2 = r1((abj - cmj) / cmj * 100);
+    var lo = rule('cmj_to_abj_low', 5), hi = rule('cmj_to_abj_high', 11);
+    d.jump.arm = {rate:g2, text: g2 < lo ? t.armLow : (g2 > hi ? t.armHigh : t.armMid),
+                  lv: g2 < lo ? 'red' : (g2 > hi ? 'amber' : 'green')};
   }
-  if(cmj){
-    var target = Math.round(cmj*rule('slcmj_target_ratio',50)/100*10)/10;
-    d.jump.slTarget = target;
+  if(cmj > 0){
+    var target = r1(cmj * rule('slcmj_target_ratio', 50) / 100);
+    var tol = rule('slcmj_tolerance', 5), redR = rule('slcmj_red_ratio', 90);
+    d.jump.sl = {target:target, sides:[]};
     ['R','L'].forEach(function(s){
-      var v=form['sl_cmj_'+s];
-      if(v===undefined) return;
-      var pct = Math.round(v/target*1000)/10;
-      if(pct < rule('slcmj_red_ratio',90)){
-        d.flags.push({lv:'red', t:'SLCMJ '+(s==='R'?'右':'左')+' が目標の'+target+'cmに届いていません（'+v+'cm）。その側の片脚筋力、または片脚での伸張反射が不十分です。'});
+      var val = num(v['sl_cmj_'+s]);
+      if(val === undefined) return;
+      var pct = r1(val / target * 100);
+      var label = (s === 'R' ? '右' : '左');
+      var e = {side:label, val:val, pct:pct};
+      if(pct < redR){
+        e.lv = 'red'; e.text = t.slRed(label, val, target, pct);
+        d.flags.push({lv:'red', code:'slcmj_'+s, t:e.text});
+      }else if(pct < 100 - tol){
+        e.lv = 'amber'; e.text = t.slNear(label, val, target, pct);
+        d.flags.push({lv:'amber', code:'slcmj_'+s, t:e.text});
+      }else{
+        e.lv = 'green'; e.text = t.slOk(label, val, target);
       }
+      d.jump.sl.sides.push(e);
     });
   }
-  var hr=form.hop_rsi, dr=form.drop_rsi;
-  if(hr && dr && Math.max(hr,dr)>0){
-    var rd = Math.round(Math.abs(hr-dr)/Math.max(hr,dr)*1000)/10;
-    if(rd >= rule('rsi_diff_flag',15)){
-      d.flags.push({lv:'amber', t:'ホップテストとドロップジャンプのRSIに'+rd+'%の差があります（'+hr+' / '+dr+'）。'});
+  var hop = num(v.hop_rsi), drop = num(v.drop_rsi);
+  if(hop !== undefined && drop !== undefined && Math.max(hop, drop) > 0){
+    var rd = r1(Math.abs(hop - drop) / Math.max(hop, drop) * 100);
+    if(rd >= rule('rsi_diff_flag', 15)){
+      d.flags.push({lv:'amber', code:'rsi_diff', t:t.rsiDiff(hop, drop, rd)});
     }
   }
-  ['hop_rsi','drop_rsi'].forEach(function(k){
-    if(form[k] && form[k] >= rule('rsi_excellent',3.1)){
-      d.flags.push({lv:'green', t:(k==='hop_rsi'?'ホップテスト':'ドロップジャンプ')+'のRSIが'+form[k]+'。非常に良い数値です。'});
+  [['hop_rsi','ホップテスト'], ['drop_rsi','ドロップジャンプ']].forEach(function(p){
+    var val = num(v[p[0]]);
+    if(val !== undefined && val >= rule('rsi_excellent', 3.1)){
+      d.flags.push({lv:'green', code:'rsi_excellent_'+p[0], t:t.rsiGood(p[1], val)});
     }
   });
 
-  // --- 総合 ---
-  var tot=0, tn=0;
-  CATS.forEach(function(c){ if(d.cats[c.key]!==undefined){ tot+=d.cats[c.key]; tn++; } });
-  d.total = tn>0 ? Math.round(tot/tn*10)/10 : 0;
+  /* ---------- 総合（カテゴリー得点率の加重平均） ---------- */
+  var tot = 0, w = 0;
+  CATS.forEach(function(c){
+    if(d.cats[c.key] === undefined) return;
+    var cw = CATEGORY_WEIGHTS[c.key];
+    if(!cw) return;
+    tot += d.cats[c.key] * cw; w += cw;
+    d.measured++;
+  });
+  d.total = w > 0 ? r1(tot / w) : 0;
   return d;
+}
+</script>
+
+<script>
+"use strict";
+/* ==================================================================
+   6. 通信と接続設定
+   ================================================================== */
+
+/* URLの整形。よくある貼り間違いをここで吸収する。 */
+function sanitizeUrl(raw){
+  var out = {url:'', msgs:[], fatal:null};
+  var s = String(raw == null ? '' : raw).replace(/\s+/g, '').replace(/^["'<]+|["'>]+$/g, '');
+  if(!s){ out.fatal = 'URLが入力されていません。'; return out; }
+
+  if(/^AKfycb[A-Za-z0-9_-]*$/i.test(s)){
+    out.fatal = 'これはデプロイIDです。ウェブアプリURLをコピーしてください。'
+              + 'Apps Script の［デプロイを管理］で、デプロイIDの下にある '
+              + 'https://script.google.com/macros/s/' + s.slice(0, 12) + '…/exec という形のURLです。';
+    return out;
+  }
+  if(/script\.google\.com\/(home|u\/\d+\/home)/i.test(s) || /\/edit(\?|$)/i.test(s)){
+    out.fatal = 'これは Apps Script のエディタのURLです。［デプロイ］→［デプロイを管理］で表示される、'
+              + '末尾が /exec のウェブアプリURLをコピーしてください。';
+    return out;
+  }
+
+  var cut = s.search(/[?#]/);
+  if(cut >= 0){
+    out.msgs.push('URLの ? 以降（token=… など）を削除しました。');
+    s = s.slice(0, cut);
+  }
+  s = s.replace(/\/+$/, '');
+
+  if(/^http:\/\//i.test(s)){ s = s.replace(/^http:\/\//i, 'https://'); out.msgs.push('http:// を https:// に直しました。'); }
+  if(!/^https:\/\//i.test(s)){ out.fatal = 'https:// から始まるURLを貼り付けてください。'; return out; }
+  if(!/script\.google\.com/i.test(s)){ out.msgs.push('script.google.com のURLではありません。貼り付け先を間違えていないか確認してください。'); }
+
+  if(/\/dev$/i.test(s)){
+    out.msgs.push('末尾が /dev になっています。/dev は本人しか開けない開発用URLです。/exec に直しました。');
+    s = s.replace(/\/dev$/i, '/exec');
+  }else if(!/\/exec$/i.test(s)){
+    out.msgs.push('末尾が /exec ではありません。ウェブアプリURLは必ず /exec で終わります。');
+  }
+  out.url = s;
+  return out;
+}
+
+/* fetch の薄いラッパー。失敗の種類を e.kind に分けて投げ直す。 */
+function httpJson(url, opts){
+  return fetch(url, opts).then(function(res){
+    return res.text().then(function(text){ return {res:res, text:text}; });
+  }, function(netErr){
+    var e = new Error(String(netErr && netErr.message ? netErr.message : netErr));
+    e.kind = 'network';
+    throw e;
+  }).then(function(o){
+    var res = o.res, text = String(o.text || '').replace(/^﻿/, '').trim();
+    if(!res.ok){
+      var e = new Error('HTTP ' + res.status);
+      e.kind = (res.status === 404) ? 'notfound' : ((res.status === 401 || res.status === 403) ? 'forbidden' : 'http');
+      e.status = res.status;
+      throw e;
+    }
+    if(text.charAt(0) === '<'){
+      var e2 = new Error('HTMLが返ってきました');
+      e2.kind = 'html';
+      throw e2;
+    }
+    try{
+      return JSON.parse(text);
+    }catch(err){
+      var e3 = new Error('応答をJSONとして読めませんでした');
+      e3.kind = 'parse';
+      e3.body = text.slice(0, 160);
+      throw e3;
+    }
+  });
+}
+
+function apiGet(action, params, opts){
+  opts = opts || {};
+  var url = (opts.url || API_URL) + '?action=' + encodeURIComponent(action);
+  if(!opts.noToken) url += '&token=' + encodeURIComponent(opts.token !== undefined ? opts.token : TOKEN);
+  for(var k in params){
+    if(params[k] === undefined || params[k] === null) continue;
+    url += '&' + k + '=' + encodeURIComponent(params[k]);
+  }
+  return httpJson(url, {method:'GET'});
+}
+
+function apiPost(body){
+  body.token = TOKEN;
+  return httpJson(API_URL, {
+    method: 'POST',
+    // text/plain にすると preflight が飛ばない（Apps Script は OPTIONS を扱えない）
+    headers: {'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(body)
+  });
+}
+
+/* 失敗の種類 → 現場で読める文言 */
+function explain(e){
+  if(!e) return {title:'原因不明のエラーです。', lines:[]};
+  if(e.appError === 'unauthorized'){
+    return {title:'合言葉が一致していません（unauthorized）。', lines:[
+      'この画面の合言葉と、Apps Script の ACCESS_TOKEN が同じ文字列か確認してください。',
+      'Apps Script 側を直した直後なら、デプロイのし直しがまだかもしれません。［デプロイを管理］→ 鉛筆マーク →［バージョン］を「新しいバージョン」にして［デプロイ］を押してください。'
+    ]};
+  }
+  if(e.appError) return {title:'サーバーがエラーを返しました：' + e.appError, lines:[]};
+  switch(e.kind){
+    case 'network':
+      return {title:'サーバーに届いていません。', lines:[
+        'URLが違うか、Apps Script の「アクセスできるユーザー」が「全員」になっていない可能性があります。',
+        '「Googleアカウントを持つ全員」だと、このアプリからは弾かれます（CORSエラーになります）。',
+        'ネットにつながっているかも確認してください。'
+      ]};
+    case 'notfound':
+      return {title:'URLが見つかりません（404）。', lines:[
+        'ウェブアプリURLを貼り直してください。末尾は /exec です。',
+        'デプロイを作り直すとURLも変わります。古いURLが残っていないか確認してください。'
+      ]};
+    case 'forbidden':
+      return {title:'アクセスが拒否されました（' + (e.status || '403') + '）。', lines:[
+        'Apps Script の［デプロイ］→［アクセスできるユーザー］を「全員」にしてください。'
+      ]};
+    case 'html':
+      return {title:'Googleのログイン画面が返ってきています。', lines:[
+        '［アクセスできるユーザー］が「全員」以外になっています。「全員」に変えて、新しいバージョンでデプロイし直してください。'
+      ]};
+    case 'parse':
+      return {title:'応答を読み取れませんでした。', lines:[
+        'Apps Script 側でエラーが出ている可能性があります。実行ログを確認してください。',
+        e.body ? ('返ってきた内容：' + esc(e.body)) : ''
+      ].filter(Boolean)};
+    default:
+      return {title:'通信に失敗しました：' + (e.message || e), lines:[]};
+  }
+}
+
+function appErr(d){
+  var e = new Error(d && d.error ? d.error : 'error');
+  e.appError = (d && d.error) ? d.error : 'unknown';
+  return e;
+}
+
+function setStatus(text, cls){
+  var el = $('apiState');
+  el.textContent = text;
+  el.className = 'sub' + (cls ? ' ' + cls : '');
+}
+
+function fail(where, e){
+  if(window.console) console.error(where, e);
+  var x = explain(e);
+  setStatus(where + 'に失敗：' + x.title, 'ng');
+  toast(where + 'に失敗しました。「接続設定」で確認してください。');
+}
+
+/* ---------- 接続設定パネル ---------- */
+function showSetup(){
+  $('setup').hidden = false;
+  $('s_url').value = API_URL;
+  $('s_token').value = TOKEN;
+  $('s_cur').textContent = API_URL + '　／　合言葉 ' + TOKEN;
+  go(1);
+  $('setup').scrollIntoView({block:'start'});
+}
+function hideSetup(){ $('setup').hidden = true; }
+
+function diag(kind, title, lines){
+  $('s_diag').innerHTML = '<div class="diag ' + kind + '"><b>' + esc(title) + '</b>'
+    + (lines && lines.length ? '<ul>' + lines.map(function(l){ return '<li>' + l + '</li>'; }).join('') + '</ul>' : '')
+    + '</div>';
+}
+
+/* 接続テスト。ping（合言葉なし）→ bootstrap（合言葉あり）の順に試して、
+   「URLが違う」のか「合言葉が違う」のかを切り分ける。 */
+function testConnection(url, token){
+  diag('info', '接続を確認しています…', []);
+  var urlOk = false;
+  return apiGet('ping', {}, {url:url, noToken:true}).then(function(d){
+    if(d && d.ok && d.app === 'needs-physical-check'){
+      urlOk = true;
+      API_VERSION = d.version || '';
+    }else if(d && d.error === 'unauthorized'){
+      // 旧版のコードが動いている（ping が合言葉チェックより後ろにある版）
+      urlOk = true;
+      API_VERSION = '(古い版)';
+    }
+    return null;
+  }, function(){ return null; }).then(function(){
+    return apiGet('bootstrap', {}, {url:url, token:token});
+  }).then(function(d){
+    if(!d || !d.ok) throw appErr(d);
+    return {
+      ok: true,
+      thresholds: d.thresholds || [],
+      rules: d.rules || [],
+      version: d.version || API_VERSION
+    };
+  }).catch(function(e){
+    e.urlOk = urlOk;
+    throw e;
+  });
+}
+
+function applyBootstrap(d){
+  TH = {}; RULES = {};
+  (d.thresholds || []).forEach(function(t){
+    if(!t || !t.item_key) return;
+    TH[t.item_key + '|' + t.sex + '|' + t.age_band] = {
+      red: Number(t.red_max),
+      green: Number(t.green_min),
+      unit: t.unit,
+      name: t.item_name,
+      direction: String(t.direction || 'high').toLowerCase()
+    };
+  });
+  (d.rules || []).forEach(function(r){ if(r && r.rule_key) RULES[r.rule_key] = r.value; });
+  API_VERSION = d.version || API_VERSION;
+}
+
+function saveConfig(){
+  var s = sanitizeUrl($('s_url').value);
+  var token = $('s_token').value.trim();
+  if(s.fatal){ diag('ng', s.fatal, []); return; }
+  if(!token){ diag('ng', '合言葉が入力されていません。', ['Apps Script の ACCESS_TOKEN と同じ文字列を入れてください。']); return; }
+  $('s_url').value = s.url;
+  $('s_token').value = token;
+
+  testConnection(s.url, token).then(function(d){
+    API_URL = s.url; TOKEN = token;
+    lsSet(LS.url, API_URL); lsSet(LS.token, TOKEN);
+    applyBootstrap(d);
+    $('s_cur').textContent = API_URL + '　／　合言葉 ' + TOKEN;
+    diag('ok', 'つながりました。この設定はこのブラウザに保存しました。',
+      s.msgs.concat(['基準 ' + d.thresholds.length + '件 / ルール ' + d.rules.length + '件を読み込みました。'
+        + (d.version ? '（サーバー版 ' + esc(d.version) + '）' : '')]));
+    setStatus('接続済み　基準 ' + d.thresholds.length + '件', 'ok');
+    hideSetup();
+    doSearch();
+  }).catch(function(e){
+    var x = explain(e);
+    diag('ng', x.title, s.msgs.concat(x.lines).concat(
+      e.urlOk ? ['URLそのものには届いています。合言葉かデプロイの版を疑ってください。'] : []));
+    setStatus('接続できていません', 'ng');
+  });
+}
+
+function boot(){
+  if(location.protocol === 'file:'){
+    setStatus('ファイルを直接開いています。この状態では通信できません。', 'ng');
+    showSetup();
+    diag('warn', 'ローカルファイルとして開いています。', ['GitHub Pages のURLから開いてください。']);
+    return;
+  }
+  setStatus('接続中…');
+  testConnection(API_URL, TOKEN).then(function(d){
+    applyBootstrap(d);
+    setStatus('接続済み　基準 ' + d.thresholds.length + '件', 'ok');
+    doSearch();
+  }).catch(function(e){
+    var x = explain(e);
+    setStatus('接続できていません：' + x.title, 'ng');
+    showSetup();
+    diag('ng', x.title, x.lines);
+    $('mlist').innerHTML = '<div class="mrow"><span class="empty">接続できていないため、選手を読み込めません。</span></div>';
+  });
+}
+</script>
+
+<script>
+"use strict";
+/* ==================================================================
+   7. 画面1：選手を選ぶ
+   ================================================================== */
+function go(n){
+  [1,2,3].forEach(function(i){
+    $('v'+i).classList.toggle('on', i === n);
+    $('nav'+i).classList.toggle('on', i === n);
+  });
+  window.scrollTo(0, 0);
+}
+
+var searchTimer = null;
+function doSearch(){
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function(){
+    apiGet('searchMembers', {q: $('q').value.trim()}).then(function(d){
+      if(!d.ok) throw appErr(d);
+      var list = d.members || [];
+      var el = $('mlist');
+      if(!list.length){
+        el.innerHTML = '<div class="mrow"><span class="empty">該当する選手がいません。下から登録してください。</span></div>';
+        return;
+      }
+      el.innerHTML = list.map(function(m){
+        var meta = [m.sport, m.kana].filter(Boolean).join(' / ');
+        return '<div class="mrow" data-id="' + esc(m.member_id) + '">'
+             + '<span><strong>' + esc(m.name) + '</strong> <span class="meta">' + esc(meta) + '</span></span>'
+             + '<span class="meta num">' + esc(m.member_id) + '</span></div>';
+      }).join('');
+    }).catch(function(e){ fail('選手の検索', e); });
+  }, 250);
+}
+
+function addMember(){
+  var name = $('n_name').value.trim();
+  if(!name){ toast('氏名を入れてください'); return; }
+  var bd = $('n_bd').value;
+  if(!bd) toast('生年月日がないと、年齢区分は「17歳以上」として採点します');
+  $('btnAdd').disabled = true;
+  apiPost({action:'createMember', member:{
+    name: name,
+    kana: $('n_kana').value.trim(),
+    sex: $('n_sex').value,
+    birth_date: bd,
+    sport: $('n_sport').value.trim()
+  }}).then(function(d){
+    if(!d.ok) throw appErr(d);
+    ['n_name','n_kana','n_bd','n_sport'].forEach(function(i){ $(i).value = ''; });
+    toast(d.member.name + ' さんを登録しました');
+    pick(d.member.member_id);
+  }).catch(function(e){ fail('選手の登録', e); })
+    .then(function(){ $('btnAdd').disabled = false; });
+}
+
+function pick(id){
+  setStatus('読み込み中…');
+  apiGet('history', {member_id: id}).then(function(d){
+    if(!d.ok) throw appErr(d);
+    if(!d.member) throw appErr({error: '会員 ' + id + ' が見つかりません'});
+    member = d.member;
+    sessions = d.measurements || [];
+    vals = {}; est = {}; result = null; currentSaved = false;
+
+    $('nav2').disabled = false;
+    $('nav3').disabled = true;
+    $('m_date').value = new Date().toISOString().slice(0, 10);
+    var last = sessions[sessions.length - 1];
+    $('m_h').value = last && last.height ? last.height : '';
+    $('m_w').value = '';
+    $('m_w').placeholder = last && last.weight ? '前回 ' + last.weight : '';
+    $('m_bf').value = '';
+    $('m_tr').value = last && last.trainer ? last.trainer : '';
+    $('m_inj').value = '';
+    updateWho();
+    buildInput();
+    setStatus(member.name + ' さんを読み込みました（過去 ' + sessions.length + '回）', 'ok');
+    go(2);
+  }).catch(function(e){ fail('履歴の読み込み', e); });
+}
+
+function updateWho(){
+  if(!member) return;
+  $('inputWho').textContent = member.name + ' さんの測定（' + (sessions.length + 1) + '回目）';
+}
+
+/* いまの入力から採点に使う条件をつくる */
+function currentCtx(){
+  var age = member ? calcAge(member.birth_date, $('m_date').value) : null;
+  return {
+    sex: (member && member.sex) ? member.sex : 'M',
+    band: bandOf(age),
+    age: age,
+    weight: num($('m_w').value),
+    est: est
+  };
 }
 
 /* ==================================================================
-   画面3：結果
+   8. 画面2：測定を入力
    ================================================================== */
-function render(d){
-  result = d;
-  $('r_name').textContent = member.name;
-  $('r_tag').textContent = [member.sport, (band()==='adult'?'17歳以上':'16歳以下'),
-                            (history.length+1)+'回目'].filter(Boolean).join(' / ');
-  $('r_total').textContent = d.total;
+var TABS = [
+  {id:'g_flex', label:'柔軟性',   cat:'flex'},
+  {id:'g_bal',  label:'バランス', cat:'balance'},
+  {id:'g_str',  label:'筋力',     cat:'strength'},
+  {id:'g_jmp',  label:'ジャンプ', cat:'jump'},
+  {id:'g_qua',  label:'動きの質', cat:'quality'}
+];
 
-  // バー
-  var C={green:'#3B8F68',amber:'#D89A1F',red:'#C7453F'};
-  $('r_bars').innerHTML = CATS.map(function(c){
-    var v=d.cats[c.key];
-    if(v===undefined) return '<div class="bar"><div class="top"><span>'+c.label+'</span><span class="empty">未測定</span></div><div class="track"></div></div>';
-    var col=bandColor(v);
-    return '<div class="bar"><div class="top"><span>'+c.label+'</span>'
-         + '<span class="num" style="color:'+C[col]+';font-weight:700">'+v+'</span></div>'
-         + '<div class="track"><div class="fill" style="width:'+v+'%;background:'+C[col]+'"></div></div></div>';
+function ptsRow(it){
+  function pad(field, side){
+    var b = '<button class="clr" data-pt="" data-f="' + field + '">未</button>';
+    [0,1,2,3].forEach(function(v){
+      b += '<button data-pt="' + v + '" data-f="' + field + '">' + v + '</button>';
+    });
+    return '<div class="sd"><span class="side">' + side + '</span><div class="pts" data-w="' + field + '">' + b + '</div></div>';
+  }
+  var note = it.note ? '<small>' + esc(it.note) + '</small>' : '';
+  var sides = it.pair
+    ? pad(it.key + '_R', '右') + pad(it.key + '_L', '左')
+    : pad(it.key, '');
+  return '<div class="item"><span class="nm">' + esc(it.name) + note + '</span>'
+       + '<div class="sides">' + sides + '</div></div>';
+}
+
+function numRow(it){
+  function one(field, side){
+    var e = it.est
+      ? '<label class="est"><input type="checkbox" data-est="' + field + '">推定</label>'
+      : '';
+    var ratio = it.bw ? '<span class="ratio" data-ratio="' + field + '"></span>' : '';
+    return '<div class="sd">' + (side ? '<span class="side">' + side + '</span>' : '')
+         + '<input type="number" step="0.01" inputmode="decimal" data-num="' + field + '">'
+         + '<span class="unit">' + esc(it.unit) + '</span>' + ratio + e + '</div>';
+  }
+  var note = it.note ? '<small>' + esc(it.note) + '</small>' : '';
+  var sides = it.pair ? one(it.key + '_R', '右') + one(it.key + '_L', '左') : one(it.key, '');
+  return '<div class="item"><span class="nm">' + esc(it.name) + note + '</span>'
+       + '<div class="sides">' + sides + '</div></div>';
+}
+
+function buildInput(){
+  $('tabs').innerHTML = TABS.map(function(t, i){
+    return '<button data-tab="' + t.id + '" class="' + (i === 0 ? 'on' : '') + '">'
+         + t.label + '<span class="n" data-count="' + t.cat + '"></span></button>';
   }).join('');
 
-  // レーダー
-  var labels=[], vals=[];
-  CATS.forEach(function(c){ labels.push(c.label); vals.push(d.cats[c.key]===undefined?0:d.cats[c.key]); });
-  if(radarChart) radarChart.destroy();
+  var h = '';
+  h += '<div class="grp on" id="g_flex"><p class="help">0点は「怪我などで測定不能」「痛みはないが病的な硬さがある」ときに使います。測っていない項目は「未」のままにしてください。左右がある種目は、低いほうの点数を種目スコアに採用します。</p>';
+  FLEX.forEach(function(g){
+    h += '<h3>' + g.label + '</h3>';
+    g.items.forEach(function(it){ h += ptsRow(it); });
+  });
+  h += '</div>';
+
+  h += '<div class="grp" id="g_bal">';
+  BALANCE.forEach(function(it){ h += numRow(it); });
+  h += '</div>';
+
+  h += '<div class="grp" id="g_str"><p class="help">1RM系は実測kgで入力してください。採点は体重比で行います。聞き取りや推定で入れた場合は「推定」にチェックを入れてください。</p>';
+  STRENGTH.forEach(function(g){
+    h += '<h3>' + g.sub + '</h3>';
+    g.items.forEach(function(it){ h += numRow(it); });
+  });
+  h += '</div>';
+
+  h += '<div class="grp" id="g_jmp"><p class="help">ホップテストとドロップジャンプは、測定機器が出したRSI値をそのまま入れてください。</p>';
+  JUMP.forEach(function(it){ h += numRow(it); });
+  h += '</div>';
+
+  h += '<div class="grp" id="g_qua">';
+  QUALITY.forEach(function(it){ h += ptsRow({key:it.key, name:it.name, pair:false}); });
+  h += '</div>';
+
+  $('groups').innerHTML = h;
+  refreshInputs();
+}
+
+/* 入力欄に vals / est の内容を書き戻す */
+function refreshInputs(){
+  var root = $('groups');
+  Array.prototype.forEach.call(root.querySelectorAll('.pts'), function(w){
+    var f = w.getAttribute('data-w');
+    var v = vals[f];
+    Array.prototype.forEach.call(w.querySelectorAll('button'), function(b){
+      var pv = b.getAttribute('data-pt');
+      b.classList.toggle('on', pv !== '' && v !== undefined && Number(pv) === Number(v));
+    });
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-num]'), function(inp){
+    var f = inp.getAttribute('data-num');
+    inp.value = (vals[f] === undefined) ? '' : vals[f];
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-est]'), function(cb){
+    cb.checked = !!est[cb.getAttribute('data-est')];
+  });
+  updateRatios();
+  updateCounts();
+}
+
+/* 1RMの体重比を入力欄の横に出す */
+function updateRatios(){
+  var w = num($('m_w').value);
+  $('m_wnote').hidden = !!w;
+  Array.prototype.forEach.call($('groups').querySelectorAll('[data-ratio]'), function(el){
+    var f = el.getAttribute('data-ratio');
+    var v = num(vals[f]);
+    el.textContent = (w && v !== undefined) ? ('体重比 ' + (v / w).toFixed(2)) : '';
+  });
+}
+
+function updateCounts(){
+  var n = {};
+  FIELDS.forEach(function(f){
+    if(vals[f] === undefined) return;
+    var def = FIELD_DEF[f];
+    if(def) n[def.cat] = (n[def.cat] || 0) + 1;
+  });
+  Array.prototype.forEach.call($('tabs').querySelectorAll('[data-count]'), function(el){
+    var c = n[el.getAttribute('data-count')] || 0;
+    el.textContent = c ? c + '件' : '';
+  });
+}
+
+function clearInputs(){
+  if(!window.confirm('入力した測定値をすべて消します。よろしいですか？')) return;
+  vals = {}; est = {};
+  refreshInputs();
+  toast('入力を消しました');
+}
+</script>
+
+<script>
+"use strict";
+/* ==================================================================
+   9. 画面3：結果を見る
+   ================================================================== */
+var currentSaved = false;
+
+var SUB_PARTS = {flex:['upper','core','lower'], strength:['str_core','str_upper','str_lower']};
+
+function hasChartLib(){ return typeof window.Chart === 'function'; }
+
+function render(d){
+  result = d;
+  var ctx = currentCtx();
+
+  $('r_name').textContent = member ? member.name : '—';
+  $('r_tag').textContent = [
+    member ? member.sport : '',
+    ctx.age !== null && ctx.age !== undefined ? ctx.age + '歳' : '',
+    BAND_LABEL[ctx.band] || ctx.band,
+    (sessions.length + (currentSaved ? 0 : 1)) + '回目'
+  ].filter(Boolean).join(' / ');
+  $('r_total').textContent = d.total;
+  $('hero').setAttribute('data-hero', DISPLAY.hero);
+  $('o_hero').value = DISPLAY.hero;
+  $('o_radar').value = DISPLAY.radarAxes;
+  $('o_tone').value = DISPLAY.tone;
+
+  /* ---- カテゴリー別バー（筋力と柔軟性は小計も出す） ---- */
+  var bars = '';
+  CATS.forEach(function(c){
+    var v = d.cats[c.key];
+    if(v === undefined){
+      bars += '<div class="bar"><div class="top"><span>' + c.label + '</span>'
+            + '<span class="empty">未測定</span></div><div class="track"></div></div>';
+      return;
+    }
+    var col = bandColor(v);
+    bars += '<div class="bar"><div class="top"><span>' + c.label + '</span>'
+          + '<span class="num" style="color:' + COLOR[col] + ';font-weight:700">' + v + '</span></div>'
+          + '<div class="track"><div class="fill" style="width:' + Math.min(100, v) + '%;background:' + COLOR[col] + '"></div></div></div>';
+    (SUB_PARTS[c.key] || []).forEach(function(pk){
+      var p = d.parts[pk];
+      if(!p) return;
+      var pc = bandColor(p.pct);
+      bars += '<div class="bar sub"><div class="top"><span>' + esc(p.label.split('・')[1] || p.label) + '</span>'
+            + '<span class="num" style="color:' + COLOR[pc] + '">' + p.pct + '</span></div>'
+            + '<div class="track"><div class="fill" style="width:' + Math.min(100, p.pct) + '%;background:' + COLOR[pc] + ';opacity:.7"></div></div></div>';
+    });
+  });
+  $('r_bars').innerHTML = bars;
+
+  /* ---- レーダーチャート ---- */
+  var axes = CATS, radarNote = '';
+  if(DISPLAY.radarAxes === 'measured'){
+    var only = CATS.filter(function(c){ return d.cats[c.key] !== undefined; });
+    if(only.length >= 3){
+      axes = only;
+    }else{
+      // 2軸以下ではレーダーの形にならないので、5軸のまま描く
+      radarNote = '測定したカテゴリーが' + only.length + 'つしかないため、5軸のまま表示しています。';
+    }
+  }else if(CATS.filter(function(c){ return d.cats[c.key] === undefined; }).length){
+    radarNote = '未測定のカテゴリーは0として描いています。「レーダーの軸」を切り替えると、測定した軸だけで描けます。';
+  }
+  $('r_radarNote').textContent = radarNote;
+  var labels = axes.map(function(c){ return c.label; });
+  var series = axes.map(function(c){ return d.cats[c.key] === undefined ? 0 : d.cats[c.key]; });
+  if(radarChart){ radarChart.destroy(); radarChart = null; }
+  if(!hasChartLib()){
+    $('r_radarNote').textContent = 'グラフの部品（Chart.js）を読み込めませんでした。数値は下に出ています。';
+  }else{
   radarChart = new Chart($('radar'), {
-    type:'radar',
-    data:{labels:labels, datasets:[{
-      data:vals, fill:true,
-      backgroundColor:'rgba(22,32,43,.12)', borderColor:'#16202B', borderWidth:2,
-      pointBackgroundColor:vals.map(function(v){return C[bandColor(v)]}),
-      pointRadius:5, pointBorderColor:'#fff', pointBorderWidth:2
+    type: 'radar',
+    data: {labels: labels, datasets: [{
+      data: series, fill: true,
+      backgroundColor: 'rgba(22,32,43,.12)', borderColor: '#16202B', borderWidth: 2,
+      pointBackgroundColor: axes.map(function(c){
+        return d.cats[c.key] === undefined ? COLOR.gray : COLOR[bandColor(d.cats[c.key])];
+      }),
+      pointRadius: 5, pointBorderColor: '#fff', pointBorderWidth: 2
     }]},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{r:{min:0,max:100,ticks:{stepSize:25,backdropColor:'transparent',color:'#8A94A0',font:{size:10}},
-        grid:{color:'#D3D7DC'}, angleLines:{color:'#D3D7DC'},
-        pointLabels:{font:{size:13,family:'Zen Kaku Gothic New',weight:'700'},color:'#16202B'}}}
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {display: false},
+        tooltip: {callbacks: {label: function(c){
+          var key = axes[c.dataIndex].key;
+          return d.cats[key] === undefined ? '未測定' : (d.cats[key] + ' / 100');
+        }}}
+      },
+      scales: {r: {
+        min: 0, max: 100,
+        ticks: {stepSize: 25, backdropColor: 'transparent', color: '#8A94A0', font: {size: 10}},
+        grid: {color: '#D3D7DC'}, angleLines: {color: '#D3D7DC'},
+        pointLabels: {font: {size: 13, family: 'Zen Kaku Gothic New', weight: '700'}, color: '#16202B'}
+      }}
     }
   });
-
-  // ジャンプ
-  var j=d.jump, jh='';
-  if(j.sscRate!==undefined) jh += '<div class="note"><strong>反動の使い方（SQJ→CMJ '+j.sscRate+'%）</strong><br>'+j.ssc+'</div>';
-  if(j.armRate!==undefined) jh += '<div class="note"><strong>腕振りの連動（CMJ→ABJ '+j.armRate+'%）</strong><br>'+j.arm+'</div>';
-  if(j.slTarget!==undefined) jh += '<div class="note"><strong>片脚の目標値</strong><br>両脚CMJの半分にあたる '+j.slTarget+'cm が片脚の目標です。</div>';
-  $('r_jump').innerHTML = jh || '<p class="empty">ジャンプ種目が未入力です。</p>';
-
-  // フラグ
-  var LV={red:['c-red','要改善'],amber:['c-amber','注意'],green:['c-green','良好']};
-  $('r_flags').innerHTML = d.flags.length
-    ? d.flags.map(function(f){return '<li><span class="chip '+LV[f.lv][0]+'">'+LV[f.lv][1]+'</span> '+esc(f.t)+'</li>'}).join('')
-    : '<li class="empty">大きな偏りは見つかりませんでした。</li>';
-
-  // 項目表
-  var byCat={};
-  d.items.forEach(function(i){ (byCat[i.cat]=byCat[i.cat]||[]).push(i); });
-  var ih='';
-  for(var c in byCat){
-    ih += '<h3>'+c+'</h3><table class="res"><tr><th>種目</th><th>結果</th><th style="width:70px">判定</th></tr>';
-    ih += byCat[c].map(function(i){
-      var col, lab;
-      if(i.isFlex){ col = i.raw>=3?'green':(i.raw>=2?'amber':'red'); lab = i.raw>=3?'良好':(i.raw>=2?'普通':'要改善'); }
-      else { col = i.pt===3?'green':(i.pt===2?'amber':'red'); lab = i.pt===3?'良好':(i.pt===2?'普通':'要改善'); }
-      return '<tr><td>'+esc(i.name)+'</td><td class="v num">'+esc(i.val)+'</td>'
-           + '<td><span class="chip c-'+col+'">'+lab+'</span></td></tr>';
-    }).join('');
-    ih += '</table>';
   }
-  $('r_items').innerHTML = ih || '<p class="empty">入力された項目がありません。</p>';
 
-  // 推移
-  if(history.length===0){
-    $('r_trendWrap').innerHTML = '<p class="empty">今回が1回目です。2回目の測定から、ここに推移が出ます。</p>';
-  } else {
-    $('r_trendWrap').innerHTML = '<canvas id="trend" height="220"></canvas>';
-    var pts = history.map(function(h){return Number(h.score_total)||0}).concat([d.total]);
-    var lbs = history.map(function(h){return h.session_no+'回目'}).concat([(history.length+1)+'回目']);
-    if(trendChart) trendChart.destroy();
-    trendChart = new Chart($('trend'), {
-      type:'line',
-      data:{labels:lbs, datasets:[{data:pts, borderColor:'#16202B', backgroundColor:'rgba(22,32,43,.08)',
-        fill:true, tension:.25, pointRadius:5, pointBackgroundColor:'#D89A1F', pointBorderColor:'#fff', pointBorderWidth:2}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{y:{min:0,max:100,grid:{color:'#E3E5E9'}},x:{grid:{display:false}}}}
+  /* ---- ジャンプの中身 ---- */
+  var j = d.jump, jh = '';
+  if(j.ssc){
+    jh += '<div class="note ' + j.ssc.lv + '"><b>反動の使い方　SQJ → CMJ ' + j.ssc.rate + '%'
+        + '（標準 ' + rule('sqj_to_cmj_target', 10) + '%前後）</b>' + esc(j.ssc.text) + '</div>';
+  }
+  if(j.arm){
+    jh += '<div class="note ' + j.arm.lv + '"><b>腕振りの連動　CMJ → ABJ ' + j.arm.rate + '%'
+        + '（標準 ' + rule('cmj_to_abj_low', 5) + '〜' + rule('cmj_to_abj_high', 11) + '%）</b>' + esc(j.arm.text) + '</div>';
+  }
+  if(j.sl){
+    jh += '<div class="note"><b>片脚の目標値　' + j.sl.target + 'cm</b>'
+        + '両脚CMJの' + rule('slcmj_target_ratio', 50) + '%が目標です（許容 ±' + rule('slcmj_tolerance', 5) + '%）。'
+        + (j.sl.sides.length ? '</div>' : 'まだ片脚の測定値がありません。</div>');
+    j.sl.sides.forEach(function(s){
+      jh += '<div class="note ' + s.lv + '">' + esc(s.text) + '</div>';
     });
   }
+  $('r_jump').innerHTML = jh || '<p class="empty">ジャンプ種目が未入力です。</p>';
+
+  /* ---- 気をつけたい点 ---- */
+  var order = {red: 0, amber: 1, green: 2};
+  var flags = d.flags.slice().sort(function(a, b){ return order[a.lv] - order[b.lv]; });
+  var LV = {red: ['c-red', '要改善'], amber: ['c-amber', '注意'], green: ['c-green', '良好']};
+  $('r_flags').innerHTML = flags.length
+    ? flags.map(function(f){
+        return '<li><span class="chip ' + LV[f.lv][0] + '">' + LV[f.lv][1] + '</span><span>' + esc(f.t) + '</span></li>';
+      }).join('')
+    : '<li class="empty">大きな偏りは見つかりませんでした。</li>';
+
+  /* ---- 項目ごとの結果 ---- */
+  var groups = [], index = {};
+  d.items.forEach(function(it){
+    var k = it.cat + '|' + it.sub;
+    if(index[k] === undefined){ index[k] = groups.length; groups.push({cat: it.cat, sub: it.sub, rows: []}); }
+    groups[index[k]].rows.push(it);
+  });
+  var ih = d.notes.map(function(n){ return '<div class="note amber">' + esc(n) + '</div>'; }).join('');
+  ih += groups.map(function(g){
+    return '<h3>' + esc(g.cat + (g.sub ? '・' + g.sub : '')) + '</h3>'
+      + '<table class="res"><tr><th>種目</th><th style="text-align:right">結果</th><th style="width:76px">判定</th></tr>'
+      + g.rows.map(function(i){
+          return '<tr><td>' + esc(i.name) + '</td><td class="v num">' + esc(i.val) + '</td>'
+               + '<td><span class="chip c-' + i.color + '">' + LABEL[i.color] + '</span></td></tr>';
+        }).join('')
+      + '</table>';
+  }).join('');
+  $('r_items').innerHTML = ih || '<p class="empty">入力された項目がありません。</p>';
+
+  buildTrendOptions();
+  drawTrend();
+  $('nav3').disabled = false;
   go(3);
 }
 
-function scoreOnly(){ render(score()); }
+/* ==================================================================
+   10. 推移グラフ
+   --------------------------------------------------------------
+   保存済みスコアではなく、保存された実測値から現行の基準で
+   全回を計算し直して描く。閾値を変えても推移が壊れない。
+   ================================================================== */
+function historySeries(){
+  var out = sessions.map(function(r){
+    var v = {}, e = {};
+    FIELDS.forEach(function(f){ var n = num(r[f]); if(n !== undefined) v[f] = n; });
+    String(r.estimated_items || '').split(',').forEach(function(s){ s = s.trim(); if(s) e[s] = true; });
+    var ctx = {
+      sex: (member && member.sex) || 'M',
+      band: r.age_band || bandOf(calcAge(member && member.birth_date, r.measured_at)),
+      weight: num(r.weight),
+      est: e
+    };
+    return {
+      label: (r.session_no ? r.session_no + '回目' : (r.measured_at || '')),
+      date: r.measured_at, v: v, est: e, d: computeScore(v, ctx), saved: num(r.score_total)
+    };
+  });
+  if(!currentSaved && result){
+    out.push({label: (sessions.length + 1) + '回目', date: $('m_date').value, v: vals, est: est, d: result, current: true});
+  }
+  return out;
+}
+
+function buildTrendOptions(){
+  var sel = $('o_trend');
+  if(sel.getAttribute('data-built')) return;
+  var h = '<optgroup label="スコア"><option value="total">総合スコア</option>';
+  CATS.forEach(function(c){ h += '<option value="cat:' + c.key + '">' + c.label + '</option>'; });
+  h += '</optgroup><optgroup label="実測値">';
+  FIELDS.forEach(function(f){
+    var def = FIELD_DEF[f];
+    if(!def || def.kind !== 'num') return;
+    h += '<option value="field:' + f + '">' + esc(def.name + (def.pair ? '（' + sideOf(f) + '）' : '') + '（' + def.unit + '）') + '</option>';
+  });
+  h += '</optgroup>';
+  sel.innerHTML = h;
+  sel.setAttribute('data-built', '1');
+  sel.value = 'total';
+}
+
+function drawTrend(){
+  var wrap = $('r_trendWrap'), noteEl = $('r_trendNote');
+  var series = historySeries();
+  if(trendChart){ trendChart.destroy(); trendChart = null; }
+
+  if(sessions.length === 0){
+    wrap.innerHTML = '<p class="empty">今回が1回目です。2回目の測定から、ここに推移が出ます。</p>';
+    noteEl.textContent = '';
+    return;
+  }
+
+  if(!hasChartLib()){
+    wrap.innerHTML = '<p class="empty">グラフの部品（Chart.js）を読み込めませんでした。ネットワークを確認して再読み込みしてください。</p>';
+    noteEl.textContent = '';
+    return;
+  }
+
+  var kind = $('o_trend').value || 'total';
+  var data, unit = '', title = '', scoreScale = true;
+  if(kind === 'total'){
+    title = '総合スコア';
+    data = series.map(function(s){ return s.d.total; });
+  }else if(kind.indexOf('cat:') === 0){
+    var ck = kind.slice(4);
+    title = (CATS.filter(function(c){ return c.key === ck; })[0] || {}).label || ck;
+    data = series.map(function(s){ return s.d.cats[ck] === undefined ? null : s.d.cats[ck]; });
+  }else{
+    var f = kind.slice(6);
+    var def = FIELD_DEF[f] || {};
+    unit = def.unit || '';
+    title = def.name + (def.pair ? '（' + sideOf(f) + '）' : '');
+    scoreScale = false;
+    data = series.map(function(s){ return s.v[f] === undefined ? null : Number(s.v[f]); });
+  }
+  var estFlags = series.map(function(s){ return kind.indexOf('field:') === 0 ? !!s.est[kind.slice(6)] : false; });
+
+  wrap.innerHTML = '<canvas id="trend" height="240"></canvas>';
+  trendChart = new Chart($('trend'), {
+    type: 'line',
+    data: {
+      labels: series.map(function(s){ return s.date ? [s.label, String(s.date).slice(5)] : [s.label]; }),
+      datasets: [{
+        label: title,
+        data: data,
+        spanGaps: true,
+        borderColor: '#16202B',
+        backgroundColor: 'rgba(22,32,43,.07)',
+        fill: true, tension: .25,
+        pointRadius: 6, pointHoverRadius: 8, pointBorderWidth: 2,
+        pointBackgroundColor: series.map(function(s, i){
+          return estFlags[i] ? '#FFFFFF' : (s.current ? '#C7453F' : '#D89A1F');
+        }),
+        pointBorderColor: series.map(function(s, i){ return estFlags[i] ? '#8A94A0' : '#fff'; }),
+        segment: {
+          borderDash: function(c){
+            return (estFlags[c.p0DataIndex] || estFlags[c.p1DataIndex]) ? [6, 4] : undefined;
+          },
+          borderColor: function(c){
+            return (estFlags[c.p0DataIndex] || estFlags[c.p1DataIndex]) ? '#8A94A0' : undefined;
+          }
+        }
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {display: false},
+        tooltip: {callbacks: {label: function(c){
+          var v = c.parsed.y;
+          if(v === null || v === undefined) return '未測定';
+          return title + ' ' + v + (unit ? ' ' + unit : '') + (estFlags[c.dataIndex] ? '（推定値）' : '');
+        }}}
+      },
+      scales: {
+        y: scoreScale ? {min: 0, max: 100, grid: {color: '#E3E5E9'}} : {beginAtZero: false, grid: {color: '#E3E5E9'}},
+        x: {grid: {display: false}}
+      }
+    }
+  });
+
+  var hasEst = estFlags.some(function(b){ return b; });
+  noteEl.textContent = '過去の回も、いまの基準（thresholds / rules）で計算し直して表示しています。'
+    + (hasEst ? '点線と白い点は、聞き取りや推定で入力した値です。' : '');
+}
+</script>
+
+<script>
+"use strict";
+/* ==================================================================
+   11. 採点・保存
+   ================================================================== */
+function scoreNow(){
+  return computeScore(vals, currentCtx());
+}
+
+function scoreOnly(){
+  if(!member){ toast('先に選手を選んでください'); return; }
+  render(scoreNow());
+}
 
 function saveMeasurement(){
-  var d = score();
+  if(!member){ toast('先に選手を選んでください'); return; }
+  var d = scoreNow();
+  var filled = FIELDS.filter(function(f){ return vals[f] !== undefined; });
+  if(!filled.length){ toast('測定値がまだ1つも入力されていません'); return; }
+
   var payload = {
     member_id: member.member_id,
-    measured_at: $('m_date').value,
-    height: $('m_h').value, weight: $('m_w').value, body_fat: $('m_bf').value,
-    trainer: $('m_tr').value, injury: $('m_inj').value,
-    estimated_items: Object.keys(est).filter(function(k){return est[k]}),
-    score_flex: d.cats.flex, score_balance: d.cats.balance, score_strength: d.cats.strength,
-    score_jump: d.cats.jump, score_quality: d.cats.quality, score_total: d.total,
-    risk_flags: d.flags.filter(function(f){return f.lv==='red'}).length + '件'
+    measured_at: $('m_date').value || new Date().toISOString().slice(0, 10),
+    height: num($('m_h').value),
+    weight: num($('m_w').value),
+    body_fat: num($('m_bf').value),
+    trainer: $('m_tr').value.trim(),
+    injury: $('m_inj').value.trim(),
+    estimated_items: filled.filter(function(f){ return est[f]; }),
+    score_flex: d.cats.flex,
+    score_balance: d.cats.balance,
+    score_strength: d.cats.strength,
+    score_jump: d.cats.jump,
+    score_quality: d.cats.quality,
+    score_total: d.total,
+    risk_flags: d.flags.filter(function(f){ return f.lv !== 'green'; })
+                       .map(function(f){ return f.code; }).join(',')
   };
-  for(var k in form){ payload[k] = form[k]; }
-  post({action:'saveMeasurement', measurement:payload}).then(function(r){
-    if(!r.ok){ fail('測定の保存', r.error||'不明なエラー'); return; }
+  filled.forEach(function(f){ payload[f] = vals[f]; });
+
+  $('btnSave').disabled = true;
+  setStatus('保存中…');
+  apiPost({action: 'saveMeasurement', measurement: payload}).then(function(r){
+    if(!r.ok) throw appErr(r);
+    sessions.push(r.measurement);
+    currentSaved = true;
+    setStatus('保存しました（' + r.measurement.session_no + '回目）', 'ok');
     toast('保存しました');
     render(d);
-  }).catch(function(e){ fail('測定の保存', e); });
+  }).catch(function(e){ fail('測定の保存', e); })
+    .then(function(){ $('btnSave').disabled = false; });
 }
+
+/* ==================================================================
+   12. 画面のつなぎこみ
+   ================================================================== */
+on('nav1', 'click', function(){ go(1); });
+on('nav2', 'click', function(){ go(2); });
+on('nav3', 'click', function(){ if(result) go(3); });
+
+on('btnSetup', 'click', function(){
+  if($('setup').hidden) showSetup(); else hideSetup();
+});
+on('s_close', 'click', hideSetup);
+on('s_save', 'click', saveConfig);
+on('s_test', 'click', function(){
+  var s = sanitizeUrl($('s_url').value);
+  if(s.fatal){ diag('ng', s.fatal, []); return; }
+  $('s_url').value = s.url;
+  var token = $('s_token').value.trim();
+  testConnection(s.url, token).then(function(d){
+    diag('ok', 'このURLと合言葉でつながります。', s.msgs.concat([
+      '基準 ' + d.thresholds.length + '件 / ルール ' + d.rules.length + '件'
+        + (d.version ? '（サーバー版 ' + esc(d.version) + '）' : ''),
+      '「保存して接続する」を押すと、この設定を使います。'
+    ]));
+  }).catch(function(e){
+    var x = explain(e);
+    diag('ng', x.title, s.msgs.concat(x.lines).concat(
+      e.urlOk ? ['URLそのものには届いています。合言葉かデプロイの版を疑ってください。'] : []));
+  });
+});
+on('s_reset', 'click', function(){
+  $('s_url').value = DEFAULT_API_URL;
+  $('s_token').value = DEFAULT_TOKEN;
+  lsDel(LS.url); lsDel(LS.token);
+  diag('info', '最初の設定に戻しました。', ['「保存して接続する」を押すと、この設定で接続します。']);
+});
+on('s_url', 'blur', function(){
+  var s = sanitizeUrl(this.value);
+  if(s.fatal){ diag('ng', s.fatal, []); return; }
+  this.value = s.url;
+  if(s.msgs.length) diag('warn', 'URLを直しました。', s.msgs);
+});
+
+on('q', 'input', doSearch);
+on('mlist', 'click', function(ev){
+  var row = ev.target.closest ? ev.target.closest('.mrow') : null;
+  if(row && row.getAttribute('data-id')) pick(row.getAttribute('data-id'));
+});
+on('btnAdd', 'click', addMember);
+
+on('tabs', 'click', function(ev){
+  var b = ev.target.closest ? ev.target.closest('button[data-tab]') : null;
+  if(!b) return;
+  var id = b.getAttribute('data-tab');
+  Array.prototype.forEach.call($('groups').querySelectorAll('.grp'), function(g){
+    g.classList.toggle('on', g.id === id);
+  });
+  Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function(x){
+    x.classList.toggle('on', x === b);
+  });
+});
+
+on('groups', 'click', function(ev){
+  var b = ev.target.closest ? ev.target.closest('button[data-f]') : null;
+  if(!b) return;
+  var f = b.getAttribute('data-f'), pv = b.getAttribute('data-pt');
+  if(pv === '') delete vals[f]; else vals[f] = Number(pv);
+  var wrap = b.parentNode;
+  Array.prototype.forEach.call(wrap.querySelectorAll('button'), function(x){
+    x.classList.toggle('on', x === b && pv !== '');
+  });
+  updateCounts();
+});
+on('groups', 'input', function(ev){
+  var el = ev.target;
+  if(!el.getAttribute) return;
+  var f = el.getAttribute('data-num');
+  if(!f) return;
+  var v = num(el.value);
+  if(v === undefined) delete vals[f]; else vals[f] = v;
+  updateRatios();
+  updateCounts();
+});
+on('groups', 'change', function(ev){
+  var el = ev.target;
+  if(!el.getAttribute) return;
+  var f = el.getAttribute('data-est');
+  if(!f) return;
+  if(el.checked) est[f] = true; else delete est[f];
+});
+
+on('m_w', 'input', updateRatios);
+on('m_date', 'change', function(){ if(result) render(scoreNow()); });
+on('btnSave', 'click', saveMeasurement);
+on('btnScore', 'click', scoreOnly);
+on('btnClear', 'click', clearInputs);
+
+function saveDisplay(){ lsSet(LS.disp, JSON.stringify(DISPLAY)); }
+on('o_hero', 'change', function(){ DISPLAY.hero = this.value; saveDisplay(); if(result) render(result); });
+on('o_radar', 'change', function(){ DISPLAY.radarAxes = this.value; saveDisplay(); if(result) render(result); });
+on('o_tone', 'change', function(){ DISPLAY.tone = this.value; saveDisplay(); if(result) render(scoreNow()); });
+on('o_trend', 'change', drawTrend);
+
+window.addEventListener('resize', function(){
+  clearTimeout(window._rz);
+  window._rz = setTimeout(function(){
+    if(radarChart) radarChart.resize();
+    if(trendChart) trendChart.resize();
+  }, 200);
+});
 
 boot();
 </script>

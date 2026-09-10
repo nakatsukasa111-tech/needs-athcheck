@@ -12,9 +12,13 @@
 // 設定
 // ============================================================
 
-// アプリと共有する合言葉。必ず別の文字列に変更すること。
-// アプリ側にも同じ文字列を書き込む。
-var ACCESS_TOKEN = 'CHANGE_ME_NeeDS_2026';
+// アプリと共有する合言葉。アプリ側の「接続設定」に入れる文字列と必ず一致させる。
+var ACCESS_TOKEN = 'NeeDS2026';
+
+// このファイルの版。アプリの「接続テスト」に表示され、
+// 「コードを直したのにデプロイし直していない」状態を見つけるために使う。
+// コードを直したら日付を上げてから、必ず［デプロイを管理］→［編集］→［新しいバージョン］で再デプロイすること。
+var API_VERSION = '2026-09-10';
 
 var SHEET_MEMBERS      = 'members';
 var SHEET_MEASUREMENTS = 'measurements';
@@ -97,6 +101,7 @@ function createSheetIfMissing_(ss, name, columns) {
 // ============================================================
 
 /**
+ * action=ping             合言葉なしで応答する（接続テスト用）
  * action=bootstrap        閾値とルールを返す（アプリ起動時に1回）
  * action=searchMembers    q= の部分一致で会員候補を返す
  * action=history          member_id= の過去測定を古い順に返す
@@ -104,6 +109,13 @@ function createSheetIfMissing_(ss, name, columns) {
 function doGet(e) {
   try {
     var p = e && e.parameter ? e.parameter : {};
+
+    // ping だけは合言葉を見ない。
+    // 「URLは合っているが合言葉が違う」のか「URL自体が違う」のかを、アプリ側で切り分けるため。
+    if (p.action === 'ping') {
+      return jsonOut_({ ok: true, app: 'needs-physical-check', version: API_VERSION });
+    }
+
     if (p.token !== ACCESS_TOKEN) {
       return jsonOut_({ ok: false, error: 'unauthorized' });
     }
@@ -112,6 +124,7 @@ function doGet(e) {
       case 'bootstrap':
         return jsonOut_({
           ok: true,
+          version: API_VERSION,
           thresholds: readSheetAsObjects_(SHEET_THRESHOLDS),
           rules: readSheetAsObjects_(SHEET_RULES)
         });
