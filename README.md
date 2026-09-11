@@ -17,7 +17,9 @@
 |---|---|
 | `index.html` | アプリ本体。この1ファイルで動きます（GitHub Pages で公開） |
 | `apps-script/コード.gs` | Google Apps Script 側のコード。スプレッドシートに貼り付けて使います |
+| `docs/採点とチャートの作り方.md` | **点数とチャートの考え方**（トレーナー間で見方をそろえる用・基準見直しの土台） |
 | `docs/CLAUDE_CODE_指示書.md` | 仕様書 |
+| `CLAUDE.md` | これまでの決定事項の記録（開発の申し送り） |
 | `docs/NeeDS_閾値マスタ_v1.xlsx` | thresholds / rules シートの元データ（列の形を確認する用の控え） |
 
 ```
