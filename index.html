@@ -181,6 +181,11 @@ details.hint ol{padding-left:1.3em}
 .partHead h2{margin:0}
 .partHead .sc{font-size:34px;font-weight:700;line-height:1;margin-left:auto}
 .partHead .of{font-size:12px;color:var(--ink-2)}
+.partGrid{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:820px){.partGrid{grid-template-columns:1fr;gap:8px}}
+.chartBox.partRadar{height:320px}
+@media(max-width:820px){.chartBox.partRadar{height:300px}}
+.partSubHead{font-size:13px;font-weight:700;color:var(--ink-2);margin:20px 0 8px;padding-top:16px;border-top:1px solid #E7E9EC}
 .partSubs{margin-bottom:18px}
 .partSubs .bar.sub{margin-left:0}
 .partMiss{font-size:12px;color:var(--ink-2);margin:10px 0 0}
@@ -705,7 +710,7 @@ function computeScore(v, ctx){
   ctx.sex = ctx.sex || 'M';
   ctx.band = ctx.band || 'adult';
   var t = T();
-  var d = {cats:{}, parts:{}, items:[], flags:[], jump:{}, notes:[], total:0, measured:0};
+  var d = {cats:{}, parts:{}, pts:{}, items:[], flags:[], jump:{}, jumpQuality:[], radars:{}, notes:[], total:0, measured:0};
 
   /* ---------- 柔軟性（左右がある種目は低いほうを採用） ---------- */
   var fSum = 0, fMax = 0;
@@ -781,6 +786,7 @@ function computeScore(v, ctx){
           return;
         }
         sum += pt; n++;
+        d.pts[f] = pt;
         d.items.push({cat:catLabel, sub:sub||'', name:name, short:short, kind:'num', pt:pt, color:ptColor(pt),
                       val: raw+' '+it.unit+extra+mark});
       });
@@ -854,7 +860,8 @@ function computeScore(v, ctx){
   var hop = num(v.hop_rsi), drop = num(v.drop_rsi);
   if(hop !== undefined && drop !== undefined && Math.max(hop, drop) > 0){
     var rd = r1(Math.abs(hop - drop) / Math.max(hop, drop) * 100);
-    if(rd >= rule('rsi_diff_flag', 15)){
+    d.jump.rsiDiff = {rate: rd, lv: rd >= rule('rsi_diff_flag', 15) ? 'amber' : 'green'};
+    if(d.jump.rsiDiff.lv === 'amber'){
       d.flags.push({lv:'amber', code:'rsi_diff', t:t.rsiDiff(hop, drop, rd)});
     }
   }
@@ -864,6 +871,93 @@ function computeScore(v, ctx){
       d.flags.push({lv:'green', code:'rsi_excellent_'+p[0], t:t.rsiGood(p[1], val)});
     }
   });
+
+  /* ---------- 部門ごとのレーダー ----------
+     ・部位の得点率はそのまま
+     ・「つながり」は「100−部位間の差」と「2部位の平均」の低いほう
+       （差が大きいと下がる／両方低ければそれ以上には上がらない）
+     ・バランスの各種「差」は、差が小さいほど外側に出るよう反転する
+       0点差=100 / 1点差=66.7 / 2点差=33.3（緑・黄・赤の境界と一致） */
+  function partPct(k){ return d.parts[k] ? d.parts[k].pct : undefined; }
+  function linkScore(a, b){
+    if(a === undefined || b === undefined) return undefined;
+    return r1(Math.min(100 - Math.abs(a - b), (a + b) / 2));
+  }
+  function diffScore(gap){
+    if(gap === undefined) return undefined;
+    return r1(Math.max(0, 100 - gap * (100 / 3)));
+  }
+  function avgPt(list){
+    var s = 0, n = 0;
+    list.forEach(function(f){ if(d.pts[f] !== undefined){ s += d.pts[f]; n++; } });
+    return n ? s / n : undefined;
+  }
+  function gapPt(a, b){
+    if(d.pts[a] === undefined || d.pts[b] === undefined) return undefined;
+    return Math.abs(d.pts[a] - d.pts[b]);
+  }
+  function pctOfPt(p){ return p === undefined ? undefined : r1(p / 3 * 100); }
+  function lvPct(lv){ return lv === 'green' ? 100 : (lv === 'amber' ? 66.7 : 33.3); }
+
+  function regionAxes(up, co, lo){
+    var U = partPct(up), C = partPct(co), L = partPct(lo);
+    var tip = '部位どうしの差が大きいほど、また両方が低いほど下がります';
+    return [
+      {label:'上半身', lines:['上半身'], value:U},
+      {label:'上半身と体幹部のつながり', lines:['上半身と', '体幹部'], value:linkScore(U, C), tip:tip},
+      {label:'体幹部', lines:['体幹部'], value:C},
+      {label:'下半身と体幹部のつながり', lines:['下半身と', '体幹部'], value:linkScore(L, C), tip:tip},
+      {label:'下半身', lines:['下半身'], value:L}
+    ];
+  }
+  if(d.cats.flex !== undefined)     d.radars.flex = regionAxes('upper', 'core', 'lower');
+  if(d.cats.strength !== undefined) d.radars.strength = regionAxes('str_upper', 'str_core', 'str_lower');
+
+  if(d.cats.balance !== undefined){
+    var stt = avgPt(['sl_stance_R', 'sl_stance_L']);
+    var dyn = avgPt(['ground_touch_bal_R', 'ground_touch_bal_L']);
+    var sdGap = (stt !== undefined && dyn !== undefined) ? Math.abs(stt - dyn) : undefined;
+    d.radars.balance = [
+      {label:'静的バランス（片脚立位）', lines:['静的', 'バランス'], value:pctOfPt(stt),
+       tip: stt === undefined ? '' : '左右の平均 ' + r1(stt) + ' 点'},
+      {label:'静的の左右差', lines:['静的の', '左右差'], value:diffScore(gapPt('sl_stance_R', 'sl_stance_L')),
+       tip:'差が小さいほど外側。0点差=100 / 1点差=66.7 / 2点差=33.3'},
+      {label:'静的と動的の差', lines:['静的と動的', 'の差'], value:diffScore(sdGap),
+       tip: sdGap === undefined ? '' : '平均点の差 ' + r1(sdGap) + ' 点'},
+      {label:'動的の左右差', lines:['動的の', '左右差'], value:diffScore(gapPt('ground_touch_bal_R', 'ground_touch_bal_L')),
+       tip:'差が小さいほど外側。0点差=100 / 1点差=66.7 / 2点差=33.3'},
+      {label:'動的バランス（地面タッチ）', lines:['動的', 'バランス'], value:pctOfPt(dyn),
+       tip: dyn === undefined ? '' : '左右の平均 ' + r1(dyn) + ' 点'}
+    ];
+  }
+
+  if(d.cats.jump !== undefined){
+    d.radars.jump = [
+      {label:'跳躍高（SQJ・CMJ・ABJ）', lines:['跳躍高'], value:pctOfPt(avgPt(['sqj', 'cmj', 'abj']))},
+      {label:'反動の使い方（SQJ→CMJ）', lines:['反動の', '使い方'], value:d.jump.ssc ? lvPct(d.jump.ssc.lv) : undefined,
+       tip: d.jump.ssc ? ('伸び率 ' + d.jump.ssc.rate + '%') : ''},
+      {label:'腕振りの連動（CMJ→ABJ）', lines:['腕振りの', '連動'], value:d.jump.arm ? lvPct(d.jump.arm.lv) : undefined,
+       tip: d.jump.arm ? ('伸び率 ' + d.jump.arm.rate + '%') : ''},
+      {label:'片脚（SLCMJ）', lines:['片脚'], value:pctOfPt(avgPt(['sl_cmj_R', 'sl_cmj_L']))},
+      {label:'RSI（ホップ・ドロップ）', lines:['RSI'], value:pctOfPt(avgPt(['hop_rsi', 'drop_rsi']))}
+    ];
+  }
+
+  /* ---------- ジャンプの質（解説文と同じ中身を棒グラフにする） ---------- */
+  if(d.jump.ssc){
+    d.jumpQuality.push({name:'反動の使い方（SQJ→CMJ）', short:'反動', lv:d.jump.ssc.lv, val:d.jump.ssc.rate + ' %'});
+  }
+  if(d.jump.arm){
+    d.jumpQuality.push({name:'腕振りの連動（CMJ→ABJ）', short:'腕振り', lv:d.jump.arm.lv, val:d.jump.arm.rate + ' %'});
+  }
+  if(d.jump.sl){
+    d.jump.sl.sides.forEach(function(e){
+      d.jumpQuality.push({name:'片脚の目標比 ' + e.side, short:'片脚 ' + e.side, lv:e.lv, val:e.pct + ' %'});
+    });
+  }
+  if(d.jump.rsiDiff){
+    d.jumpQuality.push({name:'ホップとドロップのRSI差', short:'RSI差', lv:d.jump.rsiDiff.lv, val:d.jump.rsiDiff.rate + ' %'});
+  }
 
   /* ---------- 総合（カテゴリー得点率の加重平均） ---------- */
   var tot = 0, w = 0;
@@ -1436,7 +1530,7 @@ function barHtml(label, pct, sub){
 function renderParts(d){
   destroyPartCharts();
   var host = $('r_parts');
-  var pending = [];
+  var pending = [], radarPending = [];
   var html = '';
 
   CATS.forEach(function(c){
@@ -1472,6 +1566,35 @@ function renderParts(d){
       pending.push({id: id, rows: scored});
     }
 
+    // レーダーがある部門は、レーダーと棒グラフを横に並べる
+    var axes = d.radars[c.key];
+    if(axes && hasChartLib()){
+      var rid = 'pr_' + c.key;
+      radarPending.push({id: rid, axes: axes});
+      chart = '<div class="partGrid"><div class="chartBox partRadar"><canvas id="' + rid + '"></canvas></div>'
+            + (chart || '<div></div>') + '</div>';
+      var blank = axes.filter(function(a){ return a.value === undefined; });
+      if(blank.length){
+        chart += '<p class="partMiss">レーダーの未測定の軸：'
+               + blank.map(function(a){ return esc(a.label); }).join('、') + '</p>';
+      }
+    }
+
+    // ジャンプは「ジャンプの質」の棒グラフも足す
+    if(c.key === 'jump' && d.jumpQuality.length && hasChartLib()){
+      chart += '<div class="partSubHead">ジャンプの質</div>'
+             + '<div class="chartBox part" style="height:' + (d.jumpQuality.length * 36 + 30) + 'px">'
+             + '<canvas id="pq_jump"></canvas></div>';
+      pending.push({
+        id: 'pq_jump',
+        rows: d.jumpQuality.map(function(q){
+          return {name:q.name, short:q.short, kind:'num',
+                  pt: q.lv === 'green' ? 3 : (q.lv === 'amber' ? 2 : 1),
+                  color: q.lv, val: q.val};
+        })
+      });
+    }
+
     var miss = '';
     if(skipped.length){
       miss = '<p class="partMiss">採点対象外：' + skipped.map(function(i){ return esc(i.name); }).join('、') + '</p>';
@@ -1480,6 +1603,44 @@ function renderParts(d){
   });
 
   host.innerHTML = html;
+
+  radarPending.forEach(function(p){
+    var values = p.axes.map(function(a){ return a.value === undefined ? null : a.value; });
+    partCharts.push(new Chart($(p.id), {
+      type: 'radar',
+      data: {
+        labels: p.axes.map(function(a){ return a.lines; }),
+        datasets: [{
+          data: values, fill: true,
+          backgroundColor: 'rgba(22,32,43,.12)', borderColor: '#16202B', borderWidth: 2,
+          pointBackgroundColor: p.axes.map(function(a){
+            return a.value === undefined ? COLOR.gray : COLOR[bandColor(a.value)];
+          }),
+          pointRadius: 5, pointBorderColor: '#fff', pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, resizeDelay: 120,
+        plugins: {
+          legend: {display: false},
+          tooltip: {callbacks: {
+            title: function(c){ return p.axes[c[0].dataIndex].label; },
+            label: function(c){
+              var a = p.axes[c.dataIndex];
+              if(a.value === undefined) return '未測定';
+              return a.value + ' / 100　' + LABEL[bandColor(a.value)] + (a.tip ? '　' + a.tip : '');
+            }
+          }}
+        },
+        scales: {r: {
+          min: 0, max: 100,
+          ticks: {stepSize: 25, backdropColor: 'transparent', color: '#8A94A0', font: {size: 9}},
+          grid: {color: '#D3D7DC'}, angleLines: {color: '#D3D7DC'},
+          pointLabels: {font: {size: 11, family: 'Zen Kaku Gothic New', weight: '700'}, color: '#16202B'}
+        }}
+      }
+    }));
+  });
 
   pending.forEach(function(p){
     var vals = p.rows.map(function(i){ return i.kind === 'pts' ? i.raw : i.pt; });
