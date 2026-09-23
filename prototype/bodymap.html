@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeeDS ボディマップ 試作</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDEEF0; --panel:#FFFFFF; --ink:#16202B; --ink-2:#5B6875; --line:#D3D7DC;
+  --red:#C7453F; --amber:#D89A1F; --green:#3B8F68;
+  --red-bg:#F7E5E4; --amber-bg:#FAF0DC; --green-bg:#E2F0E9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.num{font-family:"Archivo","Zen Kaku Gothic New",sans-serif;font-variant-numeric:tabular-nums}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+select{font-family:inherit;font-size:inherit}
+header{background:var(--ink);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.04em}
+header .sub{font-size:12px;color:#9AA7B4}
+main{max-width:1080px;margin:0 auto;padding:22px 20px 100px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:18px}
+.panel.note{background:#FFFBF3;border-color:#E4C9A2}
+h2{font-size:16px;margin:0 0 12px;font-weight:700}
+h3{font-size:13px;margin:22px 0 8px;font-weight:700;color:var(--ink-2)}
+p.help{color:var(--ink-2);font-size:13px;margin:0 0 14px}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.row label{font-size:12px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+select{border:1px solid var(--line);border-radius:4px;padding:9px 10px;background:#fff;min-height:42px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:100px;padding:9px 18px;color:var(--ink-2);min-height:44px}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.bodies{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:700px){.bodies{grid-template-columns:1fr}}
+.bodyCell{text-align:center}
+.bodyCell h4{margin:0 0 4px;font-size:13px;font-weight:700}
+.bodyCell .lr{font-size:11px;color:var(--ink-2);margin:0 0 6px}
+svg.body{width:100%;max-width:300px;height:auto}
+svg.body .reg{cursor:pointer;stroke:#fff;stroke-width:1.5}
+svg.body .reg:hover{stroke:var(--ink);stroke-width:2.5}
+svg.body .reg.sel{stroke:var(--ink);stroke-width:3}
+svg.body .neutral{fill:#C9CED4;stroke:#fff;stroke-width:1.5}
+svg.body text{font-family:"Zen Kaku Gothic New",sans-serif;font-size:11px;fill:#8A94A0}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin-top:14px;justify-content:center}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:16px;height:16px;border-radius:3px;display:inline-block}
+
+.detail{border-left:4px solid var(--line);background:#F5F6F8;padding:14px 16px;border-radius:0 4px 4px 0;min-height:96px}
+.detail .t{font-size:16px;font-weight:700;margin-bottom:2px}
+.detail .s{font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.detail table{width:100%;border-collapse:collapse;font-size:13px}
+.detail td{padding:4px 6px;border-bottom:1px solid #E3E5E9}
+.detail td:last-child{text-align:right;white-space:nowrap}
+.chip{display:inline-block;padding:2px 10px;border-radius:100px;font-size:11px;font-weight:700}
+.c-red{background:var(--red-bg);color:var(--red)}
+.c-amber{background:var(--amber-bg);color:#A9760D}
+.c-green{background:var(--green-bg);color:var(--green)}
+.c-gray{background:#EDEFF1;color:var(--ink-2)}
+
+table.map{width:100%;border-collapse:collapse;font-size:13px}
+table.map th{text-align:left;font-size:11px;color:var(--ink-2);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line);background:#F7F8F9}
+table.map td{padding:7px 8px;border-bottom:1px solid #E7E9EC;vertical-align:top}
+table.map tr:last-child td{border-bottom:0}
+.w1{color:var(--ink);font-weight:700}
+.w2{color:var(--ink-2)}
+.w3{color:#9AA7B4}
+.q{font-size:11px;color:var(--ink-2)}
+ul.ask{margin:8px 0 0;padding-left:1.3em}
+ul.ask li{margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ボディマップ 試作</h1>
+  <span class="sub">NeeDS フィジカルチェック ／ 本番アプリには影響しません</span>
+</header>
+
+<main>
+
+<div class="panel note">
+  <h2>これは何か</h2>
+  <p class="help" style="margin-bottom:10px">
+    測定結果を人体図の上に色で出す、という案の見た目を確認するための試作です。<br>
+    数値はすべて<b>架空のサンプル</b>で、実際のデータは読み込んでいません。本番アプリ（index.html）とは別ファイルです。
+  </p>
+  <p class="help" style="margin:0">
+    見ていただきたいのは次の3点です。<br>
+    <b>① この見せ方が伝わるか</b>　<b>② 体の区切り方（12部位）が適切か</b>　<b>③ 下の対応表（どの種目がどの部位に効くか）が妥当か</b>
+  </p>
+</div>
+
+<div class="panel">
+  <div class="row">
+    <label>サンプル
+      <select id="preset"></select>
+    </label>
+    <div class="tabs" id="themes"></div>
+  </div>
+
+  <div class="bodies">
+    <div class="bodyCell">
+      <h4>正面</h4>
+      <p class="lr">左に見えているのが選手の「右」です</p>
+      <div id="frontWrap"></div>
+    </div>
+    <div class="bodyCell">
+      <h4>背面</h4>
+      <p class="lr">右に見えているのが選手の「右」です</p>
+      <div id="backWrap"></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:#3B8F68"></i>良好</span>
+    <span><i style="background:#D89A1F"></i>普通</span>
+    <span><i style="background:#C7453F"></i>要改善</span>
+    <span><i style="background:#C9CED4"></i>未測定・対象外</span>
+  </div>
+
+  <h3>部位をタップすると、その色の根拠が出ます</h3>
+  <div class="detail" id="detail"><div class="s">上の図で部位をタップしてください。</div></div>
+</div>
+
+<div class="panel">
+  <h2>対応表の叩き台 — どの種目が、どの部位に効くか</h2>
+  <p class="help">
+    <b>ここが一番、赤ペンを入れていただきたいところです。</b>
+    測っているのは「動作」であって「部位」ではないので、この表は測定結果ではなく<b>解釈</b>です。<br>
+    <span class="w1">◎ 主に効く（重み1.0）</span>　<span class="w2">○ 関与する（0.5）</span>　<span class="w3">△ 少し関与（0.25）</span>
+    ／ 部位の点数は、その部位に集まった種目の<b>重み付き平均</b>です。
+  </p>
+  <div id="mapTable"></div>
+</div>
+
+<div class="panel">
+  <h2>決めていただきたいこと</h2>
+  <ul class="ask">
+    <li><b>体の区切り方</b>：いまは12部位（肩・胸・上腕・背中/胸椎・腹部・体側・腰/体幹深部・股関節・臀部・大腿前・大腿後・下腿/足首）です。細かすぎ／粗すぎはありませんか。<br>
+      <span class="q">※ 細かくするほど「その部位だと言い切れるのか」が苦しくなります。</span></li>
+    <li><b>3つの見方の分け方</b>：「柔軟性」「筋力」「バランス・連動」で切り替える形にしています。硬さと強さを1枚に混ぜられないための分割です。この3つでよいですか。</li>
+    <li><b>対応表の中身</b>：◎○△の付け方、部位の選び方。特に <span class="q">ブリッジ・地面タッチ・動きの質</span> は、どこに効くと見るかがトレーナーの判断次第です。</li>
+    <li><b>絵の雰囲気</b>：いまは意図的に簡素な「マネキン」型にしています。解剖図のような見た目にすべきか、このくらい簡素なほうが誤解が少なくてよいか。</li>
+    <li><b>側面図</b>：いまの40項目だと塗る場所がほとんどないため作っていません。姿勢評価を項目に加えるときに足すのが順当と考えています。</li>
+  </ul>
+</div>
+
+</main>
+
+<script>
+"use strict";
+
+/* ==================================================================
+   1. 部位の定義（12部位）
+   ================================================================== */
+var REGIONS = {
+  shoulder:    {name:'肩',            pair:true},
+  chest:       {name:'胸',            pair:false},
+  upper_arm:   {name:'上腕',          pair:true},
+  upper_back:  {name:'背中・胸椎',    pair:false},
+  abdomen:     {name:'腹部',          pair:false},
+  flank:       {name:'体側',          pair:true},
+  lower_back:  {name:'腰・体幹深部',  pair:false},
+  hip:         {name:'股関節',        pair:true},
+  glute:       {name:'臀部',          pair:true},
+  thigh_front: {name:'大腿前',        pair:true},
+  thigh_back:  {name:'大腿後（ハム）',pair:true},
+  lower_leg:   {name:'下腿・足首',    pair:true}
+};
+
+/* ==================================================================
+   2. 対応表の叩き台（種目 → 部位）
+      w: 1.0=主に効く / 0.5=関与する / 0.25=少し関与
+   ================================================================== */
+var THEMES = [
+  {key:'flex',     label:'柔軟性'},
+  {key:'strength', label:'筋力'},
+  {key:'balance',  label:'バランス・連動'}
+];
+
+var MAP = [
+  // --- 柔軟性 ---
+  {key:'banzai',      name:'バンザイ',          theme:'flex', pair:true,  to:[['shoulder',1],['upper_back',.5]]},
+  {key:'kettai',      name:'結帯動作',          theme:'flex', pair:true,  to:[['shoulder',1]]},
+  {key:'shoulder_er', name:'肩関節外旋',        theme:'flex', pair:true,  to:[['shoulder',1]]},
+  {key:'trunk_rot',   name:'体幹回旋',          theme:'flex', pair:true,  to:[['upper_back',1],['flank',.5]]},
+  {key:'trunk_side',  name:'体幹側屈',          theme:'flex', pair:true,  to:[['flank',1],['lower_back',.5]]},
+  {key:'bridge',      name:'ブリッジ',          theme:'flex', pair:false, to:[['upper_back',.5],['hip',.5],['shoulder',.25]]},
+  {key:'split',       name:'開脚',              theme:'flex', pair:false, to:[['hip',1]]},
+  {key:'aslr',        name:'ASLR',              theme:'flex', pair:true,  to:[['thigh_back',1],['hip',.5]]},
+  {key:'gt_flex',     name:'地面タッチ（柔軟）',theme:'flex', pair:false, to:[['thigh_back',1],['lower_back',.5]]},
+
+  // --- 筋力 ---
+  {key:'ab30s',    name:'30秒腹筋',        theme:'strength', pair:false, to:[['abdomen',1]]},
+  {key:'pl_basic', name:'PLベーシック',    theme:'strength', pair:false, to:[['lower_back',1],['abdomen',.5]]},
+  {key:'pushup',   name:'プッシュアップ',  theme:'strength', pair:false, to:[['chest',1],['upper_arm',.5],['shoulder',.5]]},
+  {key:'chinup',   name:'懸垂',            theme:'strength', pair:false, to:[['upper_back',1],['upper_arm',.5]]},
+  {key:'bp_1rm',   name:'ベンチプレス 1RM',theme:'strength', pair:false, to:[['chest',1],['upper_arm',.5],['shoulder',.25]]},
+  {key:'sq_1rm',   name:'スクワット 1RM',  theme:'strength', pair:false, to:[['thigh_front',1],['glute',1]]},
+  {key:'dl_1rm',   name:'デッドリフト 1RM',theme:'strength', pair:false, to:[['thigh_back',1],['glute',1],['lower_back',.5]]},
+  {key:'sl_sq',    name:'SLスクワット',    theme:'strength', pair:true,  to:[['thigh_front',1],['glute',.5]]},
+
+  // --- バランス・連動 ---
+  {key:'sl_stance', name:'片脚立位',              theme:'balance', pair:true,  to:[['lower_leg',1],['hip',.5]]},
+  {key:'gt_bal',    name:'地面タッチ（バランス）',theme:'balance', pair:true,  to:[['lower_leg',.5],['hip',.5],['thigh_back',.25]]},
+  {key:'jump',      name:'跳躍（SQJ・CMJ・ABJ）', theme:'balance', pair:false, to:[['thigh_front',.5],['glute',.5],['lower_leg',.5]]},
+  {key:'sl_cmj',    name:'SLCMJ（片脚跳躍）',     theme:'balance', pair:true,  to:[['thigh_front',.5],['glute',.5],['lower_leg',.5]]},
+  {key:'rsi',       name:'RSI（ホップ・ドロップ）',theme:'balance', pair:false, to:[['lower_leg',1]]},
+  {key:'sq_quality',name:'動きの質（スクワット系）',theme:'balance',pair:false, to:[['hip',.5],['lower_back',.5],['thigh_front',.25]]},
+  {key:'rot',       name:'動きの質（ローテーション系）',theme:'balance',pair:false,to:[['upper_back',.5],['flank',.5],['hip',.25]]}
+];
+
+/* ==================================================================
+   3. サンプルデータ（すべて架空。点数は 0〜3）
+      pair の種目は {R:点, L:点}、それ以外は数値。未測定は書かない。
+   ================================================================== */
+var PRESETS = [
+  {
+    name:'① バランスの取れた選手',
+    v:{ banzai:{R:3,L:3}, kettai:{R:2,L:2}, shoulder_er:{R:3,L:3}, trunk_rot:{R:3,L:2},
+        trunk_side:{R:3,L:3}, bridge:3, split:2, aslr:{R:3,L:3}, gt_flex:3,
+        ab30s:3, pl_basic:3, pushup:3, chinup:2, bp_1rm:3, sq_1rm:3, dl_1rm:3, sl_sq:{R:3,L:3},
+        sl_stance:{R:3,L:3}, gt_bal:{R:3,L:2}, jump:3, sl_cmj:{R:3,L:3}, rsi:3, sq_quality:3, rot:2 }
+  },
+  {
+    name:'② 左肩まわりが硬い選手',
+    v:{ banzai:{R:3,L:1}, kettai:{R:3,L:0}, shoulder_er:{R:2,L:1}, trunk_rot:{R:3,L:2},
+        trunk_side:{R:3,L:2}, bridge:2, split:3, aslr:{R:3,L:3}, gt_flex:3,
+        ab30s:3, pl_basic:2, pushup:3, chinup:3, bp_1rm:2, sq_1rm:3, dl_1rm:3, sl_sq:{R:3,L:3},
+        sl_stance:{R:3,L:3}, gt_bal:{R:3,L:3}, jump:3, sl_cmj:{R:3,L:2}, rsi:3, sq_quality:2, rot:1 }
+  },
+  {
+    name:'③ 脚は強いが体幹が弱い選手',
+    v:{ banzai:{R:2,L:2}, kettai:{R:2,L:2}, shoulder_er:{R:2,L:2}, trunk_rot:{R:1,L:1},
+        trunk_side:{R:1,L:2}, bridge:1, split:2, aslr:{R:2,L:2}, gt_flex:2,
+        ab30s:1, pl_basic:1, pushup:2, chinup:1, bp_1rm:2, sq_1rm:3, dl_1rm:3, sl_sq:{R:3,L:3},
+        sl_stance:{R:2,L:2}, gt_bal:{R:2,L:1}, jump:3, sl_cmj:{R:3,L:2}, rsi:3, sq_quality:1, rot:1 }
+  },
+  {
+    name:'④ 体験者（ジャンプと一部のみ測定）',
+    v:{ banzai:{R:2,L:1}, split:2,
+        jump:2, sl_cmj:{R:2,L:1}, rsi:2 }
+  }
+];
+
+/* ==================================================================
+   4. 人体図（意図的に簡素なマネキン型）
+      正面は「向かって左＝選手の右」、背面は「向かって右＝選手の右」
+   ================================================================== */
+var NEUTRAL_PARTS =
+  '<ellipse class="neutral" cx="100" cy="40" rx="21" ry="25"/>' +          // 頭
+  '<rect class="neutral" x="90" y="60" width="20" height="24" rx="7"/>' +  // 首
+  '<rect class="neutral" x="43" y="190" width="21" height="58" rx="10"/>' +// 前腕
+  '<rect class="neutral" x="136" y="190" width="21" height="58" rx="10"/>' +
+  '<ellipse class="neutral" cx="53.5" cy="256" rx="9" ry="11"/>' +         // 手
+  '<ellipse class="neutral" cx="146.5" cy="256" rx="9" ry="11"/>' +
+  '<rect class="neutral" x="75" y="332" width="22" height="15" rx="7"/>' + // 膝
+  '<rect class="neutral" x="103" y="332" width="22" height="15" rx="7"/>' +
+  '<rect class="neutral" x="71" y="419" width="29" height="12" rx="5"/>' + // 足
+  '<rect class="neutral" x="100" y="419" width="29" height="12" rx="5"/>';
+
+function rect(id, x, y, w, h, r){
+  return '<rect class="reg" id="' + id + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + r + '"/>';
+}
+function ell(id, cx, cy, rx, ry){
+  return '<ellipse class="reg" id="' + id + '" cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '"/>';
+}
+/* 向かって左の図形を selL、向かって右を selR に割り当てる */
+function sides(view){
+  return view === 'front' ? {left:'R', right:'L'} : {left:'L', right:'R'};
+}
+
+function bodySvg(view){
+  var s = sides(view), p = view.charAt(0) + '_';   // f_ / b_
+  var h = '<svg class="body" viewBox="0 0 200 444" xmlns="http://www.w3.org/2000/svg">';
+
+  // 左右の目印
+  h += '<text x="30" y="20" text-anchor="middle">' + (view === 'front' ? '右' : '左') + '</text>';
+  h += '<text x="170" y="20" text-anchor="middle">' + (view === 'front' ? '左' : '右') + '</text>';
+
+  h += NEUTRAL_PARTS;
+
+  // 肩・上腕（両面共通）
+  h += ell(p + 'shoulder_' + s.left,  57, 98, 20, 21);
+  h += ell(p + 'shoulder_' + s.right, 143, 98, 20, 21);
+  h += rect(p + 'upper_arm_' + s.left,  41, 114, 24, 76, 12);
+  h += rect(p + 'upper_arm_' + s.right, 135, 114, 24, 76, 12);
+  // 下腿（両面共通）
+  h += rect(p + 'lower_leg_' + s.left,  75, 349, 23, 68, 11);
+  h += rect(p + 'lower_leg_' + s.right, 102, 349, 23, 68, 11);
+
+  if(view === 'front'){
+    h += rect(p + 'chest', 71, 84, 58, 56, 14);
+    h += rect(p + 'flank_' + s.left,  71, 142, 15, 60, 7);
+    h += rect(p + 'abdomen',          86, 142, 28, 60, 9);
+    h += rect(p + 'flank_' + s.right, 114, 142, 15, 60, 7);
+    h += rect(p + 'hip_' + s.left,  73, 204, 26, 44, 11);
+    h += rect(p + 'hip_' + s.right, 101, 204, 26, 44, 11);
+    h += rect(p + 'thigh_front_' + s.left,  72, 250, 27, 80, 13);
+    h += rect(p + 'thigh_front_' + s.right, 101, 250, 27, 80, 13);
+  }else{
+    h += rect(p + 'upper_back', 71, 84, 58, 74, 14);
+    h += rect(p + 'lower_back', 75, 160, 50, 42, 10);
+    h += rect(p + 'glute_' + s.left,  73, 204, 26, 46, 12);
+    h += rect(p + 'glute_' + s.right, 101, 204, 26, 46, 12);
+    h += rect(p + 'thigh_back_' + s.left,  72, 252, 27, 78, 13);
+    h += rect(p + 'thigh_back_' + s.right, 101, 252, 27, 78, 13);
+  }
+  return h + '</svg>';
+}
+
+/* ==================================================================
+   5. 計算（部位の点数 ＝ その部位に集まった種目の重み付き平均）
+   ================================================================== */
+var COLOR = {green:'#3B8F68', amber:'#D89A1F', red:'#C7453F', gray:'#C9CED4'};
+var LABEL = {green:'良好', amber:'普通', red:'要改善', gray:'未測定'};
+
+function bandColor(pct){
+  if(pct === null || pct === undefined) return 'gray';
+  if(pct >= 88.9) return 'green';
+  if(pct >= 66.7) return 'amber';
+  return 'red';
+}
+function r1(n){ return Math.round(n * 10) / 10; }
+
+/* 種目の点数を取り出す。side は 'R' / 'L' / null（中央部位）*/
+function pointOf(v, item, side){
+  var raw = v[item.key];
+  if(raw === undefined) return undefined;
+  if(!item.pair) return raw;
+  if(side === 'R' || side === 'L'){
+    return raw[side];
+  }
+  // 中央の部位に左右ある種目が入る場合は、低いほうを採用（本番の柔軟性と同じ考え方）
+  if(raw.R === undefined) return raw.L;
+  if(raw.L === undefined) return raw.R;
+  return Math.min(raw.R, raw.L);
+}
+
+function regionScore(v, theme, regionId, side){
+  var sum = 0, wsum = 0, parts = [];
+  MAP.forEach(function(item){
+    if(item.theme !== theme) return;
+    item.to.forEach(function(t){
+      if(t[0] !== regionId) return;
+      var pt = pointOf(v, item, side);
+      if(pt === undefined) return;
+      sum += pt * t[1]; wsum += t[1];
+      parts.push({name:item.name, pt:pt, w:t[1]});
+    });
+  });
+  if(!wsum) return {pct:null, parts:[]};
+  return {pct: r1(sum / wsum / 3 * 100), parts: parts};
+}
+
+/* ==================================================================
+   6. 描画
+   ================================================================== */
+var theme = 'flex', preset = 0, selected = null;
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+function paint(){
+  var v = PRESETS[preset].v;
+  ['f', 'b'].forEach(function(p){
+    for(var id in REGIONS){
+      var sidesList = REGIONS[id].pair ? ['R', 'L'] : [null];
+      sidesList.forEach(function(side){
+        var el = $(p + '_' + id + (side ? '_' + side : ''));
+        if(!el) return;
+        var sc = regionScore(v, theme, id, side);
+        el.setAttribute('fill', COLOR[bandColor(sc.pct)]);
+        el.setAttribute('data-region', id);
+        el.setAttribute('data-side', side || '');
+      });
+    }
+  });
+  if(selected) showDetail(selected.region, selected.side);
+  else $('detail').innerHTML = '<div class="s">上の図で部位をタップしてください。その色がどの種目から出ているかを表示します。</div>';
+}
+
+function showDetail(regionId, side){
+  selected = {region: regionId, side: side};
+  var v = PRESETS[preset].v;
+  var sc = regionScore(v, theme, regionId, side);
+  var col = bandColor(sc.pct);
+  var sideTxt = side ? ('（' + (side === 'R' ? '右' : '左') + '）') : '';
+  var h = '<div class="t">' + esc(REGIONS[regionId].name) + sideTxt +
+          ' <span class="chip c-' + col + '">' + LABEL[col] + '</span></div>';
+  h += '<div class="s">' + THEMES.filter(function(t){ return t.key === theme; })[0].label +
+       ' ／ ' + (sc.pct === null ? 'この部位に集まる種目が測定されていません' : ('得点率 ' + sc.pct + ' / 100')) + '</div>';
+  if(sc.parts.length){
+    h += '<table><tr><td colspan="2" class="q" style="padding-bottom:6px">この色のもとになった種目</td></tr>';
+    h += sc.parts.map(function(p){
+      var mark = p.w === 1 ? '◎' : (p.w === 0.5 ? '○' : '△');
+      return '<tr><td>' + mark + ' ' + esc(p.name) + '</td><td class="num">' + p.pt + ' 点</td></tr>';
+    }).join('');
+    h += '</table>';
+  }
+  $('detail').innerHTML = h;
+
+  document.querySelectorAll('svg.body .reg').forEach(function(el){
+    el.classList.toggle('sel', el.getAttribute('data-region') === regionId &&
+                               el.getAttribute('data-side') === (side || ''));
+  });
+}
+
+function buildMapTable(){
+  var h = '<table class="map"><tr><th style="width:30%">種目</th><th style="width:12%">左右</th><th>効くと見なしている部位</th></tr>';
+  THEMES.forEach(function(t){
+    h += '<tr><td colspan="3" style="background:#F7F8F9;font-weight:700;font-size:12px">' + t.label + '</td></tr>';
+    MAP.filter(function(m){ return m.theme === t.key; }).forEach(function(m){
+      var cells = m.to.map(function(x){
+        var cls = x[1] === 1 ? 'w1' : (x[1] === 0.5 ? 'w2' : 'w3');
+        var mark = x[1] === 1 ? '◎' : (x[1] === 0.5 ? '○' : '△');
+        return '<span class="' + cls + '">' + mark + ' ' + esc(REGIONS[x[0]].name) + '</span>';
+      }).join('　');
+      h += '<tr><td>' + esc(m.name) + '</td><td class="q">' + (m.pair ? '左右あり' : '—') + '</td><td>' + cells + '</td></tr>';
+    });
+  });
+  $('mapTable').innerHTML = h + '</table>';
+}
+
+function init(){
+  $('frontWrap').innerHTML = bodySvg('front');
+  $('backWrap').innerHTML = bodySvg('back');
+
+  $('preset').innerHTML = PRESETS.map(function(p, i){
+    return '<option value="' + i + '">' + esc(p.name) + '</option>';
+  }).join('');
+  $('preset').addEventListener('change', function(){ preset = Number(this.value); paint(); });
+
+  $('themes').innerHTML = THEMES.map(function(t, i){
+    return '<button data-theme="' + t.key + '" class="' + (i === 0 ? 'on' : '') + '">' + t.label + '</button>';
+  }).join('');
+  $('themes').addEventListener('click', function(ev){
+    var b = ev.target.closest('button[data-theme]');
+    if(!b) return;
+    theme = b.getAttribute('data-theme');
+    Array.prototype.forEach.call(this.querySelectorAll('button'), function(x){ x.classList.toggle('on', x === b); });
+    paint();
+  });
+
+  document.querySelectorAll('svg.body').forEach(function(svg){
+    svg.addEventListener('click', function(ev){
+      var el = ev.target;
+      if(!el.classList || !el.classList.contains('reg')) return;
+      showDetail(el.getAttribute('data-region'), el.getAttribute('data-side') || null);
+    });
+  });
+
+  buildMapTable();
+  paint();
+}
+init();
+</script>
+</body>
+</html>
