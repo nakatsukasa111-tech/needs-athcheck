@@ -31,10 +31,11 @@ p.help{color:var(--ink-2);font-size:13px;margin:0 0 16px}
 select{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:#fff;min-height:40px}
 
 .opts{display:grid;gap:16px}
+.opt2{grid-template-columns:repeat(2,1fr)}
 .opt3{grid-template-columns:repeat(3,1fr)}
 .opt4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:900px){.opt4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:620px){.opt3,.opt4{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.opt2,.opt3,.opt4{grid-template-columns:1fr}}
 .card{border:1px solid var(--line);border-radius:6px;padding:12px 10px;text-align:center;background:#fff}
 .card h3{margin:0 0 2px;font-size:13px;font-weight:700}
 .card p{margin:0 0 8px;font-size:11px;color:var(--ink-2);min-height:30px;line-height:1.5}
@@ -68,11 +69,39 @@ ul.ask li{margin-bottom:10px}
   </p>
 </div>
 
-<!-- ============ 1. 体の形 ============ -->
+<!-- ============ 1. 記号の一覧 ============ -->
 <div class="panel">
-  <h2>1. 体の形<span class="n">どれが好みですか</span></h2>
-  <p class="help">同じ配色です。形の印象だけを比べてください。</p>
-  <div class="opts opt3" id="shapeOpts"></div>
+  <h2>1. 記号の言語<span class="n">部位に何を付けるか</span></h2>
+  <p class="help">
+    <b>色＝どれくらい悪いか</b>、<b>記号＝何が悪いか</b>、という分担にしています。<br>
+    これなら「赤い」だけでなく「赤くてギザギザ＝硬くて要改善」まで一目で言えます。良好な部位には何も付けません。
+  </p>
+  <div id="vocab"></div>
+</div>
+
+<!-- ============ 2. 1枚にまとめる案 ============ -->
+<div class="panel">
+  <h2>2. 1枚にまとめる<span class="n">これがいちばん大きな判断です</span></h2>
+  <p class="help">
+    記号で「何が悪いか」を言い分けられるので、<b>柔軟性・筋力・連動を1枚に載せられます</b>。<br>
+    いまの案（3つのタブを切り替える）と見比べてください。
+  </p>
+  <div class="row">
+    <label>体型
+      <select id="bodyType">
+        <option value="male">男性型</option>
+        <option value="female">女性型</option>
+        <option value="neutral" selected>中性型</option>
+      </select>
+    </label>
+    <label>体の形
+      <select id="markShape">
+        <option value="silhouette" selected>シルエット（Tシャツ・短パン）</option>
+        <option value="mannequin">マネキン（これまでの形）</option>
+      </select>
+    </label>
+  </div>
+  <div class="opts opt2" id="combineOpts"></div>
   <div class="legend">
     <span><i style="background:#3B8F68"></i>良好</span>
     <span><i style="background:#D89A1F"></i>普通</span>
@@ -81,35 +110,16 @@ ul.ask li{margin-bottom:10px}
   </div>
 </div>
 
-<!-- ============ 2. 質の表し方 ============ -->
+<!-- ============ 3. 記号の付け方の強さ ============ -->
 <div class="panel">
-  <h2>2. 質の表し方<span class="n">色のほかに、形や模様を使うか</span></h2>
-  <p class="help">
-    色だけだと「硬いのか弱いのか」が区別できません。模様や記号を足すと、<b>1枚で2つのことを言える</b>ようになります。<br>
-    下の4案は、すべて同じ選手・同じ点数です。
-  </p>
-  <div class="row">
-    <label>体の形
-      <select id="markShape">
-        <option value="pictogram">A ピクトグラム</option>
-        <option value="silhouette" selected>B シルエット</option>
-        <option value="mannequin">C マネキン</option>
-      </select>
-    </label>
-    <label>体型
-      <select id="bodyType">
-        <option value="male">男性型</option>
-        <option value="female">女性型</option>
-        <option value="neutral" selected>中性型</option>
-      </select>
-    </label>
-  </div>
-  <div class="opts opt4" id="markOpts"></div>
+  <h2>3. どこまで付けるか<span class="n">記号の量</span></h2>
+  <p class="help">記号は情報が増える一方、多いとうるさくなります。3段階で見比べてください。</p>
+  <div class="opts opt3" id="densityOpts"></div>
 </div>
 
-<!-- ============ 3. 体型の比較 ============ -->
+<!-- ============ 4. 体型 ============ -->
 <div class="panel">
-  <h2>3. 体型の作り分け<span class="n">男性型・女性型・中性型</span></h2>
+  <h2>4. 体型の作り分け<span class="n">男性型・女性型・中性型</span></h2>
   <p class="help">
     肩幅と腰幅の比率だけを変えています。どちらも<b>中肉中背</b>、身長も同じです。<br>
     髪型などの記号は入れていません（体の評価に関係しないため）。必要なら足せます。
@@ -117,17 +127,15 @@ ul.ask li{margin-bottom:10px}
   <div class="opts opt3" id="typeOpts"></div>
 </div>
 
-<!-- ============ 4. 決めていただきたいこと ============ -->
+<!-- ============ 5. 決めていただきたいこと ============ -->
 <div class="panel">
-  <h2>4. 決めていただきたいこと</h2>
+  <h2>5. 決めていただきたいこと</h2>
   <ul class="ask">
-    <li><b>体の形</b>：A ピクトグラム／B シルエット／C マネキン のどれか。<br>
-      <span class="help" style="display:block;margin:2px 0 0">A は「丸い頭にV字の体」で、いちばん誤解が少ない。B は選手に見せたときの伝わりやすさが一番。C は現状。</span></li>
-    <li><b>質の表し方</b>：① 色だけ／② 色＋模様／③ 色＋記号／④ 連動を線で結ぶ のどれか。<b>組み合わせも可能</b>です（例：②＋④）。</li>
-    <li><b>連動の線（④）について</b>：これは他の案と性質が違います。色は「その部位が良いか」しか言えませんが、線は<b>「部位と部位のつながり」</b>を表せます。レーダーの「上半身と体幹部のつながり」と同じ数字を、体の上に出したものです。</li>
-    <li><b>模様と記号の割り当て</b>：いまは②が <span class="k">ギザギザ＝硬い（柔軟性）</span> <span class="k">点々＝弱い（筋力）</span>、
-      ③が <span class="k">ギザギザ／波線＝硬い</span> <span class="k">×／－＝弱い</span> です。別の形のほうが直感的、などあればお知らせください。</li>
-    <li><b>体型の作り分け</b>：肩幅と腰幅の比率だけで男女を分けています。これで足りるか、髪型などの記号も要るか。</li>
+    <li><b>1枚にまとめるか、3つのタブのままか</b>（2章）。まとめれば一望できますが、情報は濃くなります。</li>
+    <li><b>記号の形</b>（1章）。<span class="k">ギザギザ＝硬い</span> <span class="k">▼＝弱い</span> <span class="k">破線＝連動が悪い</span> としています。別の形のほうが直感的なら教えてください。</li>
+    <li><b>記号の量</b>（3章）。要改善だけに付けるか、普通にも付けるか。</li>
+    <li><b>連動の線</b>：部位と部位を結ぶ線です。色は「その部位が良いか」しか言えませんが、線だけが<b>部位のあいだ</b>を表せます。</li>
+    <li><b>体の形</b>：Tシャツ・短パンのシルエットで進めてよいですか。</li>
   </ul>
 </div>
 
@@ -322,72 +330,6 @@ function silhouette(view, type){
   return o;
 }
 
-/* --- A ピクトグラム（丸い頭＋V字の体） --- */
-function pictogram(view, type){
-  var P = TYPES[type] || TYPES.neutral, s = sides(view), o = [];
-  function reg(id, d){ o.push({id:id, d:d}); }
-  function neutral(d){ o.push({id:null, d:d}); }
-
-  // V字の寸法（体型で肩幅と腰幅だけ変える）
-  var SH = P.shoulder * 1.12, WA = P.waist * 0.78, HP = P.hip * 0.90;
-  var yTop = 76, yWaist = 176, yHip = 218;
-
-  neutral('M' + (CX-23) + ',36a23,23 0 1,0 46,0a23,23 0 1,0 -46,0Z');          // 丸い頭
-  neutral(poly([[CX-9, 54],[CX+9, 54],[CX+10, yTop+2],[CX-10, yTop+2]]));      // 首
-
-  function edge(sg){ return function(y){
-    if(y <= yWaist) return CX + sg*(SH + (WA - SH) * (y - yTop) / (yWaist - yTop));
-    return CX + sg*(WA + (HP - WA) * (y - yWaist) / (yHip - yWaist));
-  }; }
-  function column(id, y0, y1, fa, fb){
-    var pts = [];
-    for(var y = y0; y <= y1; y += 4) pts.push([fa(y), y]);
-    pts.push([fa(y1), y1]);
-    for(var y2 = y1; y2 >= y0; y2 -= 4) pts.push([fb(y2), y2]);
-    pts.push([fb(y0), y0]);
-    reg(id, poly(pts));
-  }
-
-  // 胴（V字そのもの）
-  if(view === 'front'){
-    column('chest', yTop, 134, edge(-1), edge(1));
-    column('flank_' + s.l, 134, yWaist, edge(-1), function(y){ return edge(-1)(y) + WA*0.62; });
-    column('flank_' + s.r, 134, yWaist, edge(1),  function(y){ return edge(1)(y)  - WA*0.62; });
-    column('abdomen', 134, yWaist, function(y){ return edge(-1)(y) + WA*0.62; },
-                                   function(y){ return edge(1)(y)  - WA*0.62; });
-    column('hip_' + s.l, yWaist, yHip, edge(-1), function(){ return CX; });
-    column('hip_' + s.r, yWaist, yHip, edge(1),  function(){ return CX; });
-  }else{
-    column('upper_back', yTop, 150, edge(-1), edge(1));
-    column('lower_back', 150, yWaist, edge(-1), edge(1));
-    column('glute_' + s.l, yWaist, yHip + 4, edge(-1), function(){ return CX; });
-    column('glute_' + s.r, yWaist, yHip + 4, edge(1),  function(){ return CX; });
-  }
-
-  // 肩＝V字の上の角を丸く覆う
-  [[-1, s.l],[1, s.r]].forEach(function(e){
-    var sg = e[0], ox = CX + sg*SH;
-    reg('shoulder_' + e[1],
-        'M' + n(CX + sg*SH*0.44) + ',' + yTop +
-        'C' + n(CX + sg*SH*0.78) + ',' + (yTop-1) + ' ' + n(ox) + ',' + (yTop+6) + ' ' + n(ox) + ',' + 104 +
-        'C' + n(ox) + ',' + 122 + ' ' + n(ox - sg*3) + ',' + 128 + ' ' + n(ox - sg*6) + ',' + 132 +
-        'L' + n(edge(sg)(132) - sg*SH*0.30) + ',' + 132 +
-        'C' + n(edge(sg)(132) - sg*SH*0.30) + ',' + 108 + ' ' + n(CX + sg*SH*0.50) + ',' + (yTop+14) + ' ' + n(CX + sg*SH*0.44) + ',' + yTop + 'Z');
-  });
-
-  // 腕・脚は太い棒
-  [[-1, s.l],[1, s.r]].forEach(function(e){
-    var sg = e[0];
-    reg('upper_arm_' + e[1], limb(CX + sg*(SH-3), 96, 10.5, CX + sg*(SH+6), Y.elbow, 9));
-    neutral(limb(CX + sg*(SH+6), Y.elbow, 8.5, CX + sg*(SH+9), Y.wrist, 7));
-    var tx = CX + sg*HP*0.50;
-    reg((view === 'front' ? 'thigh_front_' : 'thigh_back_') + e[1], limb(tx, yHip-2, 15.5, tx, Y.knee, 12.5));
-    reg('lower_leg_' + e[1], limb(tx, Y.knee+10, 11.5, tx, Y.ankle, 8.5));
-    neutral(limb(tx, Y.ankle, 8.5, tx + sg*3, Y.sole, 7.5));
-  });
-  return o;
-}
-
 /* --- C マネキン（いまの形） --- */
 function mannequin(view){
   var s = sides(view), o = [];
@@ -421,7 +363,7 @@ function mannequin(view){
   return o;
 }
 
-var SHAPES = {silhouette:silhouette, pictogram:pictogram, mannequin:mannequin};
+var SHAPES = {silhouette:silhouette, mannequin:mannequin};
 
 /* ==================================================================
    服の縫い目（Tシャツ・短パン）。色の上に線だけ重ねる
@@ -429,7 +371,7 @@ var SHAPES = {silhouette:silhouette, pictogram:pictogram, mannequin:mannequin};
 function clothing(view, type, shape){
   if(shape === 'mannequin') return '';
   var P = TYPES[type] || TYPES.neutral;
-  var pic = shape === 'pictogram';
+  var pic = false;
   var SH = pic ? P.shoulder*1.12 : P.shoulder, WA = pic ? P.waist*0.78 : P.waist, HP = pic ? P.hip*0.90 : P.hip;
   var yTop = pic ? 76 : Y.shoulderTop, yWaist = pic ? 176 : Y.waist;
   var w = pic ? function(y){
@@ -480,19 +422,51 @@ var DEFS =
  '</defs>';
 
 /* ==================================================================
-   図の組み立て
-   opts: {texture, marks, links}
+   記号の言語
+   ギザギザ＝硬い（柔軟性）／▼＝弱い（筋力）／破線＝連動が悪い
    ================================================================== */
+function glyphPath(kind, lv){
+  if(kind === 'flex'){
+    return lv === 'red' ? 'M-6.5,3 L-3.5,-3.5 L0,3 L3.5,-3.5 L6.5,3'   // 強いギザギザ＝硬い
+                        : 'M-6.5,1.5 Q-3.2,-4 0,1.5 T6.5,1.5';         // ゆるい波＝やや硬い
+  }
+  return lv === 'red' ? 'M-5.5,-3.5 L5.5,-3.5 L0,4.5 Z'                 // ▼＝弱い
+                      : 'M-5.5,-2 L0,3.5 L5.5,-2';                      // 浅い▼＝やや弱い
+}
+function glyphFill(kind, lv){ return (kind === 'strength' && lv === 'red') ? COLOR[lv] : 'none'; }
+
+/* 部位の上に置く白いバッジ（記号1〜2個） */
+function badge(cx, cy, items){
+  if(!items.length) return '';
+  var w = items.length === 1 ? 18 : 31, h = 18;
+  var g = '<g transform="translate(' + n(cx) + ',' + n(cy) + ')" pointer-events="none">' +
+          '<rect x="' + (-w/2) + '" y="' + (-h/2) + '" width="' + w + '" height="' + h +
+          '" rx="' + (h/2) + '" fill="#fff" opacity=".94"/>';
+  items.forEach(function(it, i){
+    var dx = items.length === 1 ? 0 : (i === 0 ? -6.8 : 6.8);
+    g += '<g transform="translate(' + dx + ',0)">' +
+         '<path d="' + glyphPath(it.kind, it.lv) + '" fill="' + glyphFill(it.kind, it.lv) +
+         '" stroke="' + COLOR[it.lv] + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>';
+  });
+  return g + '</g>';
+}
+
 function centroid(d){
-  // パスの座標を拾って平均する（重心のかわり）
   var nums = d.match(/-?\d+(\.\d+)?/g) || [];
   var sx = 0, sy = 0, c = 0;
   for(var i = 0; i + 1 < nums.length; i += 2){ sx += +nums[i]; sy += +nums[i+1]; c++; }
   return c ? [sx/c, sy/c] : [CX, 200];
 }
 
-function buildSvg(shape, view, type, theme, opts){
+/* ==================================================================
+   図の組み立て
+   mode  : 'flex' | 'strength' | 'combined'
+   marks : 'none'（色だけ）/ 'red'（要改善だけ）/ 'all'（普通にも）
+   links : 連動の線を出すか
+   ================================================================== */
+function buildSvg(shape, view, type, mode, opts){
   opts = opts || {};
+  var marks = opts.marks || 'none';
   var parts = SHAPES[shape](view, type);
   var h = '<svg viewBox="0 0 220 440" xmlns="http://www.w3.org/2000/svg">' + DEFS;
   h += '<text x="26" y="18" font-size="11" fill="#8A94A0" font-family="sans-serif" text-anchor="middle">' +
@@ -500,67 +474,57 @@ function buildSvg(shape, view, type, theme, opts){
   h += '<text x="194" y="18" font-size="11" fill="#8A94A0" font-family="sans-serif" text-anchor="middle">' +
        (view === 'front' ? '左' : '右') + '</text>';
 
-  var pos = {};
+  var pos = {}, badges = [];
   parts.forEach(function(p){
     if(!p.id){
       h += '<path d="' + p.d + '" fill="#C9CED4" stroke="#fff" stroke-width="1.4"/>';
       return;
     }
     var base = p.id.replace(/_(R|L)$/, ''), side = (p.id.match(/_(R|L)$/) || [])[1] || null;
-    var val = valueOf(theme, base, side);
-    var col = COLOR[bandColor(val)];
-    pos[p.id] = centroid(p.d);
-    h += '<path d="' + p.d + '" fill="' + col + '" stroke="#fff" stroke-width="1.4"/>';
+    var fv = valueOf('flex', base, side), sv = valueOf('strength', base, side);
+    var use = mode === 'flex' ? [fv] : (mode === 'strength' ? [sv] : [fv, sv]);
+    var got = use.filter(function(v){ return v !== null; });
+    var worst = got.length ? Math.min.apply(null, got) : null;
 
-    // 模様：悪い部位にだけ乗せる
-    if(opts.texture && val !== null && val < 66.7){
-      var tex = theme === 'flex' ? 'texZig' : 'texDot';
-      h += '<path d="' + p.d + '" fill="url(#' + tex + ')" stroke="none" pointer-events="none"/>';
+    pos[p.id] = centroid(p.d);
+    h += '<path d="' + p.d + '" fill="' + COLOR[bandColor(worst)] + '" stroke="#fff" stroke-width="1.4"/>';
+
+    if(marks !== 'none'){
+      var items = [];
+      function add(kind, v){
+        if(v === null) return;
+        var b = bandColor(v);
+        if(b === 'green' || b === 'gray') return;
+        if(marks === 'red' && b !== 'red') return;
+        items.push({kind:kind, lv:b});
+      }
+      if(mode !== 'strength') add('flex', fv);
+      if(mode !== 'flex')     add('strength', sv);
+      if(items.length) badges.push([pos[p.id], items]);
     }
   });
 
   h += clothing(view, type, shape);
 
-  // 記号：部位の中心に小さなマーク
-  if(opts.marks){
-    parts.forEach(function(p){
-      if(!p.id) return;
-      var base = p.id.replace(/_(R|L)$/, ''), side = (p.id.match(/_(R|L)$/) || [])[1] || null;
-      var val = valueOf(theme, base, side);
-      if(val === null) return;
-      var c = pos[p.id], b = bandColor(val);
-      if(b === 'green') return;
-      var m = theme === 'flex'
-        ? (b === 'red' ? 'M-5,3 L-2.5,-3 L0,3 L2.5,-3 L5,3' : 'M-5,0 Q-2.5,-4 0,0 T5,0')   // 硬い＝ギザギザ
-        : (b === 'red' ? 'M-4,-4 L4,4 M4,-4 L-4,4' : 'M-5,0 L5,0');                        // 弱い＝×
-      h += '<g transform="translate(' + n(c[0]) + ',' + n(c[1]) + ')" pointer-events="none">' +
-           '<circle r="7.5" fill="#fff" opacity=".92"/>' +
-           '<path d="' + m + '" fill="none" stroke="' + COLOR[b] + '" stroke-width="2" stroke-linecap="round"/></g>';
-    });
-  }
-
-  // 連動：部位と部位を線で結ぶ
   if(opts.links){
     LINKS.forEach(function(k){
       var a = pos[k.a], b = pos[k.b];
       if(!a || !b) return;
       var col = COLOR[bandColor(k.v)];
       h += '<line x1="' + n(a[0]) + '" y1="' + n(a[1]) + '" x2="' + n(b[0]) + '" y2="' + n(b[1]) +
-           '" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".92" pointer-events="none"/>';
+           '" stroke="#fff" stroke-width="6.5" stroke-linecap="round" opacity=".9" pointer-events="none"/>';
       h += '<line x1="' + n(a[0]) + '" y1="' + n(a[1]) + '" x2="' + n(b[0]) + '" y2="' + n(b[1]) +
-           '" stroke="' + col + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5" pointer-events="none"/>';
-      [a, b].forEach(function(pt){
-        h += '<circle cx="' + n(pt[0]) + '" cy="' + n(pt[1]) + '" r="3.6" fill="' + col + '" stroke="#fff" stroke-width="1.5" pointer-events="none"/>';
-      });
+           '" stroke="' + col + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4.5" opacity=".95" pointer-events="none"/>';
     });
   }
+  badges.forEach(function(b){ h += badge(b[0][0], b[0][1], b[1]); });
   return h + '</svg>';
 }
 
-function pairOf(shape, type, theme, opts){
+function pairOf(shape, type, mode, opts){
   return '<div class="pair">' +
-    '<div><span>正面</span>' + buildSvg(shape, 'front', type, theme, opts) + '</div>' +
-    '<div><span>背面</span>' + buildSvg(shape, 'back',  type, theme, opts) + '</div></div>';
+    '<div><span>正面</span>' + buildSvg(shape, 'front', type, mode, opts) + '</div>' +
+    '<div><span>背面</span>' + buildSvg(shape, 'back',  type, mode, opts) + '</div></div>';
 }
 
 /* ==================================================================
@@ -569,39 +533,69 @@ function pairOf(shape, type, theme, opts){
 function card(title, desc, body){
   return '<div class="card"><h3>' + title + '</h3><p>' + desc + '</p>' + body + '</div>';
 }
-
-function renderShapes(){
-  var t = document.getElementById('bodyType') ? document.getElementById('bodyType').value : 'neutral';
-  document.getElementById('shapeOpts').innerHTML =
-    card('A　ピクトグラム', '丸い頭にV字の体。記号としていちばん分かりやすい', pairOf('pictogram', t, 'flex', {})) +
-    card('B　シルエット',   'Tシャツと短パンを着た人。選手に見せる用', pairOf('silhouette', t, 'flex', {})) +
-    card('C　マネキン',     'いまの形。部位の区切りは分かるが機械的', pairOf('mannequin', t, 'flex', {}));
+function swatch(kind, lv, label, note){
+  var sv = '<svg viewBox="-20 -20 40 40" style="width:56px;height:56px">' +
+           '<rect x="-18" y="-18" width="36" height="36" rx="8" fill="' + COLOR[lv] + '"/>' +
+           '<circle r="13" fill="#fff" opacity=".94"/>' +
+           '<path d="' + glyphPath(kind, lv) + '" fill="' + glyphFill(kind, lv) +
+           '" stroke="' + COLOR[lv] + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return '<div style="text-align:center"><div>' + sv + '</div>' +
+         '<div style="font-size:12px;font-weight:700;margin-top:2px">' + label + '</div>' +
+         '<div style="font-size:11px;color:#5B6875">' + note + '</div></div>';
+}
+function renderVocab(){
+  var linkSv = '<svg viewBox="-30 -20 60 40" style="width:86px;height:56px">' +
+    '<circle cx="-20" cy="-8" r="6" fill="#C9CED4"/><circle cx="20" cy="8" r="6" fill="#C9CED4"/>' +
+    '<line x1="-20" y1="-8" x2="20" y2="8" stroke="' + COLOR.red + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5"/></svg>';
+  document.getElementById('vocab').innerHTML =
+    '<div style="display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-start">' +
+    swatch('flex','red','ギザギザ','硬い（柔軟性が要改善）') +
+    swatch('flex','amber','ゆるい波','やや硬い') +
+    swatch('strength','red','▼','弱い（筋力が要改善）') +
+    swatch('strength','amber','浅い▼','やや弱い') +
+    '<div style="text-align:center"><div>' + linkSv + '</div>' +
+    '<div style="font-size:12px;font-weight:700;margin-top:2px">破線</div>' +
+    '<div style="font-size:11px;color:#5B6875">部位と部位の連動が悪い</div></div>' +
+    '<div style="text-align:center"><div><svg viewBox="-20 -20 40 40" style="width:56px;height:56px">' +
+    '<rect x="-18" y="-18" width="36" height="36" rx="8" fill="' + COLOR.green + '"/></svg></div>' +
+    '<div style="font-size:12px;font-weight:700;margin-top:2px">記号なし</div>' +
+    '<div style="font-size:11px;color:#5B6875">良好</div></div>' +
+    '</div>';
 }
 
-function renderMarks(){
+function renderCombined(){
   var sh = document.getElementById('markShape').value;
   var t  = document.getElementById('bodyType').value;
-  document.getElementById('markOpts').innerHTML =
-    card('① 色だけ', 'いまの案。シンプルだが「硬い」のか「弱い」のか区別できない',
-         pairOf(sh, t, 'flex', {})) +
-    card('② 色＋模様', '悪い部位に模様。柔軟性＝ギザギザ、筋力＝点々',
-         pairOf(sh, t, 'flex', {texture:true})) +
-    card('③ 色＋記号', '部位の中心に小さな記号。離れて見ても分かる',
-         pairOf(sh, t, 'flex', {marks:true})) +
-    card('④ 連動を線で', '部位と部位のつながりを線で表す。色では表せない情報',
-         pairOf(sh, t, 'flex', {links:true}));
+  document.getElementById('combineOpts').innerHTML =
+    card('1枚にまとめる', '柔軟性・筋力・連動を同時に。色＝程度、記号＝何が悪いか',
+         pairOf(sh, t, 'combined', {marks:'red', links:true})) +
+    card('3つのタブに分ける（いまの案）', '柔軟性だけを表示した状態。切り替えて見る',
+         pairOf(sh, t, 'flex', {marks:'red'}));
+  renderDensity();
+}
+
+function renderDensity(){
+  var sh = document.getElementById('markShape').value;
+  var t  = document.getElementById('bodyType').value;
+  document.getElementById('densityOpts').innerHTML =
+    card('記号なし', '色だけ。すっきりするが「何が」悪いかは分からない',
+         pairOf(sh, t, 'combined', {marks:'none'})) +
+    card('要改善だけ', '赤い部位にだけ記号。要点が絞れる',
+         pairOf(sh, t, 'combined', {marks:'red'})) +
+    card('普通にも付ける', '黄色にも記号。情報量は最大だが、やや賑やか',
+         pairOf(sh, t, 'combined', {marks:'all'}));
 }
 
 function renderTypes(){
   document.getElementById('typeOpts').innerHTML =
-    card('男性型', '肩幅が広く、腰幅が狭い', pairOf('silhouette', 'male', 'strength', {})) +
-    card('女性型', '肩幅が狭く、腰幅が広い', pairOf('silhouette', 'female', 'strength', {})) +
-    card('中性型', 'その中間。性別が未登録のとき', pairOf('silhouette', 'neutral', 'strength', {}));
+    card('男性型', '肩幅が広く、腰幅が狭い', pairOf('silhouette', 'male', 'combined', {marks:'red'})) +
+    card('女性型', '肩幅が狭く、腰幅が広い', pairOf('silhouette', 'female', 'combined', {marks:'red'})) +
+    card('中性型', 'その中間。性別が未登録のとき', pairOf('silhouette', 'neutral', 'combined', {marks:'red'}));
 }
 
-function renderAll(){ renderShapes(); renderMarks(); renderTypes(); }
-document.getElementById('markShape').addEventListener('change', renderMarks);
-document.getElementById('bodyType').addEventListener('change', function(){ renderShapes(); renderMarks(); });
+function renderAll(){ renderVocab(); renderCombined(); renderTypes(); }
+document.getElementById('markShape').addEventListener('change', renderCombined);
+document.getElementById('bodyType').addEventListener('change', renderCombined);
 renderAll();
 </script>
 </body>
