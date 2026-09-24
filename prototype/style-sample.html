@@ -68,6 +68,11 @@ ul.ask li{margin-bottom:10px}
     色は<b>境界のない「にじみ」</b>で置いています（中心が濃く、周りがぼやける）。部位の線も、肩甲骨・胸・背骨の線も入れていません。<br>
     記号は<b>特に良い（◎）</b>と<b>特に悪い（！）</b>だけです。硬さ・弱さの区別は、上のタブの切り替えで見ます。
   </p>
+  <p class="help" style="margin:10px 0 0">
+    <b>9/24 の直し</b>：にじみの範囲を狭くしました（中心から外へ、前より早く消えます）。
+    体の形は頭からつま先まで引き直しました（7.5頭身で割りつけ、肩・ウエスト・膝・足首の位置を標準の比率に合わせています）。
+    足は<b>横幅1足分だけ広げた</b>立ち姿です。
+  </p>
 </div>
 
 <div class="panel">
@@ -110,7 +115,8 @@ ul.ask li{margin-bottom:10px}
   <h2>決めていただきたいこと</h2>
   <ul class="ask">
     <li><b>にじみの濃さ</b>：いまは中心が濃く、外に向かって消えていきます。もっと濃く（はっきり）か、もっと薄くか。</li>
-    <li><b>にじみの広がり</b>：部位の境目が分からないくらい広げるか、もう少し場所が絞られるほうがよいか。</li>
+    <li><b>にじみの広がり</b>：今回狭くしました。これで「場所が分かる」程度になっているか、まだ広い／狭すぎるか。</li>
+    <li><b>立ち姿</b>：足の開きは1足分にしています。もっと閉じるか、もっと開くか。</li>
     <li><b>◎と！の基準</b>：いまは <span class="k">満点（100）＝◎</span> <span class="k">33.3以下＝！</span> です。この線引きでよいか。</li>
     <li><b>体型</b>：男性型・女性型の差の付け方はこれくらいでよいか。</li>
     <li><b>顔</b>：目と鼻をうっすら入れています。これで前後の区別は足りるか。</li>
@@ -136,73 +142,76 @@ var EXCELLENT = 100, CRITICAL = 33.3;
 
 /* ==================================================================
    体型（中心線からの半分の幅）
+   頭頂 14 / あご 70 / 肩 116 / ウエスト 181 / 股 226 / 膝 326 / 足裏 431
+   （身長 7.5 頭身で割りつけている）
    男性は少し体格よく、女性は少しほっそり
    ================================================================== */
 var TYPES = {
-  male:    {neck:13,   shoulder:52, chest:35,   waist:29, hip:36, thigh:21.5, calf:15.5, ankle:8.2, arm:12,   hx:21.5, hy:27.5},
-  female:  {neck:11,   shoulder:42, chest:28.5, waist:23, hip:38, thigh:19.5, calf:13,   ankle:7,   arm:9.4,  hx:20.5, hy:26.5},
-  neutral: {neck:12,   shoulder:47, chest:31.5, waist:26, hip:37, thigh:20.5, calf:14.2, ankle:7.6, arm:10.7, hx:21,   hy:27}
+  male:    {hx:21.5, neck:13,   shoulder:52,   chest:35,   waist:29,   hip:38,   arm:12,   leg:1.00},
+  female:  {hx:20.5, neck:11,   shoulder:43,   chest:29.5, waist:23.5, hip:39,   arm:9.6,  leg:0.90},
+  neutral: {hx:21,   neck:12,   shoulder:47.5, chest:32,   waist:26,   hip:38.5, arm:10.8, leg:0.95}
 };
 var CX = 120;
+
+/* 腕の中心線（肩からわずかに外へ開く）と太さ */
+function armCx(P, y){ return (P.shoulder - P.arm) + (y - 110) * 0.155; }
+var ARM = [           // [y, 太さの係数]
+  [120, 1.00], [144, 1.00], [166, 0.92], [182, 0.79],   // 上腕 → 肘
+  [198, 0.85], [218, 0.64], [230, 0.49],                // 前腕 → 手首
+  [241, 0.72], [254, 0.66], [264, 0.34]                 // 手 → 指先
+];
+
+/* 脚の中心線（足を横幅1足分だけ広げるため、下へ行くほど外へ開く）と太さ */
+function legCx(P, y){
+  var top = P.hip * 0.50, ank = P.hip * 0.50 + 1.4;
+  var t = (y - 226) / (412 - 226);
+  if(t < 0) t = 0;
+  return top + (ank - top) * t;
+}
+var LEG = [           // [y, 太さ（男性を1.0としたとき）]
+  [226, 18.2], [244, 17.6], [270, 16.4], [300, 14.0],   // 太もも
+  [326, 11.4], [346, 12.6], [362, 13.6], [386, 10.4],   // 膝 → ふくらはぎ
+  [412, 7.6],  [424, 10.6], [431, 10.0]                 // 足首 → 足
+];
 
 /* ==================================================================
    輪郭（1本の線）
    右半分の点を並べ、左右反転してつなげる
    ================================================================== */
 function rightHalf(P){
-  var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip,
-      T = P.thigh, K = P.calf, A = P.ankle, R = P.arm, N = P.neck;
-  var armTop = S - R + 3, armElbow = S - R + 8, armWrist = S - R + 13;
-  return [
+  var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip, N = P.neck, R = P.arm;
+  var pts = [
     [0, 14],                      // 頭頂
-    [P.hx*0.60, 19],
-    [P.hx, 40],                   // 頭の最大幅
-    [P.hx*0.84, 58],
-    [P.hx*0.44, 70],              // あご
-    [N*0.95, 78],                 // 首
-    [N*1.10, 88],
-    [S*0.58, 92],                 // 僧帽筋の傾斜
-    [S*0.93, 101],
-    [S, 114],                     // 三角筋の外側
-    [armTop + R*1.02, 136],       // 上腕の外側
-    [armTop + R*1.00, 168],
-    [armElbow + R*0.92, 196],     // 肘
-    [armWrist + R*0.72, 228],
-    [armWrist + R*0.62, 252],     // 手首
-    [armWrist + R*0.95, 268],
-    [armWrist + R*0.70, 286],     // 指先
-    [armWrist - R*0.10, 284],
-    [armWrist - R*0.45, 266],
-    [armWrist - R*0.60, 250],     // 手首の内側
-    [armElbow - R*0.74, 224],
-    [armElbow - R*0.86, 196],
-    [armTop - R*0.90, 168],
-    [C*1.02, 152],                // 脇の下
-    [C, 138],
-    [C*0.97, 156],                // 肋骨
-    [W + (C-W)*0.32, 168],
-    [W, 180],                     // ウエスト
-    [H*0.87, 196],
-    [H, 208],                     // 骨盤の最大幅
-    [H*0.93, 224],
-    [T + 3, 244],                 // 太ももの外側
-    [T + 1.5, 272],
-    [T*0.86 + 2, 302],
-    [T*0.66 + 3, 328],            // 膝
-    [K + 4.5, 354],               // ふくらはぎ
-    [K*0.74 + 4, 382],
-    [A + 5, 408],                 // 足首の外側
-    [A + 9.5, 420],
-    [A + 7, 428],                 // 足先
-    [A - 2.5, 429],
-    [A - 6.5, 421],
-    [A - 5, 408],                 // 足首の内側
-    [K*0.50, 380],
-    [T*0.40 + 2, 332],            // 膝の内側
-    [T*0.50 + 2, 298],
-    [T*0.46 + 1, 264],
-    [6.5, 238]                    // 股
+    [P.hx*0.46, 18],
+    [P.hx*0.84, 25],
+    [P.hx*0.98, 37],              // 頭の最大幅
+    [P.hx*1.03, 45],              // 耳
+    [P.hx*0.92, 54],
+    [P.hx*0.60, 64],
+    [P.hx*0.28, 71],              // あご
+    [N*0.82, 78],                 // 首
+    [N*0.98, 85],
+    [N*1.50, 90],                 // 僧帽筋のつけ根
+    [S*0.62, 95],
+    [S*0.89, 102],
+    [S*0.99, 110]                 // 三角筋の外側
   ];
+  ARM.forEach(function(a){ pts.push([armCx(P, a[0]) + R*a[1], a[0]]); });          // 腕の外側 → 指先
+  for(var i = ARM.length - 2; i >= 2; i--){                                        // 腕の内側を上へ（脇の下まで）
+    pts.push([armCx(P, ARM[i][0]) - R*ARM[i][1], ARM[i][0]]);
+  }
+  pts.push([armCx(P, 156) - R*0.96, 156]);
+  pts.push([C*0.980, 148]);       // 脇の下
+  pts.push([C*0.955, 160]);       // 肋骨
+  pts.push([W + (C-W)*0.40, 170]);
+  pts.push([W, 181]);             // ウエスト
+  pts.push([W + (H-W)*0.40, 196]);
+  pts.push([H, 212]);             // 骨盤の最大幅
+  LEG.forEach(function(g){ pts.push([legCx(P, g[0]) + g[1]*P.leg, g[0]]); });      // 脚の外側 → 足
+  for(var j = LEG.length - 1; j >= 0; j--){                                        // 脚の内側を上へ
+    pts.push([legCx(P, LEG[j][0]) - LEG[j][1]*P.leg, LEG[j][0]]);
+  }
+  return pts;                     // 最後が股（左右がここで出会う）
 }
 
 /* Catmull-Rom を三次ベジェにして、点の列を滑らかな閉じた線にする */
@@ -227,29 +236,31 @@ function bodyPath(P){
 
 /* ==================================================================
    にじみの中心（部位ごと）
+   [中心からの左右のずれ, 高さ, 横の広がり, 縦の広がり]
    ================================================================== */
 function blobSpots(P, view){
-  var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip, T = P.thigh, K = P.calf, R = P.arm;
-  var armX = S - R + 4;
+  var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip;
   var o = {
-    shoulder:    [[S*0.80, 116, 30, 28]],
-    upper_arm:   [[armX + 2, 175, 24, 40]],
-    lower_leg:   [[K*0.55 + 3, 372, 20, 40]]
+    shoulder:  [[S*0.58, 120, 16, 16]],
+    upper_arm: [[armCx(P, 164), 164, 12, 24]],
+    lower_leg: [[legCx(P, 364), 364, 12, 25]]
   };
+  var thigh = [[legCx(P, 272), 272, 15, 29]];
   if(view === 'front'){
-    o.thigh_front = [[T*0.75 + 2, 276, 26, 46]];
-    o.chest   = [[0, 140, C*1.05, 26]];
-    o.abdomen = [[0, 182, W*0.72, 26]];
-    o.flank   = [[W*0.80, 174, 16, 26]];
-    o.hip     = [[H*0.44, 214, 24, 24]];
+    o.thigh_front = thigh;
+    o.chest   = [[0, 138, C*0.70, 16]];
+    o.abdomen = [[0, 184, W*0.55, 18]];
+    o.flank   = [[W*0.62, 176, 10, 17]];
+    o.hip     = [[H*0.46, 214, 14, 15]];
   }else{
-    o.thigh_back = [[T*0.75 + 2, 276, 26, 46]];
-    o.upper_back = [[0, 146, C*1.10, 36]];
-    o.lower_back = [[0, 192, W*0.92, 22]];
-    o.glute      = [[H*0.44, 216, 26, 26]];
+    o.thigh_back = thigh;
+    o.upper_back = [[0, 140, C*0.76, 22]];
+    o.lower_back = [[0, 192, W*0.66, 14]];
+    o.glute      = [[H*0.46, 216, 15, 16]];
   }
   return o;
 }
+
 var PAIRED = {shoulder:1, upper_arm:1, flank:1, hip:1, glute:1, thigh_front:1, thigh_back:1, lower_leg:1};
 
 /* ==================================================================
@@ -336,14 +347,15 @@ function buildFigure(view, sexKey, data){
         var x = CX + sgn * dx;
         var gid = 'g' + (++uid);
         defs += '<radialGradient id="' + gid + '">' +
-                '<stop offset="0%" stop-color="' + COL[b] + '" stop-opacity=".78"/>' +
-                '<stop offset="45%" stop-color="' + COL[b] + '" stop-opacity=".55"/>' +
+                '<stop offset="0%" stop-color="' + COL[b] + '" stop-opacity=".82"/>' +
+                '<stop offset="38%" stop-color="' + COL[b] + '" stop-opacity=".48"/>' +
+                '<stop offset="70%" stop-color="' + COL[b] + '" stop-opacity=".17"/>' +
                 '<stop offset="100%" stop-color="' + COL[b] + '" stop-opacity="0"/></radialGradient>';
         blobs += '<ellipse cx="' + x.toFixed(1) + '" cy="' + y + '" rx="' + rx.toFixed(1) +
                  '" ry="' + ry + '" fill="url(#' + gid + ')"/>';
         // 特に良い／特に悪いの印
         if(v >= EXCELLENT || v <= CRITICAL){
-          marks += markAt(x, y, v >= EXCELLENT);
+          marks += markAt(x, y, v >= EXCELLENT, Math.min(11, rx * 0.72));
         }
       });
     });
@@ -352,9 +364,9 @@ function buildFigure(view, sexKey, data){
   var face = '';
   if(view === 'front'){
     face = '<g opacity=".38" fill="#5B6875">' +
-           '<ellipse cx="' + (CX-6.5) + '" cy="36" rx="1.9" ry="2.4"/>' +
-           '<ellipse cx="' + (CX+6.5) + '" cy="36" rx="1.9" ry="2.4"/></g>' +
-           '<path d="M' + CX + ',40 L' + (CX-2.2) + ',47 L' + (CX+1.4) + ',47.4" fill="none" ' +
+           '<ellipse cx="' + (CX-7) + '" cy="42" rx="2" ry="2.5"/>' +
+           '<ellipse cx="' + (CX+7) + '" cy="42" rx="2" ry="2.5"/></g>' +
+           '<path d="M' + CX + ',47 L' + (CX-2.4) + ',56 L' + (CX+1.5) + ',56.4" fill="none" ' +
            'stroke="#5B6875" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".34"/>';
   }
 
@@ -369,18 +381,19 @@ function buildFigure(view, sexKey, data){
          face + marks + '</svg>';
 }
 
-function markAt(x, y, good){
+function markAt(x, y, good, r){
+  var k = (r || 11) / 11;                       // 細い部位では印も小さくする
+  var g = '<g transform="translate(' + x.toFixed(1) + ',' + y + ')' +
+          (k < 0.999 ? ' scale(' + k.toFixed(3) + ')' : '') + '">';
   if(good){
-    return '<g transform="translate(' + x.toFixed(1) + ',' + y + ')">' +
-           '<circle r="12" fill="#fff" opacity=".96"/>' +
-           '<circle r="10.5" fill="none" stroke="' + COL.green + '" stroke-width="2"/>' +
-           '<circle r="6" fill="none" stroke="' + COL.green + '" stroke-width="2"/></g>';
+    return g + '<circle r="10.5" fill="#fff" opacity=".96"/>' +
+           '<circle r="9.2" fill="none" stroke="' + COL.green + '" stroke-width="1.8"/>' +
+           '<circle r="5.2" fill="none" stroke="' + COL.green + '" stroke-width="1.8"/></g>';
   }
-  return '<g transform="translate(' + x.toFixed(1) + ',' + y + ')">' +
-         '<circle r="12.5" fill="#fff" opacity=".96"/>' +
-         '<circle r="11" fill="none" stroke="' + COL.red + '" stroke-width="2.6"/>' +
-         '<path d="M0,-6.5 L0,1.5" stroke="' + COL.red + '" stroke-width="2.8" stroke-linecap="round"/>' +
-         '<circle cy="5.4" r="1.7" fill="' + COL.red + '"/></g>';
+  return g + '<circle r="11" fill="#fff" opacity=".96"/>' +
+         '<circle r="9.6" fill="none" stroke="' + COL.red + '" stroke-width="2.3"/>' +
+         '<path d="M0,-5.6 L0,1.2" stroke="' + COL.red + '" stroke-width="2.5" stroke-linecap="round"/>' +
+         '<circle cy="4.7" r="1.5" fill="' + COL.red + '"/></g>';
 }
 
 /* ==================================================================
