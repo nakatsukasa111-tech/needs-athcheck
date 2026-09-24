@@ -20,33 +20,33 @@ button{cursor:pointer}
 header{background:var(--ink);color:#fff;padding:14px 20px}
 header h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.04em}
 header .sub{font-size:12px;color:#9AA7B4}
-main{max-width:1120px;margin:0 auto;padding:22px 20px 110px}
+main{max-width:1060px;margin:0 auto;padding:22px 20px 110px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:18px}
 .panel.note{background:#FFFBF3;border-color:#E4C9A2}
 h2{font-size:16px;margin:0 0 6px;font-weight:700}
 h2 .n{color:var(--ink-2);font-weight:500;font-size:13px;margin-left:8px}
 p.help{color:var(--ink-2);font-size:13px;margin:0 0 16px}
-.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
 .row label{font-size:12px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
-select{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:#fff;min-height:40px}
+select{border:1px solid var(--line);border-radius:4px;padding:9px 10px;background:#fff;min-height:42px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:100px;padding:10px 20px;color:var(--ink-2);min-height:46px}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
-.opts{display:grid;gap:16px}
-.opt2{grid-template-columns:repeat(2,1fr)}
-.opt3{grid-template-columns:repeat(3,1fr)}
-.opt4{grid-template-columns:repeat(4,1fr)}
-@media(max-width:900px){.opt4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:620px){.opt2,.opt3,.opt4{grid-template-columns:1fr}}
-.card{border:1px solid var(--line);border-radius:6px;padding:12px 10px;text-align:center;background:#fff}
-.card h3{margin:0 0 2px;font-size:13px;font-weight:700}
-.card p{margin:0 0 8px;font-size:11px;color:var(--ink-2);min-height:30px;line-height:1.5}
-.card svg{width:100%;max-width:210px;height:auto}
-.pair{display:flex;gap:6px;justify-content:center}
-.pair>div{flex:1;min-width:0}
-.pair span{display:block;font-size:10px;color:var(--ink-2)}
+.figs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fig{text-align:center;flex:1;min-width:230px;max-width:330px}
+.fig h4{margin:0 0 2px;font-size:13px;font-weight:700}
+.fig .lr{font-size:11px;color:var(--ink-2);margin:0 0 4px}
+.fig svg{width:100%;height:auto}
 
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);justify-content:center;margin-top:12px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);justify-content:center;margin-top:16px;align-items:center}
 .legend span{display:flex;align-items:center;gap:6px}
-.legend i{width:15px;height:15px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.08)}
+.legend i{width:26px;height:15px;border-radius:8px;display:inline-block}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.opts{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:6px;padding:12px 10px;text-align:center}
+.card h3{margin:0 0 2px;font-size:13px;font-weight:700}
+.card p{margin:0 0 6px;font-size:11px;color:var(--ink-2)}
 ul.ask{margin:6px 0 0;padding-left:1.3em}
 ul.ask li{margin-bottom:10px}
 .k{background:#F1F3F5;border-radius:3px;padding:1px 6px;font-size:12px}
@@ -56,86 +56,64 @@ ul.ask li{margin-bottom:10px}
 
 <header>
   <h1>ボディマップ 見た目の見本</h1>
-  <span class="sub">形と表し方の選択肢を並べたものです ／ 数値は架空・本番アプリには影響しません</span>
+  <span class="sub">数値は架空 ／ 本番アプリには影響しません</span>
 </header>
 
 <main>
 
 <div class="panel note">
-  <h2>見比べて、好みを選んでください</h2>
+  <h2>今回の作り</h2>
   <p class="help" style="margin:0">
-    すべて<b>同じ架空の選手</b>（左肩まわりが硬く、体幹が弱い）を、違う描き方で出しています。<br>
-    <b>1章で「体の形」</b>を、<b>2章で「質の表し方」</b>を選んでいただければ、その組み合わせで仕上げます。
+    体は<b>輪郭を1本につないだ一続きのシルエット</b>です。部品に分けていません。<br>
+    色は<b>境界のない「にじみ」</b>で置いています（中心が濃く、周りがぼやける）。部位の線も、肩甲骨・胸・背骨の線も入れていません。<br>
+    記号は<b>特に良い（◎）</b>と<b>特に悪い（！）</b>だけです。硬さ・弱さの区別は、上のタブの切り替えで見ます。
   </p>
 </div>
 
-<!-- ============ 1. 記号の一覧 ============ -->
 <div class="panel">
-  <h2>1. 記号の言語<span class="n">部位に何を付けるか</span></h2>
-  <p class="help">
-    <b>色＝どれくらい悪いか</b>、<b>記号＝何が悪いか</b>、という分担にしています。<br>
-    これなら「赤い」だけでなく「赤くてギザギザ＝硬くて要改善」まで一目で言えます。良好な部位には何も付けません。
-  </p>
-  <div id="vocab"></div>
-</div>
-
-<!-- ============ 2. 1枚にまとめる案 ============ -->
-<div class="panel">
-  <h2>2. 1枚にまとめる<span class="n">これがいちばん大きな判断です</span></h2>
-  <p class="help">
-    記号で「何が悪いか」を言い分けられるので、<b>柔軟性・筋力・連動を1枚に載せられます</b>。<br>
-    いまの案（3つのタブを切り替える）と見比べてください。
-  </p>
   <div class="row">
-    <label>体型
-      <select id="bodyType">
-        <option value="male">男性型</option>
-        <option value="female">女性型</option>
-        <option value="neutral" selected>中性型</option>
+    <div class="tabs" id="tabs"></div>
+    <label>性別
+      <select id="sex">
+        <option value="male">男性</option>
+        <option value="female">女性</option>
+        <option value="neutral">未登録（中性）</option>
       </select>
     </label>
-    <label>体の形
-      <select id="markShape">
-        <option value="silhouette" selected>シルエット（Tシャツ・短パン）</option>
-        <option value="mannequin">マネキン（これまでの形）</option>
-      </select>
+    <label>サンプル
+      <select id="preset"></select>
     </label>
   </div>
-  <div class="opts opt2" id="combineOpts"></div>
+
+  <div class="figs">
+    <div class="fig"><h4>正面</h4><p class="lr">向かって左が選手の「右」</p><div id="frontWrap"></div></div>
+    <div class="fig"><h4>背面</h4><p class="lr">向かって右が選手の「右」</p><div id="backWrap"></div></div>
+  </div>
+
   <div class="legend">
-    <span><i style="background:#3B8F68"></i>良好</span>
-    <span><i style="background:#D89A1F"></i>普通</span>
-    <span><i style="background:#C7453F"></i>要改善</span>
-    <span><i style="background:#C9CED4"></i>未測定</span>
+    <span><i style="background:linear-gradient(90deg,rgba(59,143,104,.75),rgba(59,143,104,0))"></i>緑：良い</span>
+    <span><i style="background:linear-gradient(90deg,rgba(216,154,31,.75),rgba(216,154,31,0))"></i>黄：中間</span>
+    <span><i style="background:linear-gradient(90deg,rgba(199,69,63,.75),rgba(199,69,63,0))"></i>赤：良くない</span>
+    <span><svg width="26" height="26" viewBox="-13 -13 26 26"><circle r="11" fill="#fff" stroke="#3B8F68" stroke-width="2"/><circle r="7" fill="none" stroke="#3B8F68" stroke-width="2"/><circle r="3" fill="#3B8F68"/></svg>特に良い</span>
+    <span><svg width="26" height="26" viewBox="-13 -13 26 26"><circle r="11" fill="#fff" stroke="#C7453F" stroke-width="2.5"/><path d="M0,-6 L0,1.5" stroke="#C7453F" stroke-width="2.6" stroke-linecap="round"/><circle cy="5" r="1.5" fill="#C7453F"/></svg>特に悪い</span>
+    <span><i style="background:#DEE2E6"></i>未測定</span>
   </div>
 </div>
 
-<!-- ============ 3. 記号の付け方の強さ ============ -->
 <div class="panel">
-  <h2>3. どこまで付けるか<span class="n">記号の量</span></h2>
-  <p class="help">記号は情報が増える一方、多いとうるさくなります。3段階で見比べてください。</p>
-  <div class="opts opt3" id="densityOpts"></div>
+  <h2>体型の作り分け<span class="n">会員登録の性別で自動的に切り替わります</span></h2>
+  <p class="help">男性は少し体格よく、女性は少しほっそり。身長は同じです。未登録のときは中間の体型になります。</p>
+  <div class="opts" id="typeOpts"></div>
 </div>
 
-<!-- ============ 4. 体型 ============ -->
 <div class="panel">
-  <h2>4. 体型の作り分け<span class="n">男性型・女性型・中性型</span></h2>
-  <p class="help">
-    肩幅と腰幅の比率だけを変えています。どちらも<b>中肉中背</b>、身長も同じです。<br>
-    髪型などの記号は入れていません（体の評価に関係しないため）。必要なら足せます。
-  </p>
-  <div class="opts opt3" id="typeOpts"></div>
-</div>
-
-<!-- ============ 5. 決めていただきたいこと ============ -->
-<div class="panel">
-  <h2>5. 決めていただきたいこと</h2>
+  <h2>決めていただきたいこと</h2>
   <ul class="ask">
-    <li><b>1枚にまとめるか、3つのタブのままか</b>（2章）。まとめれば一望できますが、情報は濃くなります。</li>
-    <li><b>記号の形</b>（1章）。<span class="k">ギザギザ＝硬い</span> <span class="k">▼＝弱い</span> <span class="k">破線＝連動が悪い</span> としています。別の形のほうが直感的なら教えてください。</li>
-    <li><b>記号の量</b>（3章）。要改善だけに付けるか、普通にも付けるか。</li>
-    <li><b>連動の線</b>：部位と部位を結ぶ線です。色は「その部位が良いか」しか言えませんが、線だけが<b>部位のあいだ</b>を表せます。</li>
-    <li><b>体の形</b>：Tシャツ・短パンのシルエットで進めてよいですか。</li>
+    <li><b>にじみの濃さ</b>：いまは中心が濃く、外に向かって消えていきます。もっと濃く（はっきり）か、もっと薄くか。</li>
+    <li><b>にじみの広がり</b>：部位の境目が分からないくらい広げるか、もう少し場所が絞られるほうがよいか。</li>
+    <li><b>◎と！の基準</b>：いまは <span class="k">満点（100）＝◎</span> <span class="k">33.3以下＝！</span> です。この線引きでよいか。</li>
+    <li><b>体型</b>：男性型・女性型の差の付け方はこれくらいでよいか。</li>
+    <li><b>顔</b>：目と鼻をうっすら入れています。これで前後の区別は足りるか。</li>
   </ul>
 </div>
 
@@ -145,462 +123,299 @@ ul.ask li{margin-bottom:10px}
 "use strict";
 
 /* ==================================================================
-   共通：色・部位・サンプルデータ
+   色と判定
    ================================================================== */
-var COLOR = {green:'#3B8F68', amber:'#D89A1F', red:'#C7453F', gray:'#C9CED4'};
-function bandColor(p){
-  if(p === null || p === undefined) return 'gray';
-  if(p >= 88.9) return 'green';
-  if(p >= 66.7) return 'amber';
+var COL = {green:'#3B8F68', amber:'#D89A1F', red:'#C7453F'};
+function band(v){
+  if(v === null || v === undefined) return null;
+  if(v >= 88.9) return 'green';
+  if(v >= 66.7) return 'amber';
   return 'red';
 }
-
-/* 架空の選手：左肩まわりが硬く、体幹が弱い
-   値は部位ごとの得点率（0〜100）。null は未測定。 */
-var SAMPLE = {
-  flex: {                                   // 柔軟性
-    shoulder:{R:67, L:26}, chest:null, upper_arm:{R:null,L:null},
-    upper_back:52, abdomen:null, flank:{R:83, L:61}, lower_back:58,
-    hip:{R:78, L:78}, glute:{R:null,L:null},
-    thigh_front:{R:null,L:null}, thigh_back:{R:89, L:89}, lower_leg:{R:null,L:null}
-  },
-  strength: {                               // 筋力
-    shoulder:{R:70, L:70}, chest:72, upper_arm:{R:63,L:63},
-    upper_back:44, abdomen:39, flank:{R:null,L:null}, lower_back:42,
-    hip:{R:null,L:null}, glute:{R:92,L:92},
-    thigh_front:{R:97, L:97}, thigh_back:{R:94, L:94}, lower_leg:{R:null,L:null}
-  }
-};
-/* 連動（部位と部位のつながり）。0〜100 */
-var LINKS = [
-  // 背面
-  {a:'shoulder_L', b:'upper_back', v:34, label:'左肩と背中'},
-  {a:'shoulder_R', b:'upper_back', v:58, label:'右肩と背中'},
-  {a:'upper_back', b:'lower_back', v:52, label:'背中と腰'},
-  {a:'lower_back', b:'glute_R',    v:62, label:'腰と右の股関節まわり'},
-  {a:'lower_back', b:'glute_L',    v:62, label:'腰と左の股関節まわり'},
-  // 正面
-  {a:'shoulder_L', b:'chest',   v:34, label:'左肩と胸'},
-  {a:'shoulder_R', b:'chest',   v:58, label:'右肩と胸'},
-  {a:'chest',      b:'abdomen', v:52, label:'胸と腹部'},
-  {a:'abdomen',    b:'hip_R',   v:62, label:'腹部と右股関節'},
-  {a:'abdomen',    b:'hip_L',   v:62, label:'腹部と左股関節'}
-];
-
-var REGION_LIST = ['shoulder','chest','upper_arm','upper_back','abdomen','flank',
-                   'lower_back','hip','glute','thigh_front','thigh_back','lower_leg'];
-var PAIRED = {shoulder:1, upper_arm:1, flank:1, hip:1, glute:1, thigh_front:1, thigh_back:1, lower_leg:1};
-
-function valueOf(theme, id, side){
-  var v = SAMPLE[theme][id];
-  if(v === undefined) return null;
-  if(v === null) return null;
-  if(typeof v === 'object') return side ? v[side] : null;
-  return v;
-}
+var EXCELLENT = 100, CRITICAL = 33.3;
 
 /* ==================================================================
-   体型のパラメータ（半分の幅。中心線は x=110）
+   体型（中心線からの半分の幅）
+   男性は少し体格よく、女性は少しほっそり
    ================================================================== */
 var TYPES = {
-  male:    {neck:13,   shoulder:50, chest:38, waist:31,   hip:33, thigh:18.5, calf:12,   arm:11.5, hx:21,   hy:27},
-  female:  {neck:11,   shoulder:37, chest:29, waist:23.5, hip:37, thigh:17.5, calf:9.6,  arm:8.8,  hx:19.5, hy:25.5},
-  neutral: {neck:12,   shoulder:43, chest:33, waist:27,   hip:35, thigh:18,   calf:10.8, arm:10,   hx:20.3, hy:26.3}
+  male:    {neck:13,   shoulder:52, chest:35,   waist:29, hip:36, thigh:21.5, calf:15.5, ankle:8.2, arm:12,   hx:21.5, hy:27.5},
+  female:  {neck:11,   shoulder:42, chest:28.5, waist:23, hip:38, thigh:19.5, calf:13,   ankle:7,   arm:9.4,  hx:20.5, hy:26.5},
+  neutral: {neck:12,   shoulder:47, chest:31.5, waist:26, hip:37, thigh:20.5, calf:14.2, ankle:7.6, arm:10.7, hx:21,   hy:27}
 };
 var CX = 120;
-var Y = {headC:46, chin:73, shoulderTop:84, shoulderC:100, deltaBottom:140,
-         chestBottom:148, waist:174, hipTop:190, crotch:228,
-         knee:310, kneeBottom:326, ankle:392, sole:408,
-         elbow:180, wrist:240};
 
-/* 胴体の輪郭（y → 中心からの幅） */
-function outlinePts(P){
-  return [[Y.shoulderTop - 6, P.shoulder * 0.60],
-          [Y.shoulderC,       P.shoulder],
-          [120,               P.shoulder * 0.93],
-          [Y.chestBottom,     P.chest],
-          [Y.waist,           P.waist],
-          [206,               P.hip],
-          [Y.crotch,          P.hip * 0.90]];
+/* ==================================================================
+   輪郭（1本の線）
+   右半分の点を並べ、左右反転してつなげる
+   ================================================================== */
+function rightHalf(P){
+  var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip,
+      T = P.thigh, K = P.calf, A = P.ankle, R = P.arm, N = P.neck;
+  var armTop = S - R + 3, armElbow = S - R + 8, armWrist = S - R + 13;
+  return [
+    [0, 14],                      // 頭頂
+    [P.hx*0.60, 19],
+    [P.hx, 40],                   // 頭の最大幅
+    [P.hx*0.84, 58],
+    [P.hx*0.44, 70],              // あご
+    [N*0.95, 78],                 // 首
+    [N*1.10, 88],
+    [S*0.58, 92],                 // 僧帽筋の傾斜
+    [S*0.93, 101],
+    [S, 114],                     // 三角筋の外側
+    [armTop + R*1.02, 136],       // 上腕の外側
+    [armTop + R*1.00, 168],
+    [armElbow + R*0.92, 196],     // 肘
+    [armWrist + R*0.72, 228],
+    [armWrist + R*0.62, 252],     // 手首
+    [armWrist + R*0.95, 268],
+    [armWrist + R*0.70, 286],     // 指先
+    [armWrist - R*0.10, 284],
+    [armWrist - R*0.45, 266],
+    [armWrist - R*0.60, 250],     // 手首の内側
+    [armElbow - R*0.74, 224],
+    [armElbow - R*0.86, 196],
+    [armTop - R*0.90, 168],
+    [C*1.02, 152],                // 脇の下
+    [C, 138],
+    [C*0.97, 156],                // 肋骨
+    [W + (C-W)*0.32, 168],
+    [W, 180],                     // ウエスト
+    [H*0.87, 196],
+    [H, 208],                     // 骨盤の最大幅
+    [H*0.93, 224],
+    [T + 3, 244],                 // 太ももの外側
+    [T + 1.5, 272],
+    [T*0.86 + 2, 302],
+    [T*0.66 + 3, 328],            // 膝
+    [K + 4.5, 354],               // ふくらはぎ
+    [K*0.74 + 4, 382],
+    [A + 5, 408],                 // 足首の外側
+    [A + 9.5, 420],
+    [A + 7, 428],                 // 足先
+    [A - 2.5, 429],
+    [A - 6.5, 421],
+    [A - 5, 408],                 // 足首の内側
+    [K*0.50, 380],
+    [T*0.40 + 2, 332],            // 膝の内側
+    [T*0.50 + 2, 298],
+    [T*0.46 + 1, 264],
+    [6.5, 238]                    // 股
+  ];
 }
-function halfW(y, P){
-  var k = outlinePts(P);
-  if(y <= k[0][0]) return k[0][1];
-  if(y >= k[k.length-1][0]) return k[k.length-1][1];
-  var i = 0; while(k[i+1][0] < y) i++;
-  var p0 = k[Math.max(0,i-1)], p1 = k[i], p2 = k[i+1], p3 = k[Math.min(k.length-1,i+2)];
-  var t = (y - p1[0]) / (p2[0] - p1[0]), t2 = t*t, t3 = t2*t;
-  return 0.5 * ((2*p1[1]) + (-p0[1]+p2[1])*t + (2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2 + (-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3);
-}
-function n(v){ return Math.round(v * 10) / 10; }
-function poly(pts){ return 'M' + pts.map(function(p){ return n(p[0]) + ',' + n(p[1]); }).join('L') + 'Z'; }
 
-/* 先が丸い、先細りの手足 */
-function limb(x0, y0, w0, x1, y1, w1){
-  var dx = x1-x0, dy = y1-y0, L = Math.hypot(dx,dy) || 1;
-  var ux = dx/L, uy = dy/L, nx = -uy, ny = ux;
-  var a = [x0+nx*w0, y0+ny*w0], b = [x1+nx*w1, y1+ny*w1];
-  var c = [x1-nx*w1, y1-ny*w1], d = [x0-nx*w0, y0-ny*w0];
-  var k1 = w1*1.33, k0 = w0*1.33;
-  return 'M' + n(a[0])+','+n(a[1]) +
-         'L' + n(b[0])+','+n(b[1]) +
-         'C' + n(b[0]+ux*k1)+','+n(b[1]+uy*k1) + ' ' + n(c[0]+ux*k1)+','+n(c[1]+uy*k1) + ' ' + n(c[0])+','+n(c[1]) +
-         'L' + n(d[0])+','+n(d[1]) +
-         'C' + n(d[0]-ux*k0)+','+n(d[1]-uy*k0) + ' ' + n(a[0]-ux*k0)+','+n(a[1]-uy*k0) + ' ' + n(a[0])+','+n(a[1]) + 'Z';
+/* Catmull-Rom を三次ベジェにして、点の列を滑らかな閉じた線にする */
+function smoothClosed(pts){
+  var m = pts.length, d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+  for(var i = 0; i < m; i++){
+    var p0 = pts[(i-1+m)%m], p1 = pts[i], p2 = pts[(i+1)%m], p3 = pts[(i+2)%m];
+    var c1x = p1[0] + (p2[0]-p0[0])/6, c1y = p1[1] + (p2[1]-p0[1])/6;
+    var c2x = p2[0] - (p3[0]-p1[0])/6, c2y = p2[1] - (p3[1]-p1[1])/6;
+    d += 'C' + c1x.toFixed(1)+','+c1y.toFixed(1) + ' ' + c2x.toFixed(1)+','+c2y.toFixed(1) +
+         ' ' + p2[0].toFixed(1)+','+p2[1].toFixed(1);
+  }
+  return d + 'Z';
+}
+
+function bodyPath(P){
+  var half = rightHalf(P);
+  var pts = half.map(function(p){ return [CX + p[0], p[1]]; });
+  for(var i = half.length - 1; i >= 1; i--) pts.push([CX - half[i][0], half[i][1]]);
+  return smoothClosed(pts);
 }
 
 /* ==================================================================
-   体の形 3種
-   どの形でも、部位のIDは同じ（shoulder_R など）
+   にじみの中心（部位ごと）
    ================================================================== */
-function sides(view){ return view === 'front' ? {l:'R', r:'L'} : {l:'L', r:'R'}; }
-
-/* --- B シルエット（解剖図に近い輪郭・服なし） --- */
-function silhouette(view, type){
-  var P = TYPES[type] || TYPES.neutral, s = sides(view), o = [];
-  function reg(id, d){ o.push({id:id, d:d}); }
-  function neutral(d){ o.push({id:null, d:d}); }
-
-  // 頭・首
-  neutral('M' + (CX-P.hx) + ',' + Y.headC + 'a' + P.hx + ',' + P.hy + ' 0 1,0 ' + (P.hx*2) + ',0' +
-          'a' + P.hx + ',' + P.hy + ' 0 1,0 ' + (-P.hx*2) + ',0Z');
-  neutral(poly([[CX-P.neck*0.72, Y.chin-4],[CX+P.neck*0.72, Y.chin-4],
-                [CX+P.neck, Y.shoulderTop+6],[CX-P.neck, Y.shoulderTop+6]]));
-
-  var edL = function(y){ return CX - halfW(y,P); };
-  var edR = function(y){ return CX + halfW(y,P); };
-  function column(id, y0, y1, xa, xb){
-    var pts = [];
-    for(var y = y0; y <= y1; y += 3) pts.push([xa(y), y]);
-    for(var y2 = y1; y2 >= y0; y2 -= 3) pts.push([xb(y2), y2]);
-    reg(id, poly(pts));
-  }
-
+function blobSpots(P, view){
+  var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip, T = P.thigh, K = P.calf, R = P.arm;
+  var armX = S - R + 4;
+  var o = {
+    shoulder:    [[S*0.80, 116, 30, 28]],
+    upper_arm:   [[armX + 2, 175, 24, 40]],
+    lower_leg:   [[K*0.55 + 3, 372, 20, 40]]
+  };
   if(view === 'front'){
-    column('chest', Y.shoulderTop - 2, Y.chestBottom, edL, edR);
-    var fW = P.waist * 0.42;
-    column('flank_' + s.l, Y.chestBottom, Y.hipTop, edL, function(y){ return CX - (halfW(y,P) - fW); });
-    column('flank_' + s.r, Y.chestBottom, Y.hipTop, edR, function(y){ return CX + (halfW(y,P) - fW); });
-    column('abdomen', Y.chestBottom, Y.hipTop,
-           function(y){ return CX - (halfW(y,P) - fW); }, function(y){ return CX + (halfW(y,P) - fW); });
-    column('hip_' + s.l, Y.hipTop, Y.crotch, edL, function(){ return CX; });
-    column('hip_' + s.r, Y.hipTop, Y.crotch, edR, function(){ return CX; });
+    o.thigh_front = [[T*0.75 + 2, 276, 26, 46]];
+    o.chest   = [[0, 140, C*1.05, 26]];
+    o.abdomen = [[0, 182, W*0.72, 26]];
+    o.flank   = [[W*0.80, 174, 16, 26]];
+    o.hip     = [[H*0.44, 214, 24, 24]];
   }else{
-    column('upper_back', Y.shoulderTop - 2, Y.waist, edL, edR);
-    column('lower_back', Y.waist, Y.hipTop, edL, edR);
-    column('glute_' + s.l, Y.hipTop, Y.crotch + 6, edL, function(){ return CX; });
-    column('glute_' + s.r, Y.hipTop, Y.crotch + 6, edR, function(){ return CX; });
-  }
-
-  // 腕（体から少し離して、自然に開いた角度）
-  [[-1, s.l], [1, s.r]].forEach(function(e){
-    var sg = e[0];
-    var sx = CX + sg*(P.shoulder - P.arm*0.40);
-    var ex = CX + sg*(P.shoulder + 11);
-    var wx = CX + sg*(P.shoulder + 21);
-    reg('upper_arm_' + e[1], limb(sx, Y.shoulderC, P.arm, ex, Y.elbow, P.arm*0.80));
-    neutral(limb(ex, Y.elbow, P.arm*0.76, wx, Y.wrist, P.arm*0.52));
-    neutral(limb(wx, Y.wrist, P.arm*0.56, wx + sg*4, Y.wrist+22, P.arm*0.44));
-  });
-
-  // 肩＝三角筋のキャップ
-  [[-1, s.l], [1, s.r]].forEach(function(e){
-    var sg = e[0];
-    var neckX = CX + sg*(P.shoulder*0.42), topY = Y.shoulderTop - 2;
-    var outX  = CX + sg*(P.shoulder + P.arm*0.60);
-    var botY  = Y.deltaBottom;
-    var inX   = CX + sg*(halfW(botY,P) - P.shoulder*0.30);
-    reg('shoulder_' + e[1],
-        'M' + n(neckX) + ',' + n(topY) +
-        'C' + n(neckX + sg*P.shoulder*0.30) + ',' + n(topY-4) + ' ' + n(outX) + ',' + n(Y.shoulderC-16) + ' ' + n(outX+sg*2) + ',' + n(Y.shoulderC+6) +
-        'C' + n(outX+sg*3) + ',' + n(Y.shoulderC+24) + ' ' + n(outX + sg*2) + ',' + n(botY-6) + ' ' + n(outX - sg*1) + ',' + n(botY+2) +
-        'L' + n(inX) + ',' + n(botY) +
-        'C' + n(inX) + ',' + n(botY-24) + ' ' + n(neckX + sg*4) + ',' + n(topY+16) + ' ' + n(neckX) + ',' + n(topY) + 'Z');
-  });
-
-  // 脚（少し開く）
-  [[-1, s.l], [1, s.r]].forEach(function(e){
-    var sg = e[0];
-    var tx = CX + sg*P.hip*0.44, kx = CX + sg*P.hip*0.52, ax = CX + sg*P.hip*0.58;
-    reg((view === 'front' ? 'thigh_front_' : 'thigh_back_') + e[1],
-        limb(tx, Y.crotch - 4, P.thigh, kx, Y.knee, P.thigh*0.66));
-    neutral(limb(kx, Y.knee, P.thigh*0.62, kx + sg*1.5, Y.kneeBottom, P.thigh*0.58));
-    reg('lower_leg_' + e[1], limb(kx + sg*1.5, Y.kneeBottom, P.calf, ax, Y.ankle, P.calf*0.58));
-    neutral(limb(ax, Y.ankle, P.calf*0.58, ax + sg*5, Y.sole+4, P.calf*0.52));
-  });
-  return o;
-}
-
-/* --- C マネキン（いまの形） --- */
-function mannequin(view){
-  var s = sides(view), o = [];
-  function reg(id, x, y, w, h, r){ o.push({id:id, d:rectD(x,y,w,h,r)}); }
-  function neu(x, y, w, h, r){ o.push({id:null, d:rectD(x,y,w,h,r)}); }
-  function rectD(x, y, w, h, r){
-    return 'M' + (x+r) + ',' + y + 'h' + (w-2*r) + 'a' + r + ',' + r + ' 0 0,1 ' + r + ',' + r +
-           'v' + (h-2*r) + 'a' + r + ',' + r + ' 0 0,1 ' + (-r) + ',' + r + 'h' + (-(w-2*r)) +
-           'a' + r + ',' + r + ' 0 0,1 ' + (-r) + ',' + (-r) + 'v' + (-(h-2*r)) +
-           'a' + r + ',' + r + ' 0 0,1 ' + r + ',' + (-r) + 'Z';
-  }
-  o.push({id:null, d:'M88,40a22,26 0 1,0 44,0a22,26 0 1,0 -44,0Z'});
-  neu(100, 60, 20, 24, 7);
-  neu(53, 190, 21, 58, 10); neu(146, 190, 21, 58, 10);
-  neu(85, 332, 22, 15, 7);  neu(113, 332, 22, 15, 7);
-  neu(81, 419, 29, 12, 5);  neu(110, 419, 29, 12, 5);
-  o.push({id:'shoulder_'+s.l, d:'M47,98a20,21 0 1,0 40,0a20,21 0 1,0 -40,0Z'});
-  o.push({id:'shoulder_'+s.r, d:'M133,98a20,21 0 1,0 40,0a20,21 0 1,0 -40,0Z'});
-  reg('upper_arm_'+s.l, 51, 114, 24, 76, 12); reg('upper_arm_'+s.r, 145, 114, 24, 76, 12);
-  reg('lower_leg_'+s.l, 85, 349, 23, 68, 11); reg('lower_leg_'+s.r, 112, 349, 23, 68, 11);
-  if(view === 'front'){
-    reg('chest', 81, 84, 58, 56, 14);
-    reg('flank_'+s.l, 81, 142, 15, 60, 7); reg('abdomen', 96, 142, 28, 60, 9); reg('flank_'+s.r, 124, 142, 15, 60, 7);
-    reg('hip_'+s.l, 83, 204, 26, 44, 11); reg('hip_'+s.r, 111, 204, 26, 44, 11);
-    reg('thigh_front_'+s.l, 82, 250, 27, 80, 13); reg('thigh_front_'+s.r, 111, 250, 27, 80, 13);
-  }else{
-    reg('upper_back', 81, 84, 58, 74, 14); reg('lower_back', 85, 160, 50, 42, 10);
-    reg('glute_'+s.l, 83, 204, 26, 46, 12); reg('glute_'+s.r, 111, 204, 26, 46, 12);
-    reg('thigh_back_'+s.l, 82, 252, 27, 78, 13); reg('thigh_back_'+s.r, 111, 252, 27, 78, 13);
+    o.thigh_back = [[T*0.75 + 2, 276, 26, 46]];
+    o.upper_back = [[0, 146, C*1.10, 36]];
+    o.lower_back = [[0, 192, W*0.92, 22]];
+    o.glute      = [[H*0.44, 216, 26, 26]];
   }
   return o;
 }
-
-var SHAPES = {silhouette:silhouette, mannequin:mannequin};
+var PAIRED = {shoulder:1, upper_arm:1, flank:1, hip:1, glute:1, thigh_front:1, thigh_back:1, lower_leg:1};
 
 /* ==================================================================
-   服の縫い目（Tシャツ・短パン）。色の上に線だけ重ねる
+   サンプルデータ（架空。部位ごとの得点率 0〜100、null は未測定）
    ================================================================== */
-function anatomy(view, type, shape){
-  if(shape === 'mannequin') return '';
-  var P = TYPES[type] || TYPES.neutral;
-  var d = '', dots = '';
-
-  if(view === 'front'){
-    // 顔
-    dots += '<ellipse cx="' + n(CX-7) + '" cy="' + n(Y.headC-3) + '" rx="2.1" ry="2.8" fill="#2E3A47"/>';
-    dots += '<ellipse cx="' + n(CX+7) + '" cy="' + n(Y.headC-3) + '" rx="2.1" ry="2.8" fill="#2E3A47"/>';
-    d += 'M' + CX + ',' + n(Y.headC+2) + ' L' + n(CX-2.6) + ',' + n(Y.headC+9) + ' L' + n(CX+1.8) + ',' + n(Y.headC+9.4);
-    d += 'M' + n(CX-4.5) + ',' + n(Y.headC+16) + ' Q' + CX + ',' + n(Y.headC+18.5) + ' ' + n(CX+4.5) + ',' + n(Y.headC+16);
-    // 鎖骨
-    d += 'M' + n(CX-P.neck*0.85) + ',' + 92 + ' Q' + n(CX-P.shoulder*0.45) + ',' + 99 + ' ' + n(CX-P.shoulder*0.76) + ',' + 96;
-    d += 'M' + n(CX+P.neck*0.85) + ',' + 92 + ' Q' + n(CX+P.shoulder*0.45) + ',' + 99 + ' ' + n(CX+P.shoulder*0.76) + ',' + 96;
-    // 胸骨と大胸筋の下縁
-    d += 'M' + CX + ',' + 100 + ' L' + CX + ',' + 144;
-    d += 'M' + n(CX-P.chest*0.84) + ',' + 112 + ' Q' + n(CX-P.chest*0.62) + ',' + 138 + ' ' + n(CX-P.chest*0.26) + ',' + 137;
-    d += 'M' + n(CX+P.chest*0.84) + ',' + 112 + ' Q' + n(CX+P.chest*0.62) + ',' + 138 + ' ' + n(CX+P.chest*0.26) + ',' + 137;
-    // 腹の正中線とへそ
-    d += 'M' + CX + ',' + 152 + ' L' + CX + ',' + 186;
-    dots += '<circle cx="' + CX + '" cy="' + 178 + '" r="1.9" fill="#2E3A47"/>';
-  }else{
-    // 背骨
-    d += 'M' + CX + ',' + 92 + ' L' + CX + ',' + 196;
-    // 肩甲骨
-    d += 'M' + n(CX-7) + ',' + 110 + ' L' + n(CX-P.chest*0.68) + ',' + 114 + ' L' + n(CX-P.chest*0.42) + ',' + 138 + ' Z';
-    d += 'M' + n(CX+7) + ',' + 110 + ' L' + n(CX+P.chest*0.68) + ',' + 114 + ' L' + n(CX+P.chest*0.42) + ',' + 138 + ' Z';
-    // 骨盤の上端・臀部の割れ目
-    d += 'M' + n(CX-P.waist*0.7) + ',' + 194 + ' Q' + CX + ',' + 201 + ' ' + n(CX+P.waist*0.7) + ',' + 194;
-    d += 'M' + CX + ',' + 204 + ' L' + CX + ',' + n(Y.crotch+2);
+function P2(r, l){ return {R:r, L:l}; }
+var PRESETS = [
+  {
+    name:'① 左肩が硬く、体幹が弱い選手',
+    flex: {shoulder:P2(70,26), upper_back:52, flank:P2(83,61), lower_back:58,
+           hip:P2(78,78), thigh_back:P2(100,100), thigh_front:null, chest:null,
+           abdomen:null, glute:null, upper_arm:null, lower_leg:null},
+    strength: {shoulder:P2(70,70), chest:72, upper_arm:P2(63,63), upper_back:44,
+               abdomen:33, lower_back:30, glute:P2(92,92), thigh_front:P2(100,100),
+               thigh_back:P2(94,94), hip:null, flank:null, lower_leg:null},
+    balance: {lower_leg:P2(88,52), hip:P2(70,55), thigh_front:P2(75,60), thigh_back:P2(75,60),
+              glute:P2(75,60), shoulder:null, chest:null, abdomen:null, flank:null,
+              upper_back:null, lower_back:null, upper_arm:null}
+  },
+  {
+    name:'② バランスの取れた選手',
+    flex: {shoulder:P2(100,89), upper_back:89, flank:P2(89,89), lower_back:78,
+           hip:P2(100,100), thigh_back:P2(89,89), thigh_front:null, chest:null,
+           abdomen:null, glute:null, upper_arm:null, lower_leg:null},
+    strength: {shoulder:P2(89,89), chest:100, upper_arm:P2(83,83), upper_back:78,
+               abdomen:100, lower_back:89, glute:P2(100,100), thigh_front:P2(100,100),
+               thigh_back:P2(94,94), hip:null, flank:null, lower_leg:null},
+    balance: {lower_leg:P2(100,89), hip:P2(89,89), thigh_front:P2(89,89), thigh_back:P2(89,89),
+              glute:P2(89,89), shoulder:null, chest:null, abdomen:null, flank:null,
+              upper_back:null, lower_back:null, upper_arm:null}
+  },
+  {
+    name:'③ 全体的に硬く弱い選手',
+    flex: {shoulder:P2(33,26), upper_back:30, flank:P2(44,33), lower_back:26,
+           hip:P2(44,44), thigh_back:P2(33,33), thigh_front:null, chest:null,
+           abdomen:null, glute:null, upper_arm:null, lower_leg:null},
+    strength: {shoulder:P2(44,44), chest:39, upper_arm:P2(33,33), upper_back:33,
+               abdomen:26, lower_back:30, glute:P2(56,56), thigh_front:P2(61,61),
+               thigh_back:P2(50,50), hip:null, flank:null, lower_leg:null},
+    balance: {lower_leg:P2(44,33), hip:P2(50,44), thigh_front:P2(50,50), thigh_back:P2(50,50),
+              glute:P2(50,50), shoulder:null, chest:null, abdomen:null, flank:null,
+              upper_back:null, lower_back:null, upper_arm:null}
+  },
+  {
+    name:'④ 体験者（ジャンプと一部のみ測定）',
+    flex: {shoulder:P2(56,33), hip:P2(67,67), upper_back:null, flank:null, lower_back:null,
+           thigh_back:null, thigh_front:null, chest:null, abdomen:null, glute:null,
+           upper_arm:null, lower_leg:null},
+    strength: {shoulder:null, chest:null, upper_arm:null, upper_back:null, abdomen:null,
+               lower_back:null, glute:null, thigh_front:null, thigh_back:null, hip:null,
+               flank:null, lower_leg:null},
+    balance: {thigh_front:P2(67,67), thigh_back:P2(67,67), glute:P2(67,67), lower_leg:P2(72,56),
+              hip:null, shoulder:null, chest:null, abdomen:null, flank:null,
+              upper_back:null, lower_back:null, upper_arm:null}
   }
-  // 膝
-  [-1, 1].forEach(function(sg){
-    var kx = CX + sg*P.hip*0.52;
-    d += 'M' + n(kx-P.thigh*0.40) + ',' + n(Y.knee+9) + ' Q' + n(kx) + ',' + n(Y.knee+15) + ' ' + n(kx+P.thigh*0.40) + ',' + n(Y.knee+9);
-  });
-
-  return '<g class="anat" pointer-events="none">' +
-           '<path d="' + d + '" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>' +
-           '<path d="' + d + '" fill="none" stroke="#2E3A47" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>' +
-           dots + '</g>';
-}
-
-/* ==================================================================
-   模様（ギザギザ＝硬い／点々＝弱い／斜線＝連動が悪い）
-   ================================================================== */
-var DEFS =
- '<defs>' +
-  '<pattern id="texZig" width="10" height="8" patternUnits="userSpaceOnUse">' +
-    '<path d="M0,6 L2.5,2 L5,6 L7.5,2 L10,6" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85"/></pattern>' +
-  '<pattern id="texDot" width="8" height="8" patternUnits="userSpaceOnUse">' +
-    '<circle cx="4" cy="4" r="1.5" fill="#fff" opacity=".85"/></pattern>' +
-  '<pattern id="texHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
-    '<line x1="0" y1="0" x2="0" y2="8" stroke="#fff" stroke-width="1.8" opacity=".8"/></pattern>' +
- '</defs>';
-
-/* ==================================================================
-   記号の言語
-   ギザギザ＝硬い（柔軟性）／▼＝弱い（筋力）／破線＝連動が悪い
-   ================================================================== */
-function glyphPath(kind, lv){
-  if(kind === 'flex'){
-    return lv === 'red' ? 'M-6.5,3 L-3.5,-3.5 L0,3 L3.5,-3.5 L6.5,3'   // 強いギザギザ＝硬い
-                        : 'M-6.5,1.5 Q-3.2,-4 0,1.5 T6.5,1.5';         // ゆるい波＝やや硬い
-  }
-  return lv === 'red' ? 'M-5.5,-3.5 L5.5,-3.5 L0,4.5 Z'                 // ▼＝弱い
-                      : 'M-5.5,-2 L0,3.5 L5.5,-2';                      // 浅い▼＝やや弱い
-}
-function glyphFill(kind, lv){ return (kind === 'strength' && lv === 'red') ? COLOR[lv] : 'none'; }
-
-/* 部位の上に置く白いバッジ（記号1〜2個） */
-function badge(cx, cy, items){
-  if(!items.length) return '';
-  var w = items.length === 1 ? 18 : 31, h = 18;
-  var g = '<g transform="translate(' + n(cx) + ',' + n(cy) + ')" pointer-events="none">' +
-          '<rect x="' + (-w/2) + '" y="' + (-h/2) + '" width="' + w + '" height="' + h +
-          '" rx="' + (h/2) + '" fill="#fff" opacity=".94"/>';
-  items.forEach(function(it, i){
-    var dx = items.length === 1 ? 0 : (i === 0 ? -6.8 : 6.8);
-    g += '<g transform="translate(' + dx + ',0)">' +
-         '<path d="' + glyphPath(it.kind, it.lv) + '" fill="' + glyphFill(it.kind, it.lv) +
-         '" stroke="' + COLOR[it.lv] + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>';
-  });
-  return g + '</g>';
-}
-
-function centroid(d){
-  var nums = d.match(/-?\d+(\.\d+)?/g) || [];
-  var sx = 0, sy = 0, c = 0;
-  for(var i = 0; i + 1 < nums.length; i += 2){ sx += +nums[i]; sy += +nums[i+1]; c++; }
-  return c ? [sx/c, sy/c] : [CX, 200];
-}
+];
+var THEMES = [{key:'flex', label:'柔軟性'}, {key:'strength', label:'筋力'}, {key:'balance', label:'バランス・連動'}];
 
 /* ==================================================================
    図の組み立て
-   mode  : 'flex' | 'strength' | 'combined'
-   marks : 'none'（色だけ）/ 'red'（要改善だけ）/ 'all'（普通にも）
-   links : 連動の線を出すか
    ================================================================== */
-function buildSvg(shape, view, type, mode, opts){
-  opts = opts || {};
-  var marks = opts.marks || 'none';
-  var parts = SHAPES[shape](view, type);
-  var h = '<svg viewBox="0 0 240 444" xmlns="http://www.w3.org/2000/svg">' + DEFS;
-  h += '<text x="22" y="18" font-size="11" fill="#8A94A0" font-family="sans-serif" text-anchor="middle">' +
-       (view === 'front' ? '右' : '左') + '</text>';
-  h += '<text x="218" y="18" font-size="11" fill="#8A94A0" font-family="sans-serif" text-anchor="middle">' +
-       (view === 'front' ? '左' : '右') + '</text>';
+var uid = 0;
+function buildFigure(view, sexKey, data){
+  var P = TYPES[sexKey] || TYPES.neutral;
+  var id = 'b' + (++uid);
+  var spots = blobSpots(P, view);
+  var body = bodyPath(P);
+  var mirror = (view === 'front') ? -1 : 1;   // 正面は向かって左が選手の右
 
-  var pos = {}, badges = [];
-  parts.forEach(function(p){
-    if(!p.id){
-      h += '<path d="' + p.d + '" fill="#C9CED4" stroke="#fff" stroke-width="1.4"/>';
-      return;
-    }
-    var base = p.id.replace(/_(R|L)$/, ''), side = (p.id.match(/_(R|L)$/) || [])[1] || null;
-    var fv = valueOf('flex', base, side), sv = valueOf('strength', base, side);
-    var use = mode === 'flex' ? [fv] : (mode === 'strength' ? [sv] : [fv, sv]);
-    var got = use.filter(function(v){ return v !== null; });
-    var worst = got.length ? Math.min.apply(null, got) : null;
+  var defs = '<clipPath id="clip' + id + '"><path d="' + body + '"/></clipPath>';
+  var blobs = '', marks = '';
 
-    pos[p.id] = centroid(p.d);
-    h += '<path d="' + p.d + '" fill="' + COLOR[bandColor(worst)] + '" stroke="#fff" stroke-width="1.4"/>';
-
-    if(marks !== 'none'){
-      var items = [];
-      function add(kind, v){
-        if(v === null) return;
-        var b = bandColor(v);
-        if(b === 'green' || b === 'gray') return;
-        if(marks === 'red' && b !== 'red') return;
-        items.push({kind:kind, lv:b});
-      }
-      if(mode !== 'strength') add('flex', fv);
-      if(mode !== 'flex')     add('strength', sv);
-      if(items.length) badges.push([pos[p.id], items]);
-    }
+  Object.keys(spots).forEach(function(key){
+    var isPair = !!PAIRED[key];
+    var sides = isPair ? ['R', 'L'] : [null];
+    sides.forEach(function(side){
+      var raw = data[key];
+      var v = (raw === null || raw === undefined) ? null : (isPair ? raw[side] : raw);
+      if(v === null || v === undefined) return;
+      var b = band(v);
+      spots[key].forEach(function(sp){
+        var dx = sp[0], y = sp[1], rx = sp[2], ry = sp[3];
+        var sgn = !isPair ? 0 : (side === 'R' ? mirror : -mirror);
+        var x = CX + sgn * dx;
+        var gid = 'g' + (++uid);
+        defs += '<radialGradient id="' + gid + '">' +
+                '<stop offset="0%" stop-color="' + COL[b] + '" stop-opacity=".78"/>' +
+                '<stop offset="45%" stop-color="' + COL[b] + '" stop-opacity=".55"/>' +
+                '<stop offset="100%" stop-color="' + COL[b] + '" stop-opacity="0"/></radialGradient>';
+        blobs += '<ellipse cx="' + x.toFixed(1) + '" cy="' + y + '" rx="' + rx.toFixed(1) +
+                 '" ry="' + ry + '" fill="url(#' + gid + ')"/>';
+        // 特に良い／特に悪いの印
+        if(v >= EXCELLENT || v <= CRITICAL){
+          marks += markAt(x, y, v >= EXCELLENT);
+        }
+      });
+    });
   });
 
-  h += anatomy(view, type, shape);
-
-  if(opts.links){
-    LINKS.forEach(function(k){
-      var a = pos[k.a], b = pos[k.b];
-      if(!a || !b) return;
-      var col = COLOR[bandColor(k.v)];
-      h += '<line x1="' + n(a[0]) + '" y1="' + n(a[1]) + '" x2="' + n(b[0]) + '" y2="' + n(b[1]) +
-           '" stroke="#fff" stroke-width="6.5" stroke-linecap="round" opacity=".9" pointer-events="none"/>';
-      h += '<line x1="' + n(a[0]) + '" y1="' + n(a[1]) + '" x2="' + n(b[0]) + '" y2="' + n(b[1]) +
-           '" stroke="' + col + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4.5" opacity=".95" pointer-events="none"/>';
-    });
+  var face = '';
+  if(view === 'front'){
+    face = '<g opacity=".38" fill="#5B6875">' +
+           '<ellipse cx="' + (CX-6.5) + '" cy="36" rx="1.9" ry="2.4"/>' +
+           '<ellipse cx="' + (CX+6.5) + '" cy="36" rx="1.9" ry="2.4"/></g>' +
+           '<path d="M' + CX + ',40 L' + (CX-2.2) + ',47 L' + (CX+1.4) + ',47.4" fill="none" ' +
+           'stroke="#5B6875" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".34"/>';
   }
-  badges.forEach(function(b){ h += badge(b[0][0], b[0][1], b[1]); });
-  return h + '</svg>';
+
+  return '<svg viewBox="0 0 240 448" xmlns="http://www.w3.org/2000/svg">' +
+         '<defs>' + defs + '</defs>' +
+         '<text x="20" y="16" font-size="11" fill="#9AA7B4" font-family="sans-serif" text-anchor="middle">' +
+           (view === 'front' ? '右' : '左') + '</text>' +
+         '<text x="220" y="16" font-size="11" fill="#9AA7B4" font-family="sans-serif" text-anchor="middle">' +
+           (view === 'front' ? '左' : '右') + '</text>' +
+         '<path d="' + body + '" fill="#DEE2E6"/>' +
+         '<g clip-path="url(#clip' + id + ')">' + blobs + '</g>' +
+         face + marks + '</svg>';
 }
 
-function pairOf(shape, type, mode, opts){
-  return '<div class="pair">' +
-    '<div><span>正面</span>' + buildSvg(shape, 'front', type, mode, opts) + '</div>' +
-    '<div><span>背面</span>' + buildSvg(shape, 'back',  type, mode, opts) + '</div></div>';
+function markAt(x, y, good){
+  if(good){
+    return '<g transform="translate(' + x.toFixed(1) + ',' + y + ')">' +
+           '<circle r="12" fill="#fff" opacity=".96"/>' +
+           '<circle r="10.5" fill="none" stroke="' + COL.green + '" stroke-width="2"/>' +
+           '<circle r="6" fill="none" stroke="' + COL.green + '" stroke-width="2"/></g>';
+  }
+  return '<g transform="translate(' + x.toFixed(1) + ',' + y + ')">' +
+         '<circle r="12.5" fill="#fff" opacity=".96"/>' +
+         '<circle r="11" fill="none" stroke="' + COL.red + '" stroke-width="2.6"/>' +
+         '<path d="M0,-6.5 L0,1.5" stroke="' + COL.red + '" stroke-width="2.8" stroke-linecap="round"/>' +
+         '<circle cy="5.4" r="1.7" fill="' + COL.red + '"/></g>';
 }
 
 /* ==================================================================
-   ページの組み立て
+   ページ
    ================================================================== */
-function card(title, desc, body){
-  return '<div class="card"><h3>' + title + '</h3><p>' + desc + '</p>' + body + '</div>';
-}
-function swatch(kind, lv, label, note){
-  var sv = '<svg viewBox="-20 -20 40 40" style="width:56px;height:56px">' +
-           '<rect x="-18" y="-18" width="36" height="36" rx="8" fill="' + COLOR[lv] + '"/>' +
-           '<circle r="13" fill="#fff" opacity=".94"/>' +
-           '<path d="' + glyphPath(kind, lv) + '" fill="' + glyphFill(kind, lv) +
-           '" stroke="' + COLOR[lv] + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  return '<div style="text-align:center"><div>' + sv + '</div>' +
-         '<div style="font-size:12px;font-weight:700;margin-top:2px">' + label + '</div>' +
-         '<div style="font-size:11px;color:#5B6875">' + note + '</div></div>';
-}
-function renderVocab(){
-  var linkSv = '<svg viewBox="-30 -20 60 40" style="width:86px;height:56px">' +
-    '<circle cx="-20" cy="-8" r="6" fill="#C9CED4"/><circle cx="20" cy="8" r="6" fill="#C9CED4"/>' +
-    '<line x1="-20" y1="-8" x2="20" y2="8" stroke="' + COLOR.red + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5"/></svg>';
-  document.getElementById('vocab').innerHTML =
-    '<div style="display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-start">' +
-    swatch('flex','red','ギザギザ','硬い（柔軟性が要改善）') +
-    swatch('flex','amber','ゆるい波','やや硬い') +
-    swatch('strength','red','▼','弱い（筋力が要改善）') +
-    swatch('strength','amber','浅い▼','やや弱い') +
-    '<div style="text-align:center"><div>' + linkSv + '</div>' +
-    '<div style="font-size:12px;font-weight:700;margin-top:2px">破線</div>' +
-    '<div style="font-size:11px;color:#5B6875">部位と部位の連動が悪い</div></div>' +
-    '<div style="text-align:center"><div><svg viewBox="-20 -20 40 40" style="width:56px;height:56px">' +
-    '<rect x="-18" y="-18" width="36" height="36" rx="8" fill="' + COLOR.green + '"/></svg></div>' +
-    '<div style="font-size:12px;font-weight:700;margin-top:2px">記号なし</div>' +
-    '<div style="font-size:11px;color:#5B6875">良好</div></div>' +
-    '</div>';
+var theme = 'flex', preset = 0;
+function $(id){ return document.getElementById(id); }
+
+function render(){
+  var sexKey = $('sex').value;
+  var data = PRESETS[preset][theme];
+  $('frontWrap').innerHTML = buildFigure('front', sexKey, data);
+  $('backWrap').innerHTML  = buildFigure('back',  sexKey, data);
+
+  $('typeOpts').innerHTML =
+    '<div class="card"><h3>男性型</h3><p>肩幅が広く、全体に厚みがある</p>' +
+      buildFigure('front', 'male', data) + '</div>' +
+    '<div class="card"><h3>女性型</h3><p>肩幅は狭め、腰は広く、全体にほっそり</p>' +
+      buildFigure('front', 'female', data) + '</div>';
 }
 
-function renderCombined(){
-  var sh = document.getElementById('markShape').value;
-  var t  = document.getElementById('bodyType').value;
-  document.getElementById('combineOpts').innerHTML =
-    card('1枚にまとめる', '柔軟性・筋力・連動を同時に。色＝程度、記号＝何が悪いか',
-         pairOf(sh, t, 'combined', {marks:'red', links:true})) +
-    card('3つのタブに分ける（いまの案）', '柔軟性だけを表示した状態。切り替えて見る',
-         pairOf(sh, t, 'flex', {marks:'red'}));
-  renderDensity();
-}
-
-function renderDensity(){
-  var sh = document.getElementById('markShape').value;
-  var t  = document.getElementById('bodyType').value;
-  document.getElementById('densityOpts').innerHTML =
-    card('記号なし', '色だけ。すっきりするが「何が」悪いかは分からない',
-         pairOf(sh, t, 'combined', {marks:'none'})) +
-    card('要改善だけ', '赤い部位にだけ記号。要点が絞れる',
-         pairOf(sh, t, 'combined', {marks:'red'})) +
-    card('普通にも付ける', '黄色にも記号。情報量は最大だが、やや賑やか',
-         pairOf(sh, t, 'combined', {marks:'all'}));
-}
-
-function renderTypes(){
-  document.getElementById('typeOpts').innerHTML =
-    card('男性型', '肩幅が広く、腰幅が狭い', pairOf('silhouette', 'male', 'combined', {marks:'red'})) +
-    card('女性型', '肩幅が狭く、腰幅が広い', pairOf('silhouette', 'female', 'combined', {marks:'red'})) +
-    card('中性型', 'その中間。性別が未登録のとき', pairOf('silhouette', 'neutral', 'combined', {marks:'red'}));
-}
-
-function renderAll(){ renderVocab(); renderCombined(); renderTypes(); }
-document.getElementById('markShape').addEventListener('change', renderCombined);
-document.getElementById('bodyType').addEventListener('change', renderCombined);
-renderAll();
+$('tabs').innerHTML = THEMES.map(function(t, i){
+  return '<button data-k="' + t.key + '" class="' + (i === 0 ? 'on' : '') + '">' + t.label + '</button>';
+}).join('');
+$('tabs').addEventListener('click', function(ev){
+  var b = ev.target.closest('button[data-k]');
+  if(!b) return;
+  theme = b.getAttribute('data-k');
+  Array.prototype.forEach.call(this.querySelectorAll('button'), function(x){ x.classList.toggle('on', x === b); });
+  render();
+});
+$('preset').innerHTML = PRESETS.map(function(p, i){ return '<option value="' + i + '">' + p.name + '</option>'; }).join('');
+$('preset').addEventListener('change', function(){ preset = Number(this.value); render(); });
+$('sex').addEventListener('change', render);
+render();
 </script>
 </body>
 </html>
