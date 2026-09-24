@@ -69,9 +69,10 @@ ul.ask li{margin-bottom:10px}
     記号は<b>特に良い（◎）</b>と<b>特に悪い（！）</b>だけです。硬さ・弱さの区別は、上のタブの切り替えで見ます。
   </p>
   <p class="help" style="margin:10px 0 0">
-    <b>9/24 の直し</b>：にじみの範囲を狭くしました（中心から外へ、前より早く消えます）。
-    体の形は頭からつま先まで引き直しました（7.5頭身で割りつけ、肩・ウエスト・膝・足首の位置を標準の比率に合わせています）。
-    足は<b>横幅1足分だけ広げた</b>立ち姿です。
+    <b>9/24 の直し（2回目）</b>：にじみを<b>濃く・はっきり</b>させ、範囲も少しだけ広げました。<br>
+    首は、あご先を輪郭に出していたせいで首の上がくびれていたのを直しました（男女とも）。
+    女性は骨盤から太ももへの段差をなくし、ウエストの細さも実寸に近づけています。
+    足は<b>横幅1足分だけ広げた</b>立ち姿のままです。
   </p>
 </div>
 
@@ -115,10 +116,11 @@ ul.ask li{margin-bottom:10px}
   <h2>決めていただきたいこと</h2>
   <ul class="ask">
     <li><b>にじみの濃さ</b>：いまは中心が濃く、外に向かって消えていきます。もっと濃く（はっきり）か、もっと薄くか。</li>
-    <li><b>にじみの広がり</b>：今回狭くしました。これで「場所が分かる」程度になっているか、まだ広い／狭すぎるか。</li>
-    <li><b>立ち姿</b>：足の開きは1足分にしています。もっと閉じるか、もっと開くか。</li>
+    <li><b>にじみの濃さと広がり</b>：今回は濃く・少し広くしました。これでよいか、まだ薄い／濃すぎるか。</li>
+    <li><b>首と肩まわり</b>：くびれを取りました。これで自然に見えるか。</li>
+    <li><b>女性の骨盤</b>：段差をなくしました。形はこれでよいか。</li>
     <li><b>◎と！の基準</b>：いまは <span class="k">満点（100）＝◎</span> <span class="k">33.3以下＝！</span> です。この線引きでよいか。</li>
-    <li><b>体型</b>：男性型・女性型の差の付け方はこれくらいでよいか。</li>
+    <li><b>体型</b>：男性型・女性型の差の付け方はこれくらいでよいか（女性は膝から下をより細くしています）。</li>
     <li><b>顔</b>：目と鼻をうっすら入れています。これで前後の区別は足りるか。</li>
   </ul>
 </div>
@@ -147,9 +149,9 @@ var EXCELLENT = 100, CRITICAL = 33.3;
    男性は少し体格よく、女性は少しほっそり
    ================================================================== */
 var TYPES = {
-  male:    {hx:21.5, neck:13,   shoulder:52,   chest:35,   waist:29,   hip:38,   arm:12,   leg:1.00},
-  female:  {hx:20.5, neck:11,   shoulder:43,   chest:29.5, waist:23.5, hip:39,   arm:9.6,  leg:0.90},
-  neutral: {hx:21,   neck:12,   shoulder:47.5, chest:32,   waist:26,   hip:38.5, arm:10.8, leg:0.95}
+  male:    {hx:21.5, neck:14,   shoulder:52,   chest:35,   waist:30, hip:38,   arm:12,   legU:1.00, legL:1.00},
+  female:  {hx:20.5, neck:12.2, shoulder:43,   chest:29.5, waist:26, hip:38.5, arm:9.6,  legU:0.96, legL:0.88},
+  neutral: {hx:21,   neck:13.1, shoulder:47.5, chest:32,   waist:28, hip:38.2, arm:10.8, legU:0.98, legL:0.94}
 };
 var CX = 120;
 
@@ -173,6 +175,12 @@ var LEG = [           // [y, 太さ（男性を1.0としたとき）]
   [326, 11.4], [346, 12.6], [362, 13.6], [386, 10.4],   // 膝 → ふくらはぎ
   [412, 7.6],  [424, 10.6], [431, 10.0]                 // 足首 → 足
 ];
+/* 太ももと膝から下では細さの度合いが違う（女性は特に膝下が細い） */
+function legScale(P, y){
+  if(y <= 300) return P.legU;
+  if(y >= 346) return P.legL;
+  return P.legU + (P.legL - P.legU) * (y - 300) / 46;
+}
 
 /* ==================================================================
    輪郭（1本の線）
@@ -185,16 +193,16 @@ function rightHalf(P){
     [P.hx*0.46, 18],
     [P.hx*0.84, 25],
     [P.hx*0.98, 37],              // 頭の最大幅
-    [P.hx*1.03, 45],              // 耳
-    [P.hx*0.92, 54],
-    [P.hx*0.60, 64],
-    [P.hx*0.28, 71],              // あご
-    [N*0.82, 78],                 // 首
-    [N*0.98, 85],
-    [N*1.50, 90],                 // 僧帽筋のつけ根
-    [S*0.62, 95],
-    [S*0.89, 102],
-    [S*0.99, 110]                 // 三角筋の外側
+    [P.hx*1.02, 45],              // 耳
+    [P.hx*0.93, 54],
+    [P.hx*0.76, 63],              // えら
+    [N*1.06, 71],                 // あごの下（あご先は正面から見て輪郭に出ない）
+    [N*0.98, 80],                 // 首のいちばん細いところ
+    [N*1.06, 87],
+    [N*1.55, 93],                 // 僧帽筋のつけ根
+    [S*0.62, 97],
+    [S*0.89, 104],
+    [S*0.99, 111]                 // 三角筋の外側
   ];
   ARM.forEach(function(a){ pts.push([armCx(P, a[0]) + R*a[1], a[0]]); });          // 腕の外側 → 指先
   for(var i = ARM.length - 2; i >= 2; i--){                                        // 腕の内側を上へ（脇の下まで）
@@ -207,9 +215,10 @@ function rightHalf(P){
   pts.push([W, 181]);             // ウエスト
   pts.push([W + (H-W)*0.40, 196]);
   pts.push([H, 212]);             // 骨盤の最大幅
-  LEG.forEach(function(g){ pts.push([legCx(P, g[0]) + g[1]*P.leg, g[0]]); });      // 脚の外側 → 足
+  pts.push([H*0.99, 219]);        // 骨盤から太ももへ（ここが抜けると段差が出る）
+  LEG.forEach(function(g){ pts.push([legCx(P, g[0]) + g[1]*legScale(P, g[0]), g[0]]); });      // 脚の外側 → 足
   for(var j = LEG.length - 1; j >= 0; j--){                                        // 脚の内側を上へ
-    pts.push([legCx(P, LEG[j][0]) - LEG[j][1]*P.leg, LEG[j][0]]);
+    pts.push([legCx(P, LEG[j][0]) - LEG[j][1]*legScale(P, LEG[j][0]), LEG[j][0]]);
   }
   return pts;                     // 最後が股（左右がここで出会う）
 }
@@ -241,22 +250,22 @@ function bodyPath(P){
 function blobSpots(P, view){
   var S = P.shoulder, C = P.chest, W = P.waist, H = P.hip;
   var o = {
-    shoulder:  [[S*0.58, 120, 16, 16]],
-    upper_arm: [[armCx(P, 164), 164, 12, 24]],
-    lower_leg: [[legCx(P, 364), 364, 12, 25]]
+    shoulder:  [[S*0.58, 120, 19, 19]],
+    upper_arm: [[armCx(P, 164), 164, 14, 28]],
+    lower_leg: [[legCx(P, 364), 364, 14, 29]]
   };
-  var thigh = [[legCx(P, 272), 272, 15, 29]];
+  var thigh = [[legCx(P, 272), 272, 18, 34]];
   if(view === 'front'){
     o.thigh_front = thigh;
-    o.chest   = [[0, 138, C*0.70, 16]];
-    o.abdomen = [[0, 184, W*0.55, 18]];
-    o.flank   = [[W*0.62, 176, 10, 17]];
-    o.hip     = [[H*0.46, 214, 14, 15]];
+    o.chest   = [[0, 138, C*0.80, 19]];
+    o.abdomen = [[0, 184, W*0.62, 21]];
+    o.flank   = [[W*0.60, 176, 12, 20]];
+    o.hip     = [[H*0.46, 214, 17, 18]];
   }else{
     o.thigh_back = thigh;
-    o.upper_back = [[0, 140, C*0.76, 22]];
-    o.lower_back = [[0, 192, W*0.66, 14]];
-    o.glute      = [[H*0.46, 216, 15, 16]];
+    o.upper_back = [[0, 140, C*0.86, 26]];
+    o.lower_back = [[0, 192, W*0.74, 17]];
+    o.glute      = [[H*0.46, 216, 18, 19]];
   }
   return o;
 }
@@ -347,15 +356,15 @@ function buildFigure(view, sexKey, data){
         var x = CX + sgn * dx;
         var gid = 'g' + (++uid);
         defs += '<radialGradient id="' + gid + '">' +
-                '<stop offset="0%" stop-color="' + COL[b] + '" stop-opacity=".82"/>' +
-                '<stop offset="38%" stop-color="' + COL[b] + '" stop-opacity=".48"/>' +
-                '<stop offset="70%" stop-color="' + COL[b] + '" stop-opacity=".17"/>' +
+                '<stop offset="0%" stop-color="' + COL[b] + '" stop-opacity=".90"/>' +
+                '<stop offset="45%" stop-color="' + COL[b] + '" stop-opacity=".66"/>' +
+                '<stop offset="78%" stop-color="' + COL[b] + '" stop-opacity=".24"/>' +
                 '<stop offset="100%" stop-color="' + COL[b] + '" stop-opacity="0"/></radialGradient>';
         blobs += '<ellipse cx="' + x.toFixed(1) + '" cy="' + y + '" rx="' + rx.toFixed(1) +
                  '" ry="' + ry + '" fill="url(#' + gid + ')"/>';
         // 特に良い／特に悪いの印
         if(v >= EXCELLENT || v <= CRITICAL){
-          marks += markAt(x, y, v >= EXCELLENT, Math.min(11, rx * 0.72));
+          marks += markAt(x, y, v >= EXCELLENT, Math.min(11, rx * 0.62));
         }
       });
     });
