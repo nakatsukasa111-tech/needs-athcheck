@@ -315,11 +315,12 @@ table.res tr:last-child td{border-bottom:0}
 
   <div class="panel">
     <h2>新しい選手を登録する</h2>
-    <p class="help">同姓同名や改姓があっても履歴が分かれないよう、内部では会員番号（NDS0001 形式）で管理します。</p>
+    <p class="help">同姓同名や改姓があっても履歴が分かれないよう、内部では会員番号（NDS0001 形式）で管理します。<br>
+      <b>性別は必須です。</b>筋力とジャンプの基準が男女で違うため、ここが空だと正しく採点できません。</p>
     <div class="row">
       <div class="f"><label for="n_name">氏名</label><input id="n_name"></div>
       <div class="f"><label for="n_kana">かな</label><input id="n_kana"></div>
-      <div class="f"><label for="n_sex">性別</label><select id="n_sex"><option value="M">男性</option><option value="F">女性</option></select></div>
+      <div class="f"><label for="n_sex">性別 <b style="color:#C7453F">必須</b></label><select id="n_sex"><option value="">選んでください</option><option value="M">男性</option><option value="F">女性</option></select></div>
       <div class="f"><label for="n_bd">生年月日</label><input id="n_bd" type="date"></div>
       <div class="f"><label for="n_sport">競技種目</label><input id="n_sport" placeholder="野球"></div>
     </div>
@@ -375,6 +376,7 @@ table.res tr:last-child td{border-bottom:0}
       <span class="name" id="r_name">—</span>
       <span class="tag" id="r_tag"></span>
     </div>
+    <p class="help" id="r_sexNote" style="margin:0 0 14px" hidden></p>
     <div class="opts" style="margin-bottom:16px">
       <label>主役
         <select id="o_hero"><option value="radar">レーダーチャート</option><option value="total">総合スコア</option></select>
@@ -1612,18 +1614,24 @@ function doSearch(){
 function addMember(){
   var name = $('n_name').value.trim();
   if(!name){ toast('氏名を入れてください'); return; }
+  var sex = $('n_sex').value;
+  if(sex !== 'M' && sex !== 'F'){
+    toast('性別を選んでください（筋力とジャンプの基準が男女で違います）');
+    $('n_sex').focus();
+    return;
+  }
   var bd = $('n_bd').value;
   if(!bd) toast('生年月日がないと、年齢区分は「17歳以上」として採点します');
   $('btnAdd').disabled = true;
   apiPost({action:'createMember', member:{
     name: name,
     kana: $('n_kana').value.trim(),
-    sex: $('n_sex').value,
+    sex: sex,
     birth_date: bd,
     sport: $('n_sport').value.trim()
   }}).then(function(d){
     if(!d.ok) throw appErr(d);
-    ['n_name','n_kana','n_bd','n_sport'].forEach(function(i){ $(i).value = ''; });
+    ['n_name','n_kana','n_bd','n_sport','n_sex'].forEach(function(i){ $(i).value = ''; });
     toast(d.member.name + ' さんを登録しました');
     pick(d.member.member_id);
   }).catch(function(e){ fail('選手の登録', e); })
@@ -2081,12 +2089,22 @@ function render(d){
   var ctx = currentCtx();
 
   $('r_name').textContent = (member ? member.name : '—') + (demoMode ? '（デモ）' : '');
+  var sexLabel = ctx.sex === 'F' ? '女性の基準' : '男性の基準';
   $('r_tag').textContent = [
     member ? member.sport : '',
     ctx.age !== null && ctx.age !== undefined ? ctx.age + '歳' : '',
     BAND_LABEL[ctx.band] || ctx.band,
+    sexLabel,
     (sessions.length + (currentSaved ? 0 : 1)) + '回目'
   ].filter(Boolean).join(' / ');
+  // 性別が未登録のまま保存された選手は、男性の基準で採点されてしまう
+  var noSex = !(member && (member.sex === 'M' || member.sex === 'F'));
+  $('r_sexNote').hidden = !noSex;
+  if(noSex){
+    $('r_sexNote').innerHTML = '<b style="color:#C7453F">性別が未登録です。</b>' +
+      'いまは男性の基準で採点しています。筋力とジャンプは男女で基準が違うため、' +
+      'スプレッドシートの members シートで性別（M / F）を入れ直してください。';
+  }
   $('r_total').textContent = d.total;
   $('hero').setAttribute('data-hero', DISPLAY.hero);
   $('o_hero').value = DISPLAY.hero;
