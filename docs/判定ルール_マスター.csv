@@ -1,0 +1,15 @@
+rule_key,内容,値,単位,意味
+flex_green_min,柔軟性・動きの質 緑の下限,88.9,%,満点に対する得点率。3種目9点満点なら8点以上が緑
+flex_yellow_min,柔軟性・動きの質 黄の下限,66.7,%,同6点以上が黄、それ未満が赤
+flex_lr_yellow,柔軟性 左右差 黄フラグ,1,点差,左右で1点差があれば黄フラグ
+flex_lr_red,柔軟性 左右差 赤フラグ,2,点差,2点以上の差で赤フラグ。総合スコアには加算しない
+sqj_to_cmj_target,SQJ→CMJ 標準の伸び率,10,%,差がほぼ無い＝伸張反射が使えていない。大きく超える＝筋力不足
+cmj_to_abj_low,CMJ→ABJ 連動不全の上限,5,%,これ未満なら腕振り・上半身の連動が機能していない
+cmj_to_abj_high,CMJ→ABJ 連動良好の下限,11,%,これを超えれば連動良好。同時にCMJに伸びしろあり
+slcmj_target_ratio,SLCMJ 対CMJ 目標比,50,%,両脚CMJの半分を目標値とする
+slcmj_tolerance,SLCMJ 目標値の許容幅,5,%,目標値の±5%以内なら達成
+slcmj_red_ratio,SLCMJ 赤の下限（対目標値）,90,%,目標値の90%未満で赤
+asym_flag,左右差フラグの閾値,10,%,SLCMJ・SLSQ・片脚立位・地面タッチに適用
+rsi_diff_flag,ホップ／ドロップ RSI差フラグ,15,%,両者の差がこれ以上でフラグ
+rsi_excellent,RSI 非常に良いの下限,3.1,RSI,色は緑のまま、文章で「非常に良い」と出す
+age_band_border,ジュニア／大人の境界,17,歳,17歳以上=大人、16歳以下=ジュニア
