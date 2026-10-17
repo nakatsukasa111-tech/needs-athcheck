@@ -245,6 +245,18 @@ table.res tr:last-child td{border-bottom:0}
 .golf-map{position:relative;isolation:isolate}.golf-overlay{position:absolute;inset:0;mix-blend-mode:multiply}.golf-overlay svg{display:block;width:100%;height:100%}.golf-region{cursor:pointer}
 
 .condition-layout{--person-height:clamp(240px,32vw,400px)}.condition-layout .body-pair svg,.golf-pair svg{height:var(--person-height);width:100%;max-height:none;display:block}.golf-pair{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:16px}.golf-pair>div{min-width:0}.condition-layout .body-pair{margin-top:78px}.condition-layout .body-pair figcaption{display:none}.golf-poses .body-tabs{min-height:44px}.quality-condition p{font-size:14px}.condition-layout .bodyFigs{margin-top:78px}.condition-layout .bodyFig h4,.condition-layout .bodyFig .lr{display:none}.condition-layout .bodyFigs svg{height:var(--person-height);max-height:none;width:100%}@media(max-width:680px){.condition-layout .body-pair,.condition-layout .bodyFigs{margin-top:16px}.condition-layout{--person-height:350px}}
+
+/* Directional movement assessments: three standing views, two golf views. */
+.condition-layout{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:18px;--person-height:clamp(220px,29vw,340px)}
+.condition-layout .body-pair,.condition-layout .bodyFigs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;max-width:none}
+.condition-layout .body-pair figure,.condition-layout .bodyFig{margin:0;min-width:0;width:auto;flex:none}
+.condition-layout .golf-poses{padding-left:12px}.condition-layout .golf-poses .body-tabs,.condition-layout #golfTabs{flex-wrap:nowrap;gap:4px}
+.condition-layout .golf-poses button{padding:8px 6px;font-size:12px;white-space:nowrap}
+.quality-mark{cursor:pointer}.quality-mark:focus{outline:none;filter:drop-shadow(0 0 2px #111)}
+@media(max-width:680px){.condition-layout{grid-template-columns:1fr;--person-height:300px}.condition-layout .golf-poses{padding-left:0}.condition-layout .body-pair,.condition-layout .bodyFigs{margin-top:16px}.condition-layout .body-pair svg,.condition-layout .bodyFigs svg{height:auto;aspect-ratio:240/448}.condition-layout .golf-pair svg{height:auto;aspect-ratio:500/1040}}
+
+
+@media(max-width:680px){.condition-layout{--person-height:clamp(180px,calc((100vw - 88px)*.6222),340px)}.condition-layout .body-pair svg,.condition-layout .bodyFigs svg,.condition-layout .golf-pair svg{height:var(--person-height);aspect-ratio:auto}}
 </style>
 </head>
 <body>
@@ -417,9 +429,10 @@ table.res tr:last-child td{border-bottom:0}
       <b>部位をタップすると、その色の根拠になった種目と点数が出ます。</b>
       色がついていないところは、その部位を見る種目を測っていません。</p>
     <div class="tabs" id="bodyTabs"></div>
-    <div class="condition-layout"><div class="standing-condition"><h3>立位の正面・背面</h3><div class="bodyFigs">
+    <div class="condition-layout"><div class="standing-condition"><h3>立位の正面・背面・横向き</h3><div class="bodyFigs">
       <div class="bodyFig"><h4>正面</h4><p class="lr">向かって左が選手の「右」</p><div id="bodyFront"></div></div>
       <div class="bodyFig"><h4>背面</h4><p class="lr">向かって右が選手の「右」</p><div id="bodyBack"></div></div>
+      <div class="bodyFig"><h4>横向き</h4><div id="bodySide"></div></div>
     </div>
     <div id="bodyQuality" hidden></div>
     <div class="bodyLegend">
@@ -578,15 +591,19 @@ var FLEX = [
 
 var QUALITY = [
   {key:'sq_quality',name:'スクワット',link:'lower',note:'まっすぐ上下し、膝・股関節・体幹をコントロールできるか'},
-  {key:'slide_sq',name:'スライドスクワット',short:'スライドSQ',link:'vertical',note:'左右への移動で上半身と下半身が連動するか'},
-  {key:'rot_sq',name:'ローテーションスクワット',short:'ローテ SQ',link:'hips',note:'体幹と股関節を連動させて回旋できるか'},
-  {key:'rot_drill_up',name:'ローテーションドリル 上',short:'ローテ 上',link:'shoulders',note:'胸椎の回旋を滑らかにコントロールできるか'},
-  {key:'rot_drill_low',name:'ローテーションドリル 下',short:'ローテ 下',link:'hips',note:'股関節の動きを滑らかにコントロールできるか'},
-  {key:'pelvic_tilt',name:'ペルビックティルト',link:'hips',min:1,note:'骨盤の前傾・後傾を滑らかに切り替えられるか'},
-  {key:'scapula_motion',name:'肩甲骨の動き',link:'shoulders',min:1,note:'肩甲骨の内転・外転を滑らかに切り替えられるか'},
+  {key:'slide_sq',pair:true,min:1,name:'スライドスクワット',short:'スライドSQ',link:'vertical',note:'左右への移動で上半身と下半身が連動するか'},
+  {key:'rot_sq',pair:true,min:1,name:'ローテーションスクワット',short:'ローテ SQ',link:'hips',note:'体幹と股関節を連動させて回旋できるか'},
+  {key:'rot_drill_up',pair:true,min:1,name:'ローテーションドリル 上',short:'ローテ 上',link:'shoulders',note:'胸椎の回旋を滑らかにコントロールできるか'},
+  {key:'rot_drill_low',pair:true,min:1,name:'ローテーションドリル 下',short:'ローテ 下',link:'hips',note:'股関節の動きを滑らかにコントロールできるか'},
+  {key:'pelvic_tilt_anterior',name:'ペルビックティルト・前傾',short:'骨盤 前傾',min:1,note:'腰だけで反らず、骨盤を前へ傾けて戻せるか'},
+  {key:'pelvic_tilt_posterior',name:'ペルビックティルト・後傾',short:'骨盤 後傾',min:1,note:'膝や上体で代償せず、骨盤を後ろへ傾けて戻せるか'},
+  {key:'scapula_motion',pair:true,min:1,name:'肩甲骨の動き',link:'shoulders',note:'肩甲骨の内転・外転を滑らかに切り替えられるか'},
   {key:'ssp_extension',name:'SSP連動テスト・伸展',short:'SSP 伸展',link:'extension',min:1,note:'肩甲骨の内転・脊柱の伸展・骨盤の前傾が連動するか'},
   {key:'ssp_flexion',name:'SSP連動テスト・屈曲',short:'SSP 屈曲',link:'flexion',min:1,note:'肩甲骨の外転・脊柱の屈曲・骨盤の後傾が連動するか'}
 ];
+
+// 旧記録の未分離評価。新しい左右・方向の値には転用しない。
+var LEGACY_QUALITY_KEYS = ['slide_sq','rot_sq','rot_drill_up','rot_drill_low','scapula_motion','pelvic_tilt'];
 
 // 実測系：key は thresholds シートの item_key と一致させる
 var BALANCE = [
@@ -892,11 +909,10 @@ function computeScore(v, ctx){
 
   /* ---------- 動きの質 ---------- */
   var qs = 0, qm = 0;
-  QUALITY.forEach(function(it){
-    var sc = num(v[it.key]);
-    if(sc === undefined) return;
-    qs += sc; qm += 3;
-    d.items.push({cat:'動きの質', sub:'', name:it.name, short:it.short || it.name, kind:'pts', raw:sc, color:rawColor(sc), val:sc+' 点'});
+  d.qualityAssessments = qualityAssessments(v);
+  d.qualityAssessments.forEach(function(a){
+    qs += a.pt; qm += 3;
+    d.items.push({cat:'動きの質',sub:'',name:a.label,short:a.label,kind:'pts',raw:a.pt,color:a.lv,val:a.pt+' 点'+(a.legacy?'（旧評価・未分離）':'')});
   });
   if(qm > 0) d.cats.quality = r1(qs/qm*100);
 
@@ -1117,7 +1133,7 @@ function computeScore(v, ctx){
 
   /* ---------- ボディマップ（部位ごとの得点率） ---------- */
   d.body = bodyScores(v, d);
-  d.qualityLinks = qualityConnections(v,d);
+  // 横断的なつながりの推定は保留。直接評価のみを図へ渡す。
   return d;
 }
 
@@ -1137,31 +1153,28 @@ function ptOfField(f, v, d){
    左右がある種目は左右それぞれの側へ。
    左右がある種目が中央の部位（背中・腰・腹部・胸）に入るときは、
    低いほうの点数を採る（柔軟性の扱いと同じ考え方）。 */
-function qualityConnections(v,d){
+function qualityAssessments(v){
   var out=[];
-  function add(key,label,type,pct,detail,lv){if(pct===undefined)return;out.push({key:key,label:label,type:type,value:r1(pct),lv:lv||bandColor(pct),detail:detail});}
-  QUALITY.forEach(function(it){var p=num(v[it.key]);add(it.key,it.name,it.link||'lower',p===undefined?undefined:p/3*100,it.note||'動作のコントロールを確認',p===undefined?undefined:rawColor(p));});
-  if(d.jump.ssc)add('ssc','SQJ → CMJ：下半身の反動','lower',({red:33.3,amber:66.7,green:100})[d.jump.ssc.lv],d.jump.ssc.text,d.jump.ssc.lv);
-  if(d.jump.arm)add('arm','CMJ → ABJ：上下の連動','vertical',({red:33.3,amber:66.7,green:100})[d.jump.arm.lv],d.jump.arm.text,d.jump.arm.lv);
-  function pair(key,label,type){
-    var R=ptOfField(key+'_R',v,d),L=ptOfField(key+'_L',v,d);if(R===undefined||L===undefined)return;
-    var pct=Math.min(Math.max(0,100-Math.abs(R-L)*100/3),(R+L)/6*100);
-    var flag=d.flags.find(function(f){return f.code==='asym_'+key;});if(flag)pct=Math.min(pct,33.3);
-    add('pair_'+key,label+'：左右のつながり',type,pct,'右 '+r1(R)+'点 ／ 左 '+r1(L)+'点。左右差と両側の評価を使用。'+(flag?flag.t:''));
-  }
-  FLEX.forEach(function(g){g.items.filter(function(it){return it.pair;}).forEach(function(it){pair(it.key,it.name,g.part==='upper'?'shoulders':g.part==='core'?'hips':'lower');});});
-  [['sl_sq','SLスクワット'],['sl_stance','片脚立位'],['ground_touch_bal','地面タッチ'],['sl_cmj','SLCMJ']].forEach(function(a){pair(a[0],a[1],'lower');});
-  ['R','L'].forEach(function(side){var a=d.pts['sl_stance_'+side],b=d.pts['ground_touch_bal_'+side];if(a===undefined||b===undefined)return;add('static_dynamic_'+side,'静的・動的バランス（'+(side==='R'?'右':'左')+'）','lower',Math.min(Math.max(0,100-Math.abs(a-b)*100/3),(a+b)/6*100),'片脚立位 '+a+'点 ／ 地面タッチ '+b+'点。単位の異なる実測値ではなく評価点を比較。');});
+  function add(key,it,side,legacy){var p=num(v[key]);if(p===undefined||!Number.isInteger(p)||p<0||p>3)return;out.push({key:key,test:it.key,side:side||'',label:it.name+(side==='R'?'・右':side==='L'?'・左':''),pt:p,lv:rawColor(p),detail:it.note||'',legacy:!!legacy});}
+  QUALITY.forEach(function(it){
+    if(it.pair){
+      var hasSide=['R','L'].some(function(s){return num(v[it.key+'_'+s])!==undefined;});
+      if(hasSide)['R','L'].forEach(function(s){add(it.key+'_'+s,it,s,false);});
+      else add(it.key,it,'',true);
+    }else add(it.key,it,'',false);
+  });
+  if(num(v.pelvic_tilt_anterior)===undefined&&num(v.pelvic_tilt_posterior)===undefined)add('pelvic_tilt',{key:'pelvic_tilt',name:'ペルビックティルト'},'',true);
   return out;
 }
+function qualityExtraKeys(){return QUALITY.reduce(function(a,it){return a.concat(it.pair?[it.key+'_R',it.key+'_L']:[it.key]);},[]).concat(LEGACY_QUALITY_KEYS);}
 function unpackQualityRecord(row){
   var copy=Object.assign({},row);
-  try{var ext=JSON.parse(row.note);if(ext.schema==='needs-quality-v2'&&ext.values){['pelvic_tilt','scapula_motion','ssp_extension','ssp_flexion'].forEach(function(k){var n=ext.values[k];if(Number.isInteger(n)&&n>=1&&n<=3)copy[k]=n;});}}catch(e){}
+  try{var ext=JSON.parse(row.note);if(['needs-quality-v2','needs-quality-v3'].includes(ext.schema)&&ext.values){qualityExtraKeys().forEach(function(k){var n=ext.values[k];if(Number.isInteger(n)&&n>=0&&n<=3)copy[k]=n;});}}catch(e){}
   return copy;
 }
 function packQualityValues(values){
-  var extra={};['pelvic_tilt','scapula_motion','ssp_extension','ssp_flexion'].forEach(function(k){if(values[k]!==undefined)extra[k]=values[k];});
-  return Object.keys(extra).length?JSON.stringify({schema:'needs-quality-v2',values:extra}):'';
+  var extra={};qualityExtraKeys().forEach(function(k){if(values[k]!==undefined)extra[k]=values[k];});
+  return Object.keys(extra).length?JSON.stringify({schema:'needs-quality-v3',values:extra}):'';
 }
 
 function bodyScores(v, d){
@@ -1939,6 +1952,10 @@ function renderParts(d){
           + '<span class="sc num" style="color:' + COLOR[col] + '">' + pct + '</span>'
           + '<span class="of">/ 100</span></div>';
 
+    if(c.key==='quality'){
+      html+='<div class="panel">'+head+'<details><summary>動きの質の項目別評価（'+mine.length+'件）</summary><table><tbody>'+mine.map(function(i){return '<tr><th>'+esc(i.name)+'</th><td style="color:'+COLOR[i.color]+'">'+esc(i.val)+'</td></tr>';}).join('')+'</tbody></table></details></div>';
+      return;
+    }
     var subs = '';
     (SUB_PARTS[c.key] || []).forEach(function(pk){
       var p = d.parts[pk];
@@ -2072,7 +2089,7 @@ function renderParts(d){
   });
 }
 
-var bodyTheme = 'flex', qualityLinkKey='';
+var bodyTheme = 'flex';
 
 /* 会員登録の性別で体型を切り替える。未登録なら中性。 */
 function bodySexKey(){
@@ -2086,12 +2103,7 @@ function renderBodyMap(d){
   var tabs=[{key:'flex',label:'柔軟'},{key:'strength',label:'筋力'},{key:'balance',label:'バランス'},{key:'quality',label:'動きの質'}];
   $('bodyTabs').innerHTML=tabs.map(function(t){return '<button type="button" data-k="'+t.key+'" aria-pressed="'+(t.key===bodyTheme)+'"'+(t.key===bodyTheme?' class="on"':'')+'>'+t.label+'</button>';}).join('');
   $('bodyQuality').hidden=bodyTheme!=='quality';
-  if(bodyTheme==='quality'){
-    var links=d.qualityLinks||[];
-    if(!links.some(function(l){return l.key===qualityLinkKey;}))qualityLinkKey=(links[0]||{}).key||'';
-    var selected=links.find(function(l){return l.key===qualityLinkKey;});
-    $('bodyQuality').innerHTML=links.length?'<label>表示するつながり<select id="qualityLink">'+links.map(function(l){return '<option value="'+l.key+'"'+(l.key===qualityLinkKey?' selected':'')+'>'+esc(l.label)+'</option>';}).join('')+'</select></label><p>'+esc(selected.detail)+'</p><p>'+({red:'要改善',amber:'普通',green:'良好'})[selected.lv]+'</p>':'<p>つながりを評価できる測定はまだありません。</p>';
-  }
+  $('bodyQuality').innerHTML='<p class="help">縦線：スライドSQ ／ 回旋：ローテーションSQ・ドリル ／ 背面の色：肩甲骨 ／ 横向き：SSP・骨盤。マークを選ぶと評価が出ます。</p><p id="qualityDetail" role="status"></p>';
   var scores = (body[bodyTheme] || {}).score || {};
   var sexKey = bodySexKey();
   $('bodyFront').innerHTML = buildBodyFigure('front', sexKey, scores);
@@ -2275,7 +2287,7 @@ function render(d){
 function historySeries(){
   var out = sessions.map(function(r){
     var v = {}, e = {};
-    FIELDS.forEach(function(f){ var n = num(r[f]); if(n !== undefined) v[f] = n; });
+    FIELDS.concat(LEGACY_QUALITY_KEYS).forEach(function(f){ var n = num(r[f]); if(n !== undefined) v[f] = n; });
     String(r.estimated_items || '').split(',').forEach(function(s){ s = s.trim(); if(s) e[s] = true; });
     var ctx = {
       sex: (member && member.sex) || 'M',
@@ -2454,7 +2466,7 @@ function makeDemoValues(ctx, weight){
       else { v[it.key] = base; }
     });
   });
-  QUALITY.forEach(function(it){ v[it.key] = pickOne([1, 2, 2, 3, 3]); });
+  QUALITY.forEach(function(it){ (it.pair?[it.key+'_R',it.key+'_L']:[it.key]).forEach(function(k){v[k]=pickOne([1,2,2,3,3]);}); });
 
   // 実測系。左右がある種目は、右を基準に左を近い値で作る。
   var all = [];
@@ -2792,14 +2804,18 @@ document.getElementById('golfTabs').addEventListener('click',function(event){
 </script>
 
 <script type="module">
-import {renderGolfFigure,renderConnection} from './src/domain/quality-overlay.mjs';
+import {renderGolfFigure,renderQualityMarks,renderSideFigure} from './src/domain/quality-overlay.mjs';
 window.renderGolfOverlay=function(pose){
  const key=pose||document.querySelector('#golfTabs button.on').dataset.pose;
- const connection=bodyTheme==='quality'?(result?.qualityLinks||[]).find(l=>l.key===qualityLinkKey):undefined;
+ const connection=bodyTheme==='quality'?(result?.qualityAssessments||[]):undefined;
  document.getElementById('golfOverlay').innerHTML=['front','back'].map(view=>'<div>'+renderGolfFigure(key,view,result?.body?.[bodyTheme]?.score||{}, {flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},'legacy',connection,'assets/golf/')+'</div>').join('');
 };
-window.renderStandingLinks=function(){if(bodyTheme!=='quality')return;const link=(result?.qualityLinks||[]).find(l=>l.key===qualityLinkKey);['front','back'].forEach(view=>{const el=document.getElementById(view==='front'?'bodyFront':'bodyBack');el.innerHTML=el.innerHTML.replace('</svg>',renderConnection(link,'standing',view)+'</svg>');});};
-document.getElementById('bodyQuality').addEventListener('change',function(e){if(e.target.id==='qualityLink'){qualityLinkKey=e.target.value;renderBodyMap(result);}});
+window.renderStandingLinks=function(){
+ const marks=bodyTheme==='quality'?(result?.qualityAssessments||[]):[];
+ ['front','back'].forEach(view=>{const el=document.getElementById(view==='front'?'bodyFront':'bodyBack');el.innerHTML=el.innerHTML.replace('</svg>',renderQualityMarks(marks,'standing',view)+'</svg>');});
+ document.getElementById('bodySide').innerHTML=renderSideFigure(marks,'assets/body/');
+};
+document.getElementById('bodyPanel').addEventListener('click',function(e){const hit=e.target.closest('.quality-mark');if(hit){const a=(result?.qualityAssessments||[]).find(a=>a.key===hit.dataset.assessment);if(a)document.getElementById('qualityDetail').textContent=a.label+'：'+a.pt+'点 — '+a.detail;}});
 document.getElementById('golfOverlay').addEventListener('click',function(e){const hit=e.target.closest('.golf-region');if(hit){const [region,side]=hit.dataset.region.split('|');showBodyBasis(region,side);}});
 window.renderGolfOverlay();
 </script>

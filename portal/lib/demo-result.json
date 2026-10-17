@@ -1,24 +1,8 @@
 {
-  "rules": {
-    "flex_green_min": 88.9,
-    "flex_yellow_min": 66.7,
-    "flex_lr_yellow": 1,
-    "flex_lr_red": 2,
-    "sqj_to_cmj_target": 10,
-    "cmj_to_abj_low": 5,
-    "cmj_to_abj_high": 11,
-    "slcmj_target_ratio": 50,
-    "slcmj_tolerance": 5,
-    "slcmj_red_ratio": 90,
-    "asym_flag": 10,
-    "rsi_diff_flag": 15,
-    "rsi_excellent": 3.1,
-    "age_band_border": 17
-  },
   "score": {
     "cats": {
       "flex": 44.4,
-      "quality": 75,
+      "quality": 69,
       "balance": 66.7,
       "jump": 47.6
     },
@@ -79,8 +63,28 @@
       {
         "cat": "動きの質",
         "sub": "",
-        "name": "ペルビックティルト",
-        "short": "ペルビックティルト",
+        "name": "スライドスクワット・右",
+        "short": "スライドスクワット・右",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "スライドスクワット・左",
+        "short": "スライドスクワット・左",
+        "kind": "pts",
+        "raw": 3,
+        "color": "green",
+        "val": "3 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ローテーションスクワット・右",
+        "short": "ローテーションスクワット・右",
         "kind": "pts",
         "raw": 2,
         "color": "amber",
@@ -89,8 +93,88 @@
       {
         "cat": "動きの質",
         "sub": "",
-        "name": "肩甲骨の動き",
-        "short": "肩甲骨の動き",
+        "name": "ローテーションスクワット・左",
+        "short": "ローテーションスクワット・左",
+        "kind": "pts",
+        "raw": 3,
+        "color": "green",
+        "val": "3 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ローテーションドリル 上・右",
+        "short": "ローテーションドリル 上・右",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ローテーションドリル 上・左",
+        "short": "ローテーションドリル 上・左",
+        "kind": "pts",
+        "raw": 2,
+        "color": "amber",
+        "val": "2 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ローテーションドリル 下・右",
+        "short": "ローテーションドリル 下・右",
+        "kind": "pts",
+        "raw": 3,
+        "color": "green",
+        "val": "3 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ローテーションドリル 下・左",
+        "short": "ローテーションドリル 下・左",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ペルビックティルト・前傾",
+        "short": "ペルビックティルト・前傾",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ペルビックティルト・後傾",
+        "short": "ペルビックティルト・後傾",
+        "kind": "pts",
+        "raw": 3,
+        "color": "green",
+        "val": "3 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "肩甲骨の動き・右",
+        "short": "肩甲骨の動き・右",
+        "kind": "pts",
+        "raw": 2,
+        "color": "amber",
+        "val": "2 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "肩甲骨の動き・左",
+        "short": "肩甲骨の動き・左",
         "kind": "pts",
         "raw": 3,
         "color": "green",
@@ -100,7 +184,7 @@
         "cat": "動きの質",
         "sub": "",
         "name": "SSP連動テスト・伸展",
-        "short": "SSP 伸展",
+        "short": "SSP連動テスト・伸展",
         "kind": "pts",
         "raw": 3,
         "color": "green",
@@ -110,7 +194,7 @@
         "cat": "動きの質",
         "sub": "",
         "name": "SSP連動テスト・屈曲",
-        "short": "SSP 屈曲",
+        "short": "SSP連動テスト・屈曲",
         "kind": "pts",
         "raw": 1,
         "color": "red",
@@ -456,8 +540,150 @@
       ]
     },
     "notes": [],
-    "total": 58.4,
+    "total": 56.9,
     "measured": 4,
+    "qualityAssessments": [
+      {
+        "key": "slide_sq_R",
+        "test": "slide_sq",
+        "side": "R",
+        "label": "スライドスクワット・右",
+        "pt": 1,
+        "lv": "red",
+        "detail": "左右への移動で上半身と下半身が連動するか",
+        "legacy": false
+      },
+      {
+        "key": "slide_sq_L",
+        "test": "slide_sq",
+        "side": "L",
+        "label": "スライドスクワット・左",
+        "pt": 3,
+        "lv": "green",
+        "detail": "左右への移動で上半身と下半身が連動するか",
+        "legacy": false
+      },
+      {
+        "key": "rot_sq_R",
+        "test": "rot_sq",
+        "side": "R",
+        "label": "ローテーションスクワット・右",
+        "pt": 2,
+        "lv": "amber",
+        "detail": "体幹と股関節を連動させて回旋できるか",
+        "legacy": false
+      },
+      {
+        "key": "rot_sq_L",
+        "test": "rot_sq",
+        "side": "L",
+        "label": "ローテーションスクワット・左",
+        "pt": 3,
+        "lv": "green",
+        "detail": "体幹と股関節を連動させて回旋できるか",
+        "legacy": false
+      },
+      {
+        "key": "rot_drill_up_R",
+        "test": "rot_drill_up",
+        "side": "R",
+        "label": "ローテーションドリル 上・右",
+        "pt": 1,
+        "lv": "red",
+        "detail": "胸椎の回旋を滑らかにコントロールできるか",
+        "legacy": false
+      },
+      {
+        "key": "rot_drill_up_L",
+        "test": "rot_drill_up",
+        "side": "L",
+        "label": "ローテーションドリル 上・左",
+        "pt": 2,
+        "lv": "amber",
+        "detail": "胸椎の回旋を滑らかにコントロールできるか",
+        "legacy": false
+      },
+      {
+        "key": "rot_drill_low_R",
+        "test": "rot_drill_low",
+        "side": "R",
+        "label": "ローテーションドリル 下・右",
+        "pt": 3,
+        "lv": "green",
+        "detail": "股関節の動きを滑らかにコントロールできるか",
+        "legacy": false
+      },
+      {
+        "key": "rot_drill_low_L",
+        "test": "rot_drill_low",
+        "side": "L",
+        "label": "ローテーションドリル 下・左",
+        "pt": 1,
+        "lv": "red",
+        "detail": "股関節の動きを滑らかにコントロールできるか",
+        "legacy": false
+      },
+      {
+        "key": "pelvic_tilt_anterior",
+        "test": "pelvic_tilt_anterior",
+        "side": "",
+        "label": "ペルビックティルト・前傾",
+        "pt": 1,
+        "lv": "red",
+        "detail": "腰だけで反らず、骨盤を前へ傾けて戻せるか",
+        "legacy": false
+      },
+      {
+        "key": "pelvic_tilt_posterior",
+        "test": "pelvic_tilt_posterior",
+        "side": "",
+        "label": "ペルビックティルト・後傾",
+        "pt": 3,
+        "lv": "green",
+        "detail": "膝や上体で代償せず、骨盤を後ろへ傾けて戻せるか",
+        "legacy": false
+      },
+      {
+        "key": "scapula_motion_R",
+        "test": "scapula_motion",
+        "side": "R",
+        "label": "肩甲骨の動き・右",
+        "pt": 2,
+        "lv": "amber",
+        "detail": "肩甲骨の内転・外転を滑らかに切り替えられるか",
+        "legacy": false
+      },
+      {
+        "key": "scapula_motion_L",
+        "test": "scapula_motion",
+        "side": "L",
+        "label": "肩甲骨の動き・左",
+        "pt": 3,
+        "lv": "green",
+        "detail": "肩甲骨の内転・外転を滑らかに切り替えられるか",
+        "legacy": false
+      },
+      {
+        "key": "ssp_extension",
+        "test": "ssp_extension",
+        "side": "",
+        "label": "SSP連動テスト・伸展",
+        "pt": 3,
+        "lv": "green",
+        "detail": "肩甲骨の内転・脊柱の伸展・骨盤の前傾が連動するか",
+        "legacy": false
+      },
+      {
+        "key": "ssp_flexion",
+        "test": "ssp_flexion",
+        "side": "",
+        "label": "SSP連動テスト・屈曲",
+        "pt": 1,
+        "lv": "red",
+        "detail": "肩甲骨の外転・脊柱の屈曲・骨盤の後傾が連動するか",
+        "legacy": false
+      }
+    ],
     "body": {
       "flex": {
         "score": {
@@ -549,14 +775,18 @@
         "score": {
           "lower_leg|R": 63.6,
           "lower_leg|L": 54.5,
-          "hip|R": 83.3,
-          "hip|L": 50,
+          "hip|R": 66.7,
+          "hip|L": 66.7,
           "thigh_back|R": 100,
           "thigh_back|L": 66.7,
           "thigh_front|R": 33.3,
-          "thigh_front|L": 33.3,
+          "thigh_front|L": 40.7,
           "glute|R": 33.3,
-          "glute|L": 33.3
+          "glute|L": 33.3,
+          "lower_back|C": 33.3,
+          "upper_back|C": 44.4,
+          "flank|R": 66.7,
+          "flank|L": 66.7
         },
         "basis": {
           "lower_leg|R": [
@@ -653,6 +883,26 @@
               "name": "地面タッチ（右）",
               "pt": 3,
               "w": 0.5
+            },
+            {
+              "name": "スライドスクワット（右）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションスクワット（右）",
+              "pt": 2,
+              "w": 0.25
+            },
+            {
+              "name": "ローテーションドリル 上（右）",
+              "pt": 1,
+              "w": 0.25
+            },
+            {
+              "name": "ローテーションドリル 下（右）",
+              "pt": 3,
+              "w": 0.25
             }
           ],
           "hip|L": [
@@ -665,6 +915,26 @@
               "name": "地面タッチ（左）",
               "pt": 2,
               "w": 0.5
+            },
+            {
+              "name": "スライドスクワット（左）",
+              "pt": 3,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションスクワット（左）",
+              "pt": 3,
+              "w": 0.25
+            },
+            {
+              "name": "ローテーションドリル 上（左）",
+              "pt": 2,
+              "w": 0.25
+            },
+            {
+              "name": "ローテーションドリル 下（左）",
+              "pt": 1,
+              "w": 0.25
             }
           ],
           "thigh_back|R": [
@@ -701,6 +971,11 @@
               "name": "SLCMJ（右）",
               "pt": 1,
               "w": 0.5
+            },
+            {
+              "name": "スライドスクワット（右）",
+              "pt": 1,
+              "w": 0.25
             }
           ],
           "thigh_front|L": [
@@ -723,6 +998,11 @@
               "name": "SLCMJ（左）",
               "pt": 1,
               "w": 0.5
+            },
+            {
+              "name": "スライドスクワット（左）",
+              "pt": 3,
+              "w": 0.25
             }
           ],
           "glute|R": [
@@ -768,107 +1048,83 @@
               "pt": 1,
               "w": 0.5
             }
+          ],
+          "lower_back|C": [
+            {
+              "name": "スライドスクワット（左右の低いほう）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "upper_back|C": [
+            {
+              "name": "ローテーションスクワット（左右の低いほう）",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションドリル 上（左右の低いほう）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションドリル 下（左右の低いほう）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "flank|R": [
+            {
+              "name": "ローテーションスクワット（右）",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションドリル 上（右）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションドリル 下（右）",
+              "pt": 3,
+              "w": 0.5
+            }
+          ],
+          "flank|L": [
+            {
+              "name": "ローテーションスクワット（左）",
+              "pt": 3,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションドリル 上（左）",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "ローテーションドリル 下（左）",
+              "pt": 1,
+              "w": 0.5
+            }
           ]
         }
       }
-    },
-    "qualityLinks": [
-      {
-        "key": "pelvic_tilt",
-        "label": "ペルビックティルト",
-        "type": "hips",
-        "value": 66.7,
-        "lv": "amber",
-        "detail": "骨盤の前傾・後傾を滑らかに切り替えられるか"
-      },
-      {
-        "key": "scapula_motion",
-        "label": "肩甲骨の動き",
-        "type": "shoulders",
-        "value": 100,
-        "lv": "green",
-        "detail": "肩甲骨の内転・外転を滑らかに切り替えられるか"
-      },
-      {
-        "key": "ssp_extension",
-        "label": "SSP連動テスト・伸展",
-        "type": "extension",
-        "value": 100,
-        "lv": "green",
-        "detail": "肩甲骨の内転・脊柱の伸展・骨盤の前傾が連動するか"
-      },
-      {
-        "key": "ssp_flexion",
-        "label": "SSP連動テスト・屈曲",
-        "type": "flexion",
-        "value": 33.3,
-        "lv": "red",
-        "detail": "肩甲骨の外転・脊柱の屈曲・骨盤の後傾が連動するか"
-      },
-      {
-        "key": "ssc",
-        "label": "SQJ → CMJ：下半身の反動",
-        "type": "lower",
-        "value": 100,
-        "lv": "green",
-        "detail": "反動と筋力のバランスは標準的です。"
-      },
-      {
-        "key": "arm",
-        "label": "CMJ → ABJ：上下の連動",
-        "type": "vertical",
-        "value": 100,
-        "lv": "green",
-        "detail": "腕振りの連動は標準的です。"
-      },
-      {
-        "key": "pair_aslr",
-        "label": "ASLR：左右のつながり",
-        "type": "lower",
-        "value": 33.3,
-        "lv": "red",
-        "detail": "右 3点 ／ 左 1点。左右差と両側の評価を使用。"
-      },
-      {
-        "key": "pair_sl_stance",
-        "label": "片脚立位：左右のつながり",
-        "type": "lower",
-        "value": 33.3,
-        "lv": "red",
-        "detail": "右 2点 ／ 左 1点。左右差と両側の評価を使用。片脚立位の左右差が 33.3%あります（右 30 / 左 20）。数値そのものが高くても、この差は改善が必要です。"
-      },
-      {
-        "key": "pair_ground_touch_bal",
-        "label": "地面タッチ：左右のつながり",
-        "type": "lower",
-        "value": 33.3,
-        "lv": "red",
-        "detail": "右 3点 ／ 左 2点。左右差と両側の評価を使用。地面タッチの左右差が 33.3%あります（右 12 / 左 8）。数値そのものが高くても、この差は改善が必要です。"
-      },
-      {
-        "key": "pair_sl_cmj",
-        "label": "SLCMJ：左右のつながり",
-        "type": "lower",
-        "value": 33.3,
-        "lv": "red",
-        "detail": "右 1点 ／ 左 1点。左右差と両側の評価を使用。SLCMJの左右差が 39.4%あります（右 10 / 左 16.5）。数値そのものが高くても、この差は改善が必要です。"
-      },
-      {
-        "key": "static_dynamic_R",
-        "label": "静的・動的バランス（右）",
-        "type": "lower",
-        "value": 66.7,
-        "lv": "red",
-        "detail": "片脚立位 2点 ／ 地面タッチ 3点。単位の異なる実測値ではなく評価点を比較。"
-      },
-      {
-        "key": "static_dynamic_L",
-        "label": "静的・動的バランス（左）",
-        "type": "lower",
-        "value": 50,
-        "lv": "red",
-        "detail": "片脚立位 1点 ／ 地面タッチ 2点。単位の異なる実測値ではなく評価点を比較。"
-      }
-    ]
+    }
+  },
+  "rules": {
+    "flex_green_min": 88.9,
+    "flex_yellow_min": 66.7,
+    "flex_lr_yellow": 1,
+    "flex_lr_red": 2,
+    "sqj_to_cmj_target": 10,
+    "cmj_to_abj_low": 5,
+    "cmj_to_abj_high": 11,
+    "slcmj_target_ratio": 50,
+    "slcmj_tolerance": 5,
+    "slcmj_red_ratio": 90,
+    "asym_flag": 10,
+    "rsi_diff_flag": 15,
+    "rsi_excellent": 3.1,
+    "age_band_border": 17
   }
 }

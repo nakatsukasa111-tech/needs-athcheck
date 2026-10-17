@@ -1,5 +1,5 @@
 // tools/extract-scoring.mjs で生成。直接編集しないでください。
-// 元の採点処理の SHA-256: 1ffd4454ad47ff74137a8d1f7bcc2aa176f821720f72d159923f2c3eac406d83
+// 元の採点処理の SHA-256: b3c0e9b7d0d49ac27f94ae42c6223c83fb5596f7717282f9018f67087e75e190
 // 現行画面はこのファイルへまだ切り替えていません。
 export function createAthleteScorer({ thresholds = {}, rules = {}, tone = 'fact', weights } = {}) {
   // 会社ごとの設定を閉じ込め、別の呼び出しと混ざらないようにする。
@@ -72,15 +72,19 @@ var FLEX = [
 
 var QUALITY = [
   {key:'sq_quality',name:'スクワット',link:'lower',note:'まっすぐ上下し、膝・股関節・体幹をコントロールできるか'},
-  {key:'slide_sq',name:'スライドスクワット',short:'スライドSQ',link:'vertical',note:'左右への移動で上半身と下半身が連動するか'},
-  {key:'rot_sq',name:'ローテーションスクワット',short:'ローテ SQ',link:'hips',note:'体幹と股関節を連動させて回旋できるか'},
-  {key:'rot_drill_up',name:'ローテーションドリル 上',short:'ローテ 上',link:'shoulders',note:'胸椎の回旋を滑らかにコントロールできるか'},
-  {key:'rot_drill_low',name:'ローテーションドリル 下',short:'ローテ 下',link:'hips',note:'股関節の動きを滑らかにコントロールできるか'},
-  {key:'pelvic_tilt',name:'ペルビックティルト',link:'hips',min:1,note:'骨盤の前傾・後傾を滑らかに切り替えられるか'},
-  {key:'scapula_motion',name:'肩甲骨の動き',link:'shoulders',min:1,note:'肩甲骨の内転・外転を滑らかに切り替えられるか'},
+  {key:'slide_sq',pair:true,min:1,name:'スライドスクワット',short:'スライドSQ',link:'vertical',note:'左右への移動で上半身と下半身が連動するか'},
+  {key:'rot_sq',pair:true,min:1,name:'ローテーションスクワット',short:'ローテ SQ',link:'hips',note:'体幹と股関節を連動させて回旋できるか'},
+  {key:'rot_drill_up',pair:true,min:1,name:'ローテーションドリル 上',short:'ローテ 上',link:'shoulders',note:'胸椎の回旋を滑らかにコントロールできるか'},
+  {key:'rot_drill_low',pair:true,min:1,name:'ローテーションドリル 下',short:'ローテ 下',link:'hips',note:'股関節の動きを滑らかにコントロールできるか'},
+  {key:'pelvic_tilt_anterior',name:'ペルビックティルト・前傾',short:'骨盤 前傾',min:1,note:'腰だけで反らず、骨盤を前へ傾けて戻せるか'},
+  {key:'pelvic_tilt_posterior',name:'ペルビックティルト・後傾',short:'骨盤 後傾',min:1,note:'膝や上体で代償せず、骨盤を後ろへ傾けて戻せるか'},
+  {key:'scapula_motion',pair:true,min:1,name:'肩甲骨の動き',link:'shoulders',note:'肩甲骨の内転・外転を滑らかに切り替えられるか'},
   {key:'ssp_extension',name:'SSP連動テスト・伸展',short:'SSP 伸展',link:'extension',min:1,note:'肩甲骨の内転・脊柱の伸展・骨盤の前傾が連動するか'},
   {key:'ssp_flexion',name:'SSP連動テスト・屈曲',short:'SSP 屈曲',link:'flexion',min:1,note:'肩甲骨の外転・脊柱の屈曲・骨盤の後傾が連動するか'}
 ];
+
+// 旧記録の未分離評価。新しい左右・方向の値には転用しない。
+var LEGACY_QUALITY_KEYS = ['slide_sq','rot_sq','rot_drill_up','rot_drill_low','scapula_motion','pelvic_tilt'];
 
 // 実測系：key は thresholds シートの item_key と一致させる
 var BALANCE = [
@@ -356,11 +360,10 @@ function computeScore(v, ctx){
 
   /* ---------- 動きの質 ---------- */
   var qs = 0, qm = 0;
-  QUALITY.forEach(function(it){
-    var sc = num(v[it.key]);
-    if(sc === undefined) return;
-    qs += sc; qm += 3;
-    d.items.push({cat:'動きの質', sub:'', name:it.name, short:it.short || it.name, kind:'pts', raw:sc, color:rawColor(sc), val:sc+' 点'});
+  d.qualityAssessments = qualityAssessments(v);
+  d.qualityAssessments.forEach(function(a){
+    qs += a.pt; qm += 3;
+    d.items.push({cat:'動きの質',sub:'',name:a.label,short:a.label,kind:'pts',raw:a.pt,color:a.lv,val:a.pt+' 点'+(a.legacy?'（旧評価・未分離）':'')});
   });
   if(qm > 0) d.cats.quality = r1(qs/qm*100);
 
@@ -581,7 +584,7 @@ function computeScore(v, ctx){
 
   /* ---------- ボディマップ（部位ごとの得点率） ---------- */
   d.body = bodyScores(v, d);
-  d.qualityLinks = qualityConnections(v,d);
+  // 横断的なつながりの推定は保留。直接評価のみを図へ渡す。
   return d;
 }
 
@@ -601,31 +604,28 @@ function ptOfField(f, v, d){
    左右がある種目は左右それぞれの側へ。
    左右がある種目が中央の部位（背中・腰・腹部・胸）に入るときは、
    低いほうの点数を採る（柔軟性の扱いと同じ考え方）。 */
-function qualityConnections(v,d){
+function qualityAssessments(v){
   var out=[];
-  function add(key,label,type,pct,detail,lv){if(pct===undefined)return;out.push({key:key,label:label,type:type,value:r1(pct),lv:lv||bandColor(pct),detail:detail});}
-  QUALITY.forEach(function(it){var p=num(v[it.key]);add(it.key,it.name,it.link||'lower',p===undefined?undefined:p/3*100,it.note||'動作のコントロールを確認',p===undefined?undefined:rawColor(p));});
-  if(d.jump.ssc)add('ssc','SQJ → CMJ：下半身の反動','lower',({red:33.3,amber:66.7,green:100})[d.jump.ssc.lv],d.jump.ssc.text,d.jump.ssc.lv);
-  if(d.jump.arm)add('arm','CMJ → ABJ：上下の連動','vertical',({red:33.3,amber:66.7,green:100})[d.jump.arm.lv],d.jump.arm.text,d.jump.arm.lv);
-  function pair(key,label,type){
-    var R=ptOfField(key+'_R',v,d),L=ptOfField(key+'_L',v,d);if(R===undefined||L===undefined)return;
-    var pct=Math.min(Math.max(0,100-Math.abs(R-L)*100/3),(R+L)/6*100);
-    var flag=d.flags.find(function(f){return f.code==='asym_'+key;});if(flag)pct=Math.min(pct,33.3);
-    add('pair_'+key,label+'：左右のつながり',type,pct,'右 '+r1(R)+'点 ／ 左 '+r1(L)+'点。左右差と両側の評価を使用。'+(flag?flag.t:''));
-  }
-  FLEX.forEach(function(g){g.items.filter(function(it){return it.pair;}).forEach(function(it){pair(it.key,it.name,g.part==='upper'?'shoulders':g.part==='core'?'hips':'lower');});});
-  [['sl_sq','SLスクワット'],['sl_stance','片脚立位'],['ground_touch_bal','地面タッチ'],['sl_cmj','SLCMJ']].forEach(function(a){pair(a[0],a[1],'lower');});
-  ['R','L'].forEach(function(side){var a=d.pts['sl_stance_'+side],b=d.pts['ground_touch_bal_'+side];if(a===undefined||b===undefined)return;add('static_dynamic_'+side,'静的・動的バランス（'+(side==='R'?'右':'左')+'）','lower',Math.min(Math.max(0,100-Math.abs(a-b)*100/3),(a+b)/6*100),'片脚立位 '+a+'点 ／ 地面タッチ '+b+'点。単位の異なる実測値ではなく評価点を比較。');});
+  function add(key,it,side,legacy){var p=num(v[key]);if(p===undefined||!Number.isInteger(p)||p<0||p>3)return;out.push({key:key,test:it.key,side:side||'',label:it.name+(side==='R'?'・右':side==='L'?'・左':''),pt:p,lv:rawColor(p),detail:it.note||'',legacy:!!legacy});}
+  QUALITY.forEach(function(it){
+    if(it.pair){
+      var hasSide=['R','L'].some(function(s){return num(v[it.key+'_'+s])!==undefined;});
+      if(hasSide)['R','L'].forEach(function(s){add(it.key+'_'+s,it,s,false);});
+      else add(it.key,it,'',true);
+    }else add(it.key,it,'',false);
+  });
+  if(num(v.pelvic_tilt_anterior)===undefined&&num(v.pelvic_tilt_posterior)===undefined)add('pelvic_tilt',{key:'pelvic_tilt',name:'ペルビックティルト'},'',true);
   return out;
 }
+function qualityExtraKeys(){return QUALITY.reduce(function(a,it){return a.concat(it.pair?[it.key+'_R',it.key+'_L']:[it.key]);},[]).concat(LEGACY_QUALITY_KEYS);}
 function unpackQualityRecord(row){
   var copy=Object.assign({},row);
-  try{var ext=JSON.parse(row.note);if(ext.schema==='needs-quality-v2'&&ext.values){['pelvic_tilt','scapula_motion','ssp_extension','ssp_flexion'].forEach(function(k){var n=ext.values[k];if(Number.isInteger(n)&&n>=1&&n<=3)copy[k]=n;});}}catch(e){}
+  try{var ext=JSON.parse(row.note);if(['needs-quality-v2','needs-quality-v3'].includes(ext.schema)&&ext.values){qualityExtraKeys().forEach(function(k){var n=ext.values[k];if(Number.isInteger(n)&&n>=0&&n<=3)copy[k]=n;});}}catch(e){}
   return copy;
 }
 function packQualityValues(values){
-  var extra={};['pelvic_tilt','scapula_motion','ssp_extension','ssp_flexion'].forEach(function(k){if(values[k]!==undefined)extra[k]=values[k];});
-  return Object.keys(extra).length?JSON.stringify({schema:'needs-quality-v2',values:extra}):'';
+  var extra={};qualityExtraKeys().forEach(function(k){if(values[k]!==undefined)extra[k]=values[k];});
+  return Object.keys(extra).length?JSON.stringify({schema:'needs-quality-v3',values:extra}):'';
 }
 
 function bodyScores(v, d){
