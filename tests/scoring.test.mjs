@@ -6,9 +6,9 @@ import { loadLegacy, masters, plain } from './helpers.mjs';
 const config = masters();
 const scorer = createAthleteScorer(config);
 
-test('30種目・40入力欄を維持する', () => {
-  assert.equal(scorer.fields.length, 40);
-  assert.equal(new Set(Object.values(scorer.definitions).map(d => d.key)).size, 30);
+test('既存30種目・40入力欄に新規4項目を追加する', () => {
+  assert.equal(scorer.fields.length, 44);
+  assert.equal(new Set(Object.values(scorer.definitions).map(d => d.key)).size, 34);
   assert.equal(Object.keys(config.thresholds).length, 64);
 });
 

@@ -243,6 +243,8 @@ table.res tr:last-child td{border-bottom:0}
 .condition-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}.condition-layout>*{min-width:0}.condition-layout .golf-poses{border-left:1px solid var(--line);padding-left:24px}.condition-layout .bodyFigs{max-width:100%}@media(max-width:680px){.condition-layout{grid-template-columns:1fr}.condition-layout .golf-poses{border-left:0;border-top:1px solid var(--line);padding:16px 0 0}}
 
 .golf-map{position:relative;isolation:isolate}.golf-overlay{position:absolute;inset:0;mix-blend-mode:multiply}.golf-overlay svg{display:block;width:100%;height:100%}.golf-region{cursor:pointer}
+
+.condition-layout{--person-height:clamp(240px,32vw,400px)}.condition-layout .body-pair svg,.golf-pair svg{height:var(--person-height);width:100%;max-height:none;display:block}.golf-pair{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:16px}.golf-pair>div{min-width:0}.condition-layout .body-pair{margin-top:78px}.condition-layout .body-pair figcaption{display:none}.golf-poses .body-tabs{min-height:44px}.quality-condition p{font-size:14px}.condition-layout .bodyFigs{margin-top:78px}.condition-layout .bodyFig h4,.condition-layout .bodyFig .lr{display:none}.condition-layout .bodyFigs svg{height:var(--person-height);max-height:none;width:100%}@media(max-width:680px){.condition-layout .body-pair,.condition-layout .bodyFigs{margin-top:16px}.condition-layout{--person-height:350px}}
 </style>
 </head>
 <body>
@@ -439,8 +441,7 @@ table.res tr:last-child td{border-bottom:0}
       <button type="button" aria-pressed="false" data-pose="impact">インパクト</button>
       <button type="button" aria-pressed="false" data-pose="follow">フォロー</button>
     </div>
-    <figure><div class="golf-map"><img id="golfImage" src="assets/golf/address.png" width="1536" height="1024" alt="右打ち・アドレス：左が正面側、右が背面側" style="display:block;width:100%;height:auto"><div class="golf-overlay" id="golfOverlay"></div></div><figcaption id="golfCaption">右打ち・アドレス ｜ 左：正面側 ／ 右：背面側</figcaption></figure>
-    <p class="help">立位図と同じ測定結果を表示しています。無色の部位は未測定です（動きの質の部位対応は未設定）。色の位置は姿勢に合わせた目安で、スイング自体の採点ではありません。</p>
+    <div id="golfOverlay" class="golf-pair"></div>
   </section>
 </div>
   </div>
@@ -576,11 +577,15 @@ var FLEX = [
 ];
 
 var QUALITY = [
-  {key:'sq_quality',   name:'スクワット'},
-  {key:'slide_sq',     name:'スライドスクワット', short:'スライドSQ'},
-  {key:'rot_sq',       name:'ローテーションスクワット', short:'ローテ SQ'},
-  {key:'rot_drill_up', name:'ローテーションドリル 上', short:'ローテ 上'},
-  {key:'rot_drill_low',name:'ローテーションドリル 下', short:'ローテ 下'}
+  {key:'sq_quality',name:'スクワット',link:'lower',note:'まっすぐ上下し、膝・股関節・体幹をコントロールできるか'},
+  {key:'slide_sq',name:'スライドスクワット',short:'スライドSQ',link:'vertical',note:'左右への移動で上半身と下半身が連動するか'},
+  {key:'rot_sq',name:'ローテーションスクワット',short:'ローテ SQ',link:'hips',note:'体幹と股関節を連動させて回旋できるか'},
+  {key:'rot_drill_up',name:'ローテーションドリル 上',short:'ローテ 上',link:'shoulders',note:'胸椎の回旋を滑らかにコントロールできるか'},
+  {key:'rot_drill_low',name:'ローテーションドリル 下',short:'ローテ 下',link:'hips',note:'股関節の動きを滑らかにコントロールできるか'},
+  {key:'pelvic_tilt',name:'ペルビックティルト',link:'hips',min:1,note:'骨盤の前傾・後傾を滑らかに切り替えられるか'},
+  {key:'scapula_motion',name:'肩甲骨の動き',link:'shoulders',min:1,note:'肩甲骨の内転・外転を滑らかに切り替えられるか'},
+  {key:'ssp_extension',name:'SSP連動テスト・伸展',short:'SSP 伸展',link:'extension',min:1,note:'肩甲骨の内転・脊柱の伸展・骨盤の前傾が連動するか'},
+  {key:'ssp_flexion',name:'SSP連動テスト・屈曲',short:'SSP 屈曲',link:'flexion',min:1,note:'肩甲骨の外転・脊柱の屈曲・骨盤の後傾が連動するか'}
 ];
 
 // 実測系：key は thresholds シートの item_key と一致させる
@@ -719,7 +724,7 @@ var FIELD_DEF = (function(){
   var map = {};
   function reg(it, cat, sub){
     var d = {key:it.key, name:it.name, unit:it.unit||'点', cat:cat, sub:sub||'',
-             pair:!!it.pair, bw:!!it.bw, est:!!it.est, kind:it.unit?'num':'pts'};
+             pair:!!it.pair, bw:!!it.bw, est:!!it.est, kind:it.unit?'num':'pts', note:it.note||'', min:it.min||0};
     if(it.pair){ map[it.key+'_R'] = d; map[it.key+'_L'] = d; } else { map[it.key] = d; }
   }
   FLEX.forEach(function(g){ g.items.forEach(function(it){ reg(it,'flex',g.label); }); });
@@ -1112,6 +1117,7 @@ function computeScore(v, ctx){
 
   /* ---------- ボディマップ（部位ごとの得点率） ---------- */
   d.body = bodyScores(v, d);
+  d.qualityLinks = qualityConnections(v,d);
   return d;
 }
 
@@ -1131,6 +1137,33 @@ function ptOfField(f, v, d){
    左右がある種目は左右それぞれの側へ。
    左右がある種目が中央の部位（背中・腰・腹部・胸）に入るときは、
    低いほうの点数を採る（柔軟性の扱いと同じ考え方）。 */
+function qualityConnections(v,d){
+  var out=[];
+  function add(key,label,type,pct,detail,lv){if(pct===undefined)return;out.push({key:key,label:label,type:type,value:r1(pct),lv:lv||bandColor(pct),detail:detail});}
+  QUALITY.forEach(function(it){var p=num(v[it.key]);add(it.key,it.name,it.link||'lower',p===undefined?undefined:p/3*100,it.note||'動作のコントロールを確認',p===undefined?undefined:rawColor(p));});
+  if(d.jump.ssc)add('ssc','SQJ → CMJ：下半身の反動','lower',({red:33.3,amber:66.7,green:100})[d.jump.ssc.lv],d.jump.ssc.text,d.jump.ssc.lv);
+  if(d.jump.arm)add('arm','CMJ → ABJ：上下の連動','vertical',({red:33.3,amber:66.7,green:100})[d.jump.arm.lv],d.jump.arm.text,d.jump.arm.lv);
+  function pair(key,label,type){
+    var R=ptOfField(key+'_R',v,d),L=ptOfField(key+'_L',v,d);if(R===undefined||L===undefined)return;
+    var pct=Math.min(Math.max(0,100-Math.abs(R-L)*100/3),(R+L)/6*100);
+    var flag=d.flags.find(function(f){return f.code==='asym_'+key;});if(flag)pct=Math.min(pct,33.3);
+    add('pair_'+key,label+'：左右のつながり',type,pct,'右 '+r1(R)+'点 ／ 左 '+r1(L)+'点。左右差と両側の評価を使用。'+(flag?flag.t:''));
+  }
+  FLEX.forEach(function(g){g.items.filter(function(it){return it.pair;}).forEach(function(it){pair(it.key,it.name,g.part==='upper'?'shoulders':g.part==='core'?'hips':'lower');});});
+  [['sl_sq','SLスクワット'],['sl_stance','片脚立位'],['ground_touch_bal','地面タッチ'],['sl_cmj','SLCMJ']].forEach(function(a){pair(a[0],a[1],'lower');});
+  ['R','L'].forEach(function(side){var a=d.pts['sl_stance_'+side],b=d.pts['ground_touch_bal_'+side];if(a===undefined||b===undefined)return;add('static_dynamic_'+side,'静的・動的バランス（'+(side==='R'?'右':'左')+'）','lower',Math.min(Math.max(0,100-Math.abs(a-b)*100/3),(a+b)/6*100),'片脚立位 '+a+'点 ／ 地面タッチ '+b+'点。単位の異なる実測値ではなく評価点を比較。');});
+  return out;
+}
+function unpackQualityRecord(row){
+  var copy=Object.assign({},row);
+  try{var ext=JSON.parse(row.note);if(ext.schema==='needs-quality-v2'&&ext.values){['pelvic_tilt','scapula_motion','ssp_extension','ssp_flexion'].forEach(function(k){var n=ext.values[k];if(Number.isInteger(n)&&n>=1&&n<=3)copy[k]=n;});}}catch(e){}
+  return copy;
+}
+function packQualityValues(values){
+  var extra={};['pelvic_tilt','scapula_motion','ssp_extension','ssp_flexion'].forEach(function(k){if(values[k]!==undefined)extra[k]=values[k];});
+  return Object.keys(extra).length?JSON.stringify({schema:'needs-quality-v2',values:extra}):'';
+}
+
 function bodyScores(v, d){
   var out = {};
   BODY_THEMES.forEach(function(th){
@@ -1660,7 +1693,7 @@ function pick(id){
     if(!d.ok) throw appErr(d);
     if(!d.member) throw appErr({error: '会員 ' + id + ' が見つかりません'});
     member = d.member;
-    sessions = d.measurements || [];
+    sessions = (d.measurements || []).map(unpackQualityRecord);
     vals = {}; est = {}; result = null; currentSaved = false;
     savedSig = null; savedInfo = null;
     demoMode = false; realSessions = null; updateDemoUi();
@@ -1713,7 +1746,7 @@ var TABS = [
 function ptsRow(it){
   function pad(field, side){
     var b = '<button class="clr" data-pt="" data-f="' + field + '">未</button>';
-    [0,1,2,3].forEach(function(v){
+    [0,1,2,3].filter(function(v){return v>=(it.min||0);}).forEach(function(v){
       b += '<button data-pt="' + v + '" data-f="' + field + '">' + v + '</button>';
     });
     return '<div class="sd"><span class="side">' + side + '</span><div class="pts" data-w="' + field + '">' + b + '</div></div>';
@@ -1771,8 +1804,8 @@ function buildInput(){
   JUMP.forEach(function(it){ h += numRow(it); });
   h += '</div>';
 
-  h += '<div class="grp" id="g_qua">';
-  QUALITY.forEach(function(it){ h += ptsRow({key:it.key, name:it.name, pair:false}); });
+  h += '<div class="grp" id="g_qua"><p class="help">3点：滑らかにコントロールできる ／ 2点：できるが制限や連動の途切れがある ／ 1点：十分に行えない。未測定は「未」。既存項目の0点は従来どおり測定不能。</p>';
+  QUALITY.forEach(function(it){ h += ptsRow(it); });
   h += '</div>';
 
   $('groups').innerHTML = h;
@@ -2039,7 +2072,7 @@ function renderParts(d){
   });
 }
 
-var bodyTheme = 'flex';
+var bodyTheme = 'flex', qualityLinkKey='';
 
 /* 会員登録の性別で体型を切り替える。未登録なら中性。 */
 function bodySexKey(){
@@ -2054,8 +2087,10 @@ function renderBodyMap(d){
   $('bodyTabs').innerHTML=tabs.map(function(t){return '<button type="button" data-k="'+t.key+'" aria-pressed="'+(t.key===bodyTheme)+'"'+(t.key===bodyTheme?' class="on"':'')+'>'+t.label+'</button>';}).join('');
   $('bodyQuality').hidden=bodyTheme!=='quality';
   if(bodyTheme==='quality'){
-    var items=d.items.filter(function(i){return i.cat==='動きの質';});
-    $('bodyQuality').innerHTML='<h3>動きの質</h3><p class="help">部位への色分けは未設定です。測定した動作ごとの結果を表示します。</p>'+(items.length?'<ul>'+items.map(function(i){return '<li>'+esc(i.name)+'：'+esc(String(i.raw))+' / 3点</li>';}).join('')+'</ul>':'<p>この部門は未測定です。</p>');
+    var links=d.qualityLinks||[];
+    if(!links.some(function(l){return l.key===qualityLinkKey;}))qualityLinkKey=(links[0]||{}).key||'';
+    var selected=links.find(function(l){return l.key===qualityLinkKey;});
+    $('bodyQuality').innerHTML=links.length?'<label>表示するつながり<select id="qualityLink">'+links.map(function(l){return '<option value="'+l.key+'"'+(l.key===qualityLinkKey?' selected':'')+'>'+esc(l.label)+'</option>';}).join('')+'</select></label><p>'+esc(selected.detail)+'</p><p>'+({red:'要改善',amber:'普通',green:'良好'})[selected.lv]+'</p>':'<p>つながりを評価できる測定はまだありません。</p>';
   }
   var scores = (body[bodyTheme] || {}).score || {};
   var sexKey = bodySexKey();
@@ -2063,6 +2098,7 @@ function renderBodyMap(d){
   $('bodyBack').innerHTML  = buildBodyFigure('back',  sexKey, scores);
   $('bodyBasis').hidden = true;
   if(window.renderGolfOverlay)window.renderGolfOverlay();
+  if(window.renderStandingLinks)window.renderStandingLinks();
 }
 
 /* 部位をタップしたときに出す「その色の根拠」 */
@@ -2604,6 +2640,7 @@ function saveMeasurement(){
                        .map(function(f){ return f.code; }).join(',')
   };
   filled.forEach(function(f){ payload[f] = vals[f]; });
+  payload.note=packQualityValues(vals);
 
   var sig = inputSig();
   $('btnSave').disabled = true;
@@ -2611,7 +2648,7 @@ function saveMeasurement(){
   setStatus('保存中…');
   apiPost({action: 'saveMeasurement', measurement: payload}).then(function(r){
     if(!r.ok) throw appErr(r);
-    sessions.push(r.measurement);
+    sessions.push(unpackQualityRecord(r.measurement));
     currentSaved = true;
     savedSig = sig;
     savedInfo = {no: r.measurement.session_no, date: payload.measured_at};
@@ -2751,18 +2788,18 @@ document.getElementById('golfTabs').addEventListener('click',function(event){
  var key=button.dataset.pose; if(!['address','impact','follow'].includes(key))return;
  document.querySelectorAll('#golfTabs button').forEach(function(b){b.classList.toggle('on',b===button);b.setAttribute('aria-pressed',String(b===button));});
  if(window.renderGolfOverlay)window.renderGolfOverlay(key);
- document.getElementById('golfImage').src='assets/golf/'+key+'.png';
- document.getElementById('golfImage').alt='右打ち・'+button.textContent+'：左が正面側、右が背面側';
- document.getElementById('golfCaption').textContent='右打ち・'+button.textContent+' ｜ 左：正面側 ／ 右：背面側';
 });
 </script>
 
 <script type="module">
-import {renderGolfOverlay} from './src/domain/golf-overlay.mjs';
+import {renderGolfFigure,renderConnection} from './src/domain/quality-overlay.mjs';
 window.renderGolfOverlay=function(pose){
  const key=pose||document.querySelector('#golfTabs button.on').dataset.pose;
- document.getElementById('golfOverlay').innerHTML=renderGolfOverlay(key,result?.body?.[bodyTheme]?.score||{}, {flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},'legacy');
+ const connection=bodyTheme==='quality'?(result?.qualityLinks||[]).find(l=>l.key===qualityLinkKey):undefined;
+ document.getElementById('golfOverlay').innerHTML=['front','back'].map(view=>'<div>'+renderGolfFigure(key,view,result?.body?.[bodyTheme]?.score||{}, {flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},'legacy',connection,'assets/golf/')+'</div>').join('');
 };
+window.renderStandingLinks=function(){if(bodyTheme!=='quality')return;const link=(result?.qualityLinks||[]).find(l=>l.key===qualityLinkKey);['front','back'].forEach(view=>{const el=document.getElementById(view==='front'?'bodyFront':'bodyBack');el.innerHTML=el.innerHTML.replace('</svg>',renderConnection(link,'standing',view)+'</svg>');});};
+document.getElementById('bodyQuality').addEventListener('change',function(e){if(e.target.id==='qualityLink'){qualityLinkKey=e.target.value;renderBodyMap(result);}});
 document.getElementById('golfOverlay').addEventListener('click',function(e){const hit=e.target.closest('.golf-region');if(hit){const [region,side]=hit.dataset.region.split('|');showBodyBasis(region,side);}});
 window.renderGolfOverlay();
 </script>

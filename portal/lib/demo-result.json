@@ -18,6 +18,8 @@
   "score": {
     "cats": {
       "flex": 44.4,
+      "quality": 75,
+      "balance": 66.7,
       "jump": 47.6
     },
     "parts": {
@@ -31,6 +33,10 @@
       }
     },
     "pts": {
+      "sl_stance_R": 2,
+      "sl_stance_L": 1,
+      "ground_touch_bal_R": 3,
+      "ground_touch_bal_L": 2,
       "sqj": 1,
       "cmj": 1,
       "abj": 1,
@@ -69,6 +75,86 @@
         "raw": 1,
         "color": "red",
         "val": "1 点（右 3 / 左 1）"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "ペルビックティルト",
+        "short": "ペルビックティルト",
+        "kind": "pts",
+        "raw": 2,
+        "color": "amber",
+        "val": "2 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "肩甲骨の動き",
+        "short": "肩甲骨の動き",
+        "kind": "pts",
+        "raw": 3,
+        "color": "green",
+        "val": "3 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "SSP連動テスト・伸展",
+        "short": "SSP 伸展",
+        "kind": "pts",
+        "raw": 3,
+        "color": "green",
+        "val": "3 点"
+      },
+      {
+        "cat": "動きの質",
+        "sub": "",
+        "name": "SSP連動テスト・屈曲",
+        "short": "SSP 屈曲",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点"
+      },
+      {
+        "cat": "バランス",
+        "sub": "",
+        "name": "片脚立位（右）",
+        "short": "片脚立位 右",
+        "kind": "num",
+        "pt": 2,
+        "color": "amber",
+        "val": "30 秒"
+      },
+      {
+        "cat": "バランス",
+        "sub": "",
+        "name": "片脚立位（左）",
+        "short": "片脚立位 左",
+        "kind": "num",
+        "pt": 1,
+        "color": "red",
+        "val": "20 秒"
+      },
+      {
+        "cat": "バランス",
+        "sub": "",
+        "name": "地面タッチ（右）",
+        "short": "地面ﾀｯﾁ 右",
+        "kind": "num",
+        "pt": 3,
+        "color": "green",
+        "val": "12 回"
+      },
+      {
+        "cat": "バランス",
+        "sub": "",
+        "name": "地面タッチ（左）",
+        "short": "地面ﾀｯﾁ 左",
+        "kind": "num",
+        "pt": 2,
+        "color": "amber",
+        "val": "8 回"
       },
       {
         "cat": "ジャンプ",
@@ -146,6 +232,16 @@
         "lv": "red",
         "code": "flex_lr_aslr",
         "t": "ASLRの左右差が2点あります（右 3 / 左 1）。硬い側から改善してください。"
+      },
+      {
+        "lv": "red",
+        "code": "asym_sl_stance",
+        "t": "片脚立位の左右差が 33.3%あります（右 30 / 左 20）。数値そのものが高くても、この差は改善が必要です。"
+      },
+      {
+        "lv": "red",
+        "code": "asym_ground_touch_bal",
+        "t": "地面タッチの左右差が 33.3%あります（右 12 / 左 8）。数値そのものが高くても、この差は改善が必要です。"
       },
       {
         "lv": "red",
@@ -270,6 +366,53 @@
           "value": 33.3
         }
       ],
+      "balance": [
+        {
+          "label": "静的バランス（片脚立位）",
+          "lines": [
+            "静的",
+            "バランス"
+          ],
+          "value": 50,
+          "tip": "左右の平均 1.5 点"
+        },
+        {
+          "label": "静的の左右差",
+          "lines": [
+            "静的の",
+            "左右差"
+          ],
+          "value": 66.7,
+          "tip": "差が小さいほど外側。0点差=100 / 1点差=66.7 / 2点差=33.3"
+        },
+        {
+          "label": "静的と動的の差",
+          "lines": [
+            "静的と動的",
+            "の差"
+          ],
+          "value": 66.7,
+          "tip": "平均点の差 1 点"
+        },
+        {
+          "label": "動的の左右差",
+          "lines": [
+            "動的の",
+            "左右差"
+          ],
+          "value": 66.7,
+          "tip": "差が小さいほど外側。0点差=100 / 1点差=66.7 / 2点差=33.3"
+        },
+        {
+          "label": "動的バランス（地面タッチ）",
+          "lines": [
+            "動的",
+            "バランス"
+          ],
+          "value": 83.3,
+          "tip": "左右の平均 2.5 点"
+        }
+      ],
       "jump": [
         {
           "label": "跳躍高（SQJ・CMJ・ABJ）",
@@ -313,8 +456,8 @@
       ]
     },
     "notes": [],
-    "total": 46,
-    "measured": 2,
+    "total": 58.4,
+    "measured": 4,
     "body": {
       "flex": {
         "score": {
@@ -404,14 +547,140 @@
       },
       "balance": {
         "score": {
+          "lower_leg|R": 63.6,
+          "lower_leg|L": 54.5,
+          "hip|R": 83.3,
+          "hip|L": 50,
+          "thigh_back|R": 100,
+          "thigh_back|L": 66.7,
           "thigh_front|R": 33.3,
           "thigh_front|L": 33.3,
           "glute|R": 33.3,
-          "glute|L": 33.3,
-          "lower_leg|R": 58.3,
-          "lower_leg|L": 58.3
+          "glute|L": 33.3
         },
         "basis": {
+          "lower_leg|R": [
+            {
+              "name": "片脚立位（右）",
+              "pt": 2,
+              "w": 1
+            },
+            {
+              "name": "地面タッチ（右）",
+              "pt": 3,
+              "w": 0.5
+            },
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（右）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ホップテスト",
+              "pt": 2,
+              "w": 1
+            },
+            {
+              "name": "ドロップジャンプ",
+              "pt": 3,
+              "w": 1
+            }
+          ],
+          "lower_leg|L": [
+            {
+              "name": "片脚立位（左）",
+              "pt": 1,
+              "w": 1
+            },
+            {
+              "name": "地面タッチ（左）",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（左）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ホップテスト",
+              "pt": 2,
+              "w": 1
+            },
+            {
+              "name": "ドロップジャンプ",
+              "pt": 3,
+              "w": 1
+            }
+          ],
+          "hip|R": [
+            {
+              "name": "片脚立位（右）",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "地面タッチ（右）",
+              "pt": 3,
+              "w": 0.5
+            }
+          ],
+          "hip|L": [
+            {
+              "name": "片脚立位（左）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "地面タッチ（左）",
+              "pt": 2,
+              "w": 0.5
+            }
+          ],
+          "thigh_back|R": [
+            {
+              "name": "地面タッチ（右）",
+              "pt": 3,
+              "w": 0.25
+            }
+          ],
+          "thigh_back|L": [
+            {
+              "name": "地面タッチ（左）",
+              "pt": 2,
+              "w": 0.25
+            }
+          ],
           "thigh_front|R": [
             {
               "name": "スクワットジャンプ",
@@ -499,73 +768,107 @@
               "pt": 1,
               "w": 0.5
             }
-          ],
-          "lower_leg|R": [
-            {
-              "name": "スクワットジャンプ",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "CMJ",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "ABJ",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "SLCMJ（右）",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "ホップテスト",
-              "pt": 2,
-              "w": 1
-            },
-            {
-              "name": "ドロップジャンプ",
-              "pt": 3,
-              "w": 1
-            }
-          ],
-          "lower_leg|L": [
-            {
-              "name": "スクワットジャンプ",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "CMJ",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "ABJ",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "SLCMJ（左）",
-              "pt": 1,
-              "w": 0.5
-            },
-            {
-              "name": "ホップテスト",
-              "pt": 2,
-              "w": 1
-            },
-            {
-              "name": "ドロップジャンプ",
-              "pt": 3,
-              "w": 1
-            }
           ]
         }
       }
-    }
+    },
+    "qualityLinks": [
+      {
+        "key": "pelvic_tilt",
+        "label": "ペルビックティルト",
+        "type": "hips",
+        "value": 66.7,
+        "lv": "amber",
+        "detail": "骨盤の前傾・後傾を滑らかに切り替えられるか"
+      },
+      {
+        "key": "scapula_motion",
+        "label": "肩甲骨の動き",
+        "type": "shoulders",
+        "value": 100,
+        "lv": "green",
+        "detail": "肩甲骨の内転・外転を滑らかに切り替えられるか"
+      },
+      {
+        "key": "ssp_extension",
+        "label": "SSP連動テスト・伸展",
+        "type": "extension",
+        "value": 100,
+        "lv": "green",
+        "detail": "肩甲骨の内転・脊柱の伸展・骨盤の前傾が連動するか"
+      },
+      {
+        "key": "ssp_flexion",
+        "label": "SSP連動テスト・屈曲",
+        "type": "flexion",
+        "value": 33.3,
+        "lv": "red",
+        "detail": "肩甲骨の外転・脊柱の屈曲・骨盤の後傾が連動するか"
+      },
+      {
+        "key": "ssc",
+        "label": "SQJ → CMJ：下半身の反動",
+        "type": "lower",
+        "value": 100,
+        "lv": "green",
+        "detail": "反動と筋力のバランスは標準的です。"
+      },
+      {
+        "key": "arm",
+        "label": "CMJ → ABJ：上下の連動",
+        "type": "vertical",
+        "value": 100,
+        "lv": "green",
+        "detail": "腕振りの連動は標準的です。"
+      },
+      {
+        "key": "pair_aslr",
+        "label": "ASLR：左右のつながり",
+        "type": "lower",
+        "value": 33.3,
+        "lv": "red",
+        "detail": "右 3点 ／ 左 1点。左右差と両側の評価を使用。"
+      },
+      {
+        "key": "pair_sl_stance",
+        "label": "片脚立位：左右のつながり",
+        "type": "lower",
+        "value": 33.3,
+        "lv": "red",
+        "detail": "右 2点 ／ 左 1点。左右差と両側の評価を使用。片脚立位の左右差が 33.3%あります（右 30 / 左 20）。数値そのものが高くても、この差は改善が必要です。"
+      },
+      {
+        "key": "pair_ground_touch_bal",
+        "label": "地面タッチ：左右のつながり",
+        "type": "lower",
+        "value": 33.3,
+        "lv": "red",
+        "detail": "右 3点 ／ 左 2点。左右差と両側の評価を使用。地面タッチの左右差が 33.3%あります（右 12 / 左 8）。数値そのものが高くても、この差は改善が必要です。"
+      },
+      {
+        "key": "pair_sl_cmj",
+        "label": "SLCMJ：左右のつながり",
+        "type": "lower",
+        "value": 33.3,
+        "lv": "red",
+        "detail": "右 1点 ／ 左 1点。左右差と両側の評価を使用。SLCMJの左右差が 39.4%あります（右 10 / 左 16.5）。数値そのものが高くても、この差は改善が必要です。"
+      },
+      {
+        "key": "static_dynamic_R",
+        "label": "静的・動的バランス（右）",
+        "type": "lower",
+        "value": 66.7,
+        "lv": "red",
+        "detail": "片脚立位 2点 ／ 地面タッチ 3点。単位の異なる実測値ではなく評価点を比較。"
+      },
+      {
+        "key": "static_dynamic_L",
+        "label": "静的・動的バランス（左）",
+        "type": "lower",
+        "value": 50,
+        "lv": "red",
+        "detail": "片脚立位 1点 ／ 地面タッチ 2点。単位の異なる実測値ではなく評価点を比較。"
+      }
+    ]
   }
 }

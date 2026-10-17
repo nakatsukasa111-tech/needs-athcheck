@@ -32,7 +32,7 @@ export function measurementInput(form, member, settings) {
     const text = String(form.get(`value:${key}`) ?? '').trim();
     if (!text) continue;
     const n = Number(text); const def = athlete.definitions[key];
-    if (!Number.isFinite(n) || n < 0 || (def.kind === 'pts' && (!Number.isInteger(n) || n > 3))) throw new Error(`${def.name}は${def.kind === 'pts' ? '0〜3の整数' : '0以上の数値'}で入力してください。`);
+    if (!Number.isFinite(n) || n < (def.min||0) || (def.kind === 'pts' && (!Number.isInteger(n) || n > 3))) throw new Error(`${def.name}は${def.kind === 'pts' ? `${def.min||0}〜3の整数` : '0以上の数値'}で入力してください。`);
     values[key] = n;
     if (def.est && form.get(`estimated:${key}`) === 'on') estimated_items.push(key);
   }
