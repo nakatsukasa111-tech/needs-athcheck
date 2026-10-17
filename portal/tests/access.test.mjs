@@ -2,6 +2,8 @@ import { PGlite } from '@electric-sql/pglite';
 import { readFileSync } from 'node:fs';
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { measurementInput } from '../lib/measurement-input.mjs';
+import { masters } from '../../tests/helpers.mjs';
 
 const db = new PGlite();
 const id = n => `00000000-0000-0000-0000-${String(n).padStart(12, '0')}`;
@@ -42,6 +44,25 @@ async function asUser(user, fn, role = 'authenticated') {
   try { return await fn(); } finally { await db.exec('rollback'); }
 }
 const query = sql => db.query(sql);
+
+test('入力→下書き保存→本人非表示→公開→本人表示→公開取消', async () => {
+  const form=new FormData();form.set('measured_on','2026-10-17');form.set('value:cmj','32.5');form.set('value:split','0');form.set('public_comment','今回の公開コメント');
+  const payload=measurementInput(form,{birth_date:'2000-01-01',threshold_sex:'M'},masters());
+  await db.exec('begin');
+  try {
+    await db.exec(`set local role authenticated; select set_config('request.jwt.claim.sub','${id(2)}',true)`);
+    await db.query(`insert into athlete_measurements(id,company_id,member_id,measured_on,age_band,threshold_sex,values,saved_score,public_comment,published) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,[id(999),id(10),id(11),payload.measured_on,payload.age_band,payload.threshold_sex,JSON.stringify(payload.values),JSON.stringify(payload.saved_score),payload.public_comment,payload.published]);
+    await db.exec(`select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+    assert.equal((await query(`select * from athlete_measurements where id='${id(999)}'`)).rows.length,0);
+    await db.exec(`select set_config('request.jwt.claim.sub','${id(2)}',true);update athlete_measurements set published=true where id='${id(999)}';select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+    const row=(await query(`select * from athlete_measurements where id='${id(999)}'`)).rows[0];
+    assert.deepEqual(row.values,payload.values);assert.deepEqual(row.saved_score,JSON.parse(JSON.stringify(payload.saved_score)));assert.equal(row.public_comment,'今回の公開コメント');
+    await db.exec(`select set_config('request.jwt.claim.sub','${id(5)}',true)`);
+    assert.equal((await query(`select * from athlete_measurements where id='${id(999)}'`)).rows.length,0);
+    await db.exec(`select set_config('request.jwt.claim.sub','${id(2)}',true);update athlete_measurements set published=false where id='${id(999)}';select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+    assert.equal((await query(`select * from athlete_measurements where id='${id(999)}'`)).rows.length,0);
+  } finally { await db.exec('rollback'); }
+});
 test('本人には公開済みの自分の測定だけ返る', async () => asUser(4, async () => {
   assert.deepEqual((await query('select id from athlete_measurements')).rows, [{ id: id(101) }]);
   assert.deepEqual((await query('select id from athlete_members')).rows, [{ id: id(11) }]);
