@@ -1,5 +1,5 @@
 // tools/extract-scoring.mjs で生成。直接編集しないでください。
-// 元の採点処理の SHA-256: de20cdb6b9d82757b55537490d93ccfce2a23fdaf54d7c473defddb3cfe40a25
+// 元の採点処理の SHA-256: 25677834606f48e6de1eaedbd80645e0f08dc8d234b4f98154087e9627c815c4
 // 現行画面はこのファイルへまだ切り替えていません。
 export function createAthleteScorer({ thresholds = {}, rules = {}, tone = 'fact', weights } = {}) {
   // 会社ごとの設定を閉じ込め、別の呼び出しと混ざらないようにする。
@@ -238,7 +238,7 @@ function num(v){
   var n = Number(v);
   return isNaN(n) ? undefined : n;
 }
-var COLOR = {green:'#3B8F68', amber:'#D89A1F', red:'#C7453F', gray:'#8A94A0'};
+var COLOR = {green:'#12B76A', amber:'#F5C400', red:'#F04438', gray:'#8A94A0'};
 var LABEL = {green:'良好', amber:'普通', red:'要改善', gray:'—'};
 
 // 得点率 → 色（rules シートの値を使う）

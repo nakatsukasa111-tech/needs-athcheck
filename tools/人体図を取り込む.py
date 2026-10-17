@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-中務さん作成のイラスト（prototype/assets/人体図_原画.png）から、
+中務さんの原画を基に手を補正したイラスト（prototype/assets/人体図_手補正.png）から、
 prototype/style-sample.html に埋め込む人体図データ（FIGS）を作り直すスクリプト。
 
     python3 tools/人体図を取り込む.py > /tmp/figs.js
@@ -19,7 +19,7 @@ from collections import deque
 import numpy as np
 from PIL import Image
 
-SRC = 'prototype/assets/人体図_原画.png'
+SRC = 'prototype/assets/人体図_手補正.png'
 Y0, Y1 = 100, 915          # 見出し帯とフッタを除いた範囲
 PANEL_LINES = (440, 871)   # パネルを区切る縦罫線の x
 LINE_TH = 240              # これより暗ければ「線」
@@ -132,7 +132,8 @@ for c, nm in zip(comps, NAMES):
     axis = int(round((cen0[0]+cen0[1])/2))
     TX = lambda x: (x-axis)*SC
 
-    crotch = next(y for y in range(y0+int((y1-y0)*0.40), y0+int((y1-y0)*0.80)) if not m[y, axis])
+    # 足の内側の線が接している図は正中線が切れない。原画の股位置比で補う。
+    crotch = next((y for y in range(y0+int((y1-y0)*0.40), y0+int((y1-y0)*0.80)) if not m[y, axis]), y0+int((y1-y0)*0.51))
     def cenrun(y):
         for r in runs(y):
             if r[0] <= axis <= r[1]: return r
@@ -142,7 +143,7 @@ for c, nm in zip(comps, NAMES):
     shY = max(up, key=lambda y: widths[y]); shHalf = widths[shY]/2.0
 
     def legrun(y):
-        rr = [r for r in runs(y) if r[1]-r[0] > 8 and (r[0]+r[1])/2 > axis]
+        rr = [(max(r[0],axis+1),r[1]) for r in runs(y) if r[1]-max(r[0],axis+1)>8]
         return rr[0] if rr else None
     lw = {y: legrun(y) for y in range(crotch+5, y1-5) if legrun(y)}
     kneeY = min([y for y in lw if crotch+(y1-crotch)*0.22 < y < crotch+(y1-crotch)*0.55],
