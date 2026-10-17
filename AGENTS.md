@@ -9,4 +9,5 @@
 実測データ・接続用の秘密・非公開教材をこの公開リポジトリへ追加しない。
 
 確認：node tools/extract-scoring.mjs --check と node --test tests/*.test.mjs。
-既存のUIは新部品へ未接続。テスト成功を、ログインやマイページの完成と報告しない。
+既存index.htmlは新部品へ未接続。portal/では採点・ボディマップ・グラフ・教材提案を接続済み。
+人体図の生成部品は tools/extract-bodymap.mjs で同期する。テスト成功だけで実環境の完成を報告しない。

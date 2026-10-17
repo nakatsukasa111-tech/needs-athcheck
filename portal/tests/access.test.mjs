@@ -19,6 +19,7 @@ before(async () => {
   `);
   await db.exec(readFileSync(new URL('../../supabase/migrations/0001_athlete_accounts.sql', import.meta.url), 'utf8'));
   await db.exec(readFileSync(new URL('../../supabase/migrations/0002_member_invitations.sql', import.meta.url), 'utf8'));
+  await db.exec(readFileSync(new URL('../../supabase/migrations/0003_exercise_proposals.sql', import.meta.url), 'utf8'));
   await db.exec(`
     insert into auth.users(id) values ${[1,2,3,4,5,6].map(n => `('${id(n)}')`).join(',')};
     insert into public.athlete_companies(id,name) values ('${id(10)}','会社A'),('${id(20)}','会社B');
@@ -44,6 +45,40 @@ async function asUser(user, fn, role = 'authenticated') {
   try { return await fn(); } finally { await db.exec('rollback'); }
 }
 const query = sql => db.query(sql);
+
+test('教材の承認・担当者確定・本人への公開と取消をDBで制御する',async()=>{
+ await db.exec('begin');
+ try{
+  await db.exec(`insert into athlete_lessons(company_id,id,title,source_revision,source_approved,member_enabled,member_url) values ('${id(10)}','demo','架空教材','test',false,true,'https://example.invalid/lesson');`);
+  await db.exec(`set local role authenticated;select set_config('request.jwt.claim.sub','${id(2)}',true)`);
+  await db.exec(`insert into athlete_exercise_assignments(company_id,measurement_id,lesson_id) values ('${id(10)}','${id(101)}','demo')`);
+  await db.exec('savepoint blocked');
+  await assert.rejects(query(`update athlete_exercise_assignments set confirmed=true where lesson_id='demo'`));
+  await db.exec('rollback to blocked');
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,0);
+  assert.equal((await query('select * from athlete_lessons')).rows.length,0);
+  await db.exec(`reset role;update athlete_lessons set source_approved=true;set local role authenticated;select set_config('request.jwt.claim.sub','${id(2)}',true);update athlete_exercise_assignments set confirmed=true;select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,1);
+  assert.equal((await query('select * from athlete_lessons')).rows.length,1);
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(5)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,0);
+  assert.equal((await query('select * from athlete_lessons')).rows.length,0);
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(3)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,0);
+  await db.exec(`reset role;update athlete_lessons set source_approved=false;set local role authenticated;select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,0);
+  await db.exec(`reset role;update athlete_lessons set demo_approved=true;set local role authenticated;select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,1);
+  await db.exec('savepoint no_self_approval');
+  await assert.rejects(query('update athlete_lessons set source_approved=true'));
+  await db.exec('rollback to no_self_approval');
+  await db.exec(`reset role;update athlete_lessons set demo_approved=false;set local role authenticated;select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await query('select * from athlete_exercise_assignments')).rows.length,0);
+  await db.exec(`reset role;update athlete_lessons set source_approved=true;update athlete_measurements set published=false where id='${id(101)}';set local role authenticated;select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await query('select * from athlete_lessons')).rows.length,0);
+ }finally{await db.exec('rollback');}
+});
 
 test('入力→下書き保存→本人非表示→公開→本人表示→公開取消', async () => {
   const form=new FormData();form.set('measured_on','2026-10-17');form.set('value:cmj','32.5');form.set('value:split','0');form.set('public_comment','今回の公開コメント');
