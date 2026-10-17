@@ -1,0 +1,571 @@
+{
+  "rules": {
+    "flex_green_min": 88.9,
+    "flex_yellow_min": 66.7,
+    "flex_lr_yellow": 1,
+    "flex_lr_red": 2,
+    "sqj_to_cmj_target": 10,
+    "cmj_to_abj_low": 5,
+    "cmj_to_abj_high": 11,
+    "slcmj_target_ratio": 50,
+    "slcmj_tolerance": 5,
+    "slcmj_red_ratio": 90,
+    "asym_flag": 10,
+    "rsi_diff_flag": 15,
+    "rsi_excellent": 3.1,
+    "age_band_border": 17
+  },
+  "score": {
+    "cats": {
+      "flex": 44.4,
+      "jump": 47.6
+    },
+    "parts": {
+      "core": {
+        "label": "柔軟性・体幹部",
+        "pct": 66.7
+      },
+      "lower": {
+        "label": "柔軟性・下半身",
+        "pct": 33.3
+      }
+    },
+    "pts": {
+      "sqj": 1,
+      "cmj": 1,
+      "abj": 1,
+      "sl_cmj_R": 1,
+      "sl_cmj_L": 1,
+      "hop_rsi": 2,
+      "drop_rsi": 3
+    },
+    "items": [
+      {
+        "cat": "柔軟性",
+        "sub": "体幹部",
+        "name": "ブリッジ",
+        "short": "ブリッジ",
+        "kind": "pts",
+        "raw": 2,
+        "color": "amber",
+        "val": "2 点"
+      },
+      {
+        "cat": "柔軟性",
+        "sub": "下半身",
+        "name": "開脚",
+        "short": "開脚",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点"
+      },
+      {
+        "cat": "柔軟性",
+        "sub": "下半身",
+        "name": "ASLR",
+        "short": "ASLR",
+        "kind": "pts",
+        "raw": 1,
+        "color": "red",
+        "val": "1 点（右 3 / 左 1）"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "スクワットジャンプ",
+        "short": "SQJ",
+        "kind": "num",
+        "pt": 1,
+        "color": "red",
+        "val": "30 cm"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "CMJ",
+        "short": "CMJ",
+        "kind": "num",
+        "pt": 1,
+        "color": "red",
+        "val": "33 cm"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "ABJ",
+        "short": "ABJ",
+        "kind": "num",
+        "pt": 1,
+        "color": "red",
+        "val": "36 cm"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "SLCMJ（右）",
+        "short": "SLCMJ 右",
+        "kind": "num",
+        "pt": 1,
+        "color": "red",
+        "val": "10 cm"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "SLCMJ（左）",
+        "short": "SLCMJ 左",
+        "kind": "num",
+        "pt": 1,
+        "color": "red",
+        "val": "16.5 cm"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "ホップテスト",
+        "short": "ホップ",
+        "kind": "num",
+        "pt": 2,
+        "color": "amber",
+        "val": "2 RSI"
+      },
+      {
+        "cat": "ジャンプ",
+        "sub": "",
+        "name": "ドロップジャンプ",
+        "short": "ドロップ",
+        "kind": "num",
+        "pt": 3,
+        "color": "green",
+        "val": "3 RSI"
+      }
+    ],
+    "flags": [
+      {
+        "lv": "red",
+        "code": "flex_lr_aslr",
+        "t": "ASLRの左右差が2点あります（右 3 / 左 1）。硬い側から改善してください。"
+      },
+      {
+        "lv": "red",
+        "code": "asym_sl_cmj",
+        "t": "SLCMJの左右差が 39.4%あります（右 10 / 左 16.5）。数値そのものが高くても、この差は改善が必要です。"
+      },
+      {
+        "lv": "red",
+        "code": "slcmj_R",
+        "t": "片脚CMJ 右 が 10cm で、目標 16.5cm の 60.6%しかありません。その側の片脚筋力、または片脚での伸張反射が不十分です。"
+      },
+      {
+        "lv": "amber",
+        "code": "rsi_diff",
+        "t": "ホップテストとドロップジャンプのRSIに 33.3%の差があります（2 / 3）。"
+      }
+    ],
+    "jump": {
+      "ssc": {
+        "rate": 10,
+        "text": "反動と筋力のバランスは標準的です。",
+        "lv": "green"
+      },
+      "arm": {
+        "rate": 9.1,
+        "text": "腕振りの連動は標準的です。",
+        "lv": "green"
+      },
+      "sl": {
+        "target": 16.5,
+        "sides": [
+          {
+            "side": "右",
+            "val": 10,
+            "pct": 60.6,
+            "lv": "red",
+            "text": "片脚CMJ 右 が 10cm で、目標 16.5cm の 60.6%しかありません。その側の片脚筋力、または片脚での伸張反射が不十分です。"
+          },
+          {
+            "side": "左",
+            "val": 16.5,
+            "pct": 100,
+            "lv": "green",
+            "text": "片脚CMJ 左 は 16.5cm。目標の 16.5cm に届いています。"
+          }
+        ]
+      },
+      "rsiDiff": {
+        "rate": 33.3,
+        "lv": "amber"
+      }
+    },
+    "jumpQuality": [
+      {
+        "name": "反動の使い方（SQJ→CMJ）",
+        "short": "反動",
+        "lv": "green",
+        "val": "10 %"
+      },
+      {
+        "name": "腕振りの連動（CMJ→ABJ）",
+        "short": "腕振り",
+        "lv": "green",
+        "val": "9.1 %"
+      },
+      {
+        "name": "片脚の目標比 右",
+        "short": "片脚 右",
+        "lv": "red",
+        "val": "60.6 %"
+      },
+      {
+        "name": "片脚の目標比 左",
+        "short": "片脚 左",
+        "lv": "green",
+        "val": "100 %"
+      },
+      {
+        "name": "ホップとドロップのRSI差",
+        "short": "RSI差",
+        "lv": "amber",
+        "val": "33.3 %"
+      }
+    ],
+    "radars": {
+      "flex": [
+        {
+          "label": "上半身",
+          "lines": [
+            "上半身"
+          ]
+        },
+        {
+          "label": "上半身と体幹部のつながり",
+          "lines": [
+            "上半身と",
+            "体幹部"
+          ],
+          "tip": "部位どうしの差が大きいほど、また両方が低いほど下がります"
+        },
+        {
+          "label": "体幹部",
+          "lines": [
+            "体幹部"
+          ],
+          "value": 66.7
+        },
+        {
+          "label": "下半身と体幹部のつながり",
+          "lines": [
+            "下半身と",
+            "体幹部"
+          ],
+          "value": 50,
+          "tip": "部位どうしの差が大きいほど、また両方が低いほど下がります"
+        },
+        {
+          "label": "下半身",
+          "lines": [
+            "下半身"
+          ],
+          "value": 33.3
+        }
+      ],
+      "jump": [
+        {
+          "label": "跳躍高（SQJ・CMJ・ABJ）",
+          "lines": [
+            "跳躍高"
+          ],
+          "value": 33.3
+        },
+        {
+          "label": "反動の使い方（SQJ→CMJ）",
+          "lines": [
+            "反動の",
+            "使い方"
+          ],
+          "value": 100,
+          "tip": "伸び率 10%"
+        },
+        {
+          "label": "腕振りの連動（CMJ→ABJ）",
+          "lines": [
+            "腕振りの",
+            "連動"
+          ],
+          "value": 100,
+          "tip": "伸び率 9.1%"
+        },
+        {
+          "label": "片脚（SLCMJ）",
+          "lines": [
+            "片脚"
+          ],
+          "value": 33.3
+        },
+        {
+          "label": "RSI（ホップ・ドロップ）",
+          "lines": [
+            "RSI"
+          ],
+          "value": 83.3
+        }
+      ]
+    },
+    "notes": [],
+    "total": 46,
+    "measured": 2,
+    "body": {
+      "flex": {
+        "score": {
+          "upper_back|C": 66.7,
+          "hip|R": 58.3,
+          "hip|L": 41.7,
+          "shoulder|R": 66.7,
+          "shoulder|L": 66.7,
+          "thigh_back|R": 100,
+          "thigh_back|L": 33.3
+        },
+        "basis": {
+          "upper_back|C": [
+            {
+              "name": "ブリッジ",
+              "pt": 2,
+              "w": 0.5
+            }
+          ],
+          "hip|R": [
+            {
+              "name": "ブリッジ",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "開脚",
+              "pt": 1,
+              "w": 1
+            },
+            {
+              "name": "ASLR（右）",
+              "pt": 3,
+              "w": 0.5
+            }
+          ],
+          "hip|L": [
+            {
+              "name": "ブリッジ",
+              "pt": 2,
+              "w": 0.5
+            },
+            {
+              "name": "開脚",
+              "pt": 1,
+              "w": 1
+            },
+            {
+              "name": "ASLR（左）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "shoulder|R": [
+            {
+              "name": "ブリッジ",
+              "pt": 2,
+              "w": 0.25
+            }
+          ],
+          "shoulder|L": [
+            {
+              "name": "ブリッジ",
+              "pt": 2,
+              "w": 0.25
+            }
+          ],
+          "thigh_back|R": [
+            {
+              "name": "ASLR（右）",
+              "pt": 3,
+              "w": 1
+            }
+          ],
+          "thigh_back|L": [
+            {
+              "name": "ASLR（左）",
+              "pt": 1,
+              "w": 1
+            }
+          ]
+        }
+      },
+      "strength": {
+        "score": {},
+        "basis": {}
+      },
+      "balance": {
+        "score": {
+          "thigh_front|R": 33.3,
+          "thigh_front|L": 33.3,
+          "glute|R": 33.3,
+          "glute|L": 33.3,
+          "lower_leg|R": 58.3,
+          "lower_leg|L": 58.3
+        },
+        "basis": {
+          "thigh_front|R": [
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（右）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "thigh_front|L": [
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（左）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "glute|R": [
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（右）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "glute|L": [
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（左）",
+              "pt": 1,
+              "w": 0.5
+            }
+          ],
+          "lower_leg|R": [
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（右）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ホップテスト",
+              "pt": 2,
+              "w": 1
+            },
+            {
+              "name": "ドロップジャンプ",
+              "pt": 3,
+              "w": 1
+            }
+          ],
+          "lower_leg|L": [
+            {
+              "name": "スクワットジャンプ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "CMJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ABJ",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "SLCMJ（左）",
+              "pt": 1,
+              "w": 0.5
+            },
+            {
+              "name": "ホップテスト",
+              "pt": 2,
+              "w": 1
+            },
+            {
+              "name": "ドロップジャンプ",
+              "pt": 3,
+              "w": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}

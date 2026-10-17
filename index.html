@@ -239,6 +239,7 @@ table.res tr:last-child td{border-bottom:0}
 }
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.panel h2{font-size:20px}.partHead h2{font-size:22px}.golf-poses figure{margin:16px 0}.golf-poses figcaption{text-align:center;font-size:13px;color:var(--ink-2)}.bars .bar{margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -405,7 +406,7 @@ table.res tr:last-child td{border-bottom:0}
 
   <div class="panel" id="bodyPanel">
     <div class="head">
-      <h2>体のどこに出ているか</h2>
+      <h2>部位別コンディション</h2>
     </div>
     <p class="help">測った種目から、どの部位に出ているかを色で示しています。
       <b>部位をタップすると、その色の根拠になった種目と点数が出ます。</b>
@@ -429,6 +430,16 @@ table.res tr:last-child td{border-bottom:0}
       トレーナーが触って得た所見と食い違うときは、所見のほうが正しいという前提で使ってください。</p>
   </div>
 
+  <section class="panel golf-poses">
+    <h2>ゴルフの姿勢</h2>
+    <div class="tabs" id="golfTabs" role="group" aria-label="ゴルフの局面">
+      <button type="button" class="on" aria-pressed="true" data-pose="address">アドレス</button>
+      <button type="button" aria-pressed="false" data-pose="impact">インパクト</button>
+      <button type="button" aria-pressed="false" data-pose="follow">フォロー</button>
+    </div>
+    <figure><img id="golfImage" src="assets/golf/address.png" width="1536" height="1024" alt="右打ち・アドレス：左が正面側、右が背面側" style="display:block;width:100%;height:auto"><figcaption id="golfCaption">右打ち・アドレス ｜ 左：正面側 ／ 右：背面側</figcaption></figure>
+    <p class="help">姿勢の参考図です。スイングを測定・採点した結果ではありません。</p>
+  </section>
   <div id="r_parts"></div>
 
   <div class="panel">
@@ -1900,7 +1911,7 @@ function renderParts(d){
     var chart = '';
     if(scored.length && hasChartLib()){
       var id = 'pc_' + c.key;
-      chart = '<div class="chartBox part" style="height:' + (scored.length * 36 + 30) + 'px">'
+      chart = '<div class="chartBox part" style="height:' + (scored.length * 34 + 30) + 'px">'
             + '<canvas id="' + id + '"></canvas></div>';
       pending.push({id: id, rows: scored});
     }
@@ -1991,16 +2002,16 @@ function renderParts(d){
           data: vals,
           backgroundColor: p.rows.map(function(i){ return COLOR[i.color]; }),
           borderRadius: 3,
-          barThickness: 20
+          barThickness: 24
         }]
       },
       options: {
         indexAxis: 'y',
         responsive: true, maintainAspectRatio: false, resizeDelay: 120,
-        layout: {padding: {right: 92}},
+        layout: {padding: {right: 130}},
         plugins: {
           legend: {display: false},
-          barValueLabel: {texts: p.rows.map(function(i){ return String(i.val).split('（')[0].trim(); })},
+          barValueLabel: {texts: p.rows.map(function(i){ return (i.kind === 'pts' ? i.raw : i.pt) + ' / 3　' + String(i.val).split('（')[0].trim(); })},
           tooltip: {callbacks: {label: function(ctx){
             var row = p.rows[ctx.dataIndex];
             return row.val + '　' + LABEL[row.color];
@@ -2740,5 +2751,16 @@ on('o_trend', 'change', drawTrend);
 
 boot();
 </script>
+<script>
+document.getElementById('golfTabs').addEventListener('click',function(event){
+ var button=event.target.closest('button[data-pose]');if(!button)return;
+ var key=button.dataset.pose; if(!['address','impact','follow'].includes(key))return;
+ document.querySelectorAll('#golfTabs button').forEach(function(b){b.classList.toggle('on',b===button);b.setAttribute('aria-pressed',String(b===button));});
+ document.getElementById('golfImage').src='assets/golf/'+key+'.png';
+ document.getElementById('golfImage').alt='右打ち・'+button.textContent+'：左が正面側、右が背面側';
+ document.getElementById('golfCaption').textContent='右打ち・'+button.textContent+' ｜ 左：正面側 ／ 右：背面側';
+});
+</script>
+
 </body>
 </html>

@@ -1,6 +1,8 @@
 'use client';
 import { useId, useState } from 'react';
 import ResultTrend from './result-trend';
+import GolfPoses from './golf-poses';
+import ResultInsights from './result-insights';
 import { palette,scoreColor } from '../lib/chart-colors.mjs';
 import { bodyRegions,bodyThemes,createBodyRenderer } from '../../src/domain/bodymap.mjs';
 const cats={flex:'柔軟性',balance:'バランス',strength:'筋力',jump:'ジャンプ',quality:'動きの質'};
@@ -39,6 +41,8 @@ export default function ResultVisuals({score,sex,rules={},history=[]}){
    <Legend/><p className="muted">無色は未測定です。部位の対応は暫定です。総合点には影響しません。</p><label>部位と評価の根拠<select value={region} onChange={e=>setRegion(e.target.value)}><option value="">部位を選択</option>{Object.keys(body.score).map(k=><option key={k} value={k}>{label(k)}：{fmt(body.score[k])}</option>)}</select></label>{region&&<div role="status"><h3>{label(region)}：{fmt(body.score[region])}</h3>{(body.basis[region]??[]).length?<ul>{body.basis[region].map((b,i)=><li key={i}>{b.name}：{b.pt} / 3点（寄与 {b.w}）</li>)}</ul>:<p>この部位の測定はありません。</p>}</div>}
   </section>
   {Object.entries(cats).map(([key,name])=>{const items=score.items.filter(i=>i.cat===name);return <section className="card" key={key}><div className="section-heading"><h2>{name}</h2><strong className="category-score" style={{color:scoreColor(score.cats[key],rules)}}>{fmt(score.cats[key])}{score.cats[key]!=null&&<small> / 100</small>}</strong></div>{items.length?<div className={`chart-layout ${score.radars[key]?'':'bars-only'}`}>{score.radars[key]&&<Radar title={`${name}の部位別評価`} axes={score.radars[key]} rules={rules}/>}<div><Bars points rows={items.map(i=>({label:i.short??i.name,text:i.val,points:i.kind==='pts'?i.raw:i.pt,value:Math.round((i.kind==='pts'?i.raw:i.pt)/3*1000)/10,color:palette[i.color]??palette.gray}))}/><Legend/></div></div>:<p className="muted">この部門はまだ測定されていません。</p>}</section>;})}
+  <section className="card"><GolfPoses/></section>
+  <ResultInsights score={score} rules={rules}/>
   <ResultTrend history={history} rules={rules}/>
  </>;
 }
