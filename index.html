@@ -241,6 +241,8 @@ table.res tr:last-child td{border-bottom:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .panel h2{font-size:20px}.partHead h2{font-size:22px}.golf-poses figure{margin:16px 0}.golf-poses figcaption{text-align:center;font-size:13px;color:var(--ink-2)}.bars .bar{margin-bottom:12px}
 .condition-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}.condition-layout>*{min-width:0}.condition-layout .golf-poses{border-left:1px solid var(--line);padding-left:24px}.condition-layout .bodyFigs{max-width:100%}@media(max-width:680px){.condition-layout{grid-template-columns:1fr}.condition-layout .golf-poses{border-left:0;border-top:1px solid var(--line);padding:16px 0 0}}
+
+.golf-map{position:relative;isolation:isolate}.golf-overlay{position:absolute;inset:0;mix-blend-mode:multiply}.golf-overlay svg{display:block;width:100%;height:100%}.golf-region{cursor:pointer}
 </style>
 </head>
 <body>
@@ -437,8 +439,8 @@ table.res tr:last-child td{border-bottom:0}
       <button type="button" aria-pressed="false" data-pose="impact">インパクト</button>
       <button type="button" aria-pressed="false" data-pose="follow">フォロー</button>
     </div>
-    <figure><img id="golfImage" src="assets/golf/address.png" width="1536" height="1024" alt="右打ち・アドレス：左が正面側、右が背面側" style="display:block;width:100%;height:auto"><figcaption id="golfCaption">右打ち・アドレス ｜ 左：正面側 ／ 右：背面側</figcaption></figure>
-    <p class="help">姿勢の参考図です。スイングを測定・採点した結果ではありません。</p>
+    <figure><div class="golf-map"><img id="golfImage" src="assets/golf/address.png" width="1536" height="1024" alt="右打ち・アドレス：左が正面側、右が背面側" style="display:block;width:100%;height:auto"><div class="golf-overlay" id="golfOverlay"></div></div><figcaption id="golfCaption">右打ち・アドレス ｜ 左：正面側 ／ 右：背面側</figcaption></figure>
+    <p class="help">立位図と同じ測定結果を表示しています。無色の部位は未測定です（動きの質の部位対応は未設定）。色の位置は姿勢に合わせた目安で、スイング自体の採点ではありません。</p>
   </section>
 </div>
   </div>
@@ -2060,6 +2062,7 @@ function renderBodyMap(d){
   $('bodyFront').innerHTML = buildBodyFigure('front', sexKey, scores);
   $('bodyBack').innerHTML  = buildBodyFigure('back',  sexKey, scores);
   $('bodyBasis').hidden = true;
+  if(window.renderGolfOverlay)window.renderGolfOverlay();
 }
 
 /* 部位をタップしたときに出す「その色の根拠」 */
@@ -2747,11 +2750,21 @@ document.getElementById('golfTabs').addEventListener('click',function(event){
  var button=event.target.closest('button[data-pose]');if(!button)return;
  var key=button.dataset.pose; if(!['address','impact','follow'].includes(key))return;
  document.querySelectorAll('#golfTabs button').forEach(function(b){b.classList.toggle('on',b===button);b.setAttribute('aria-pressed',String(b===button));});
+ if(window.renderGolfOverlay)window.renderGolfOverlay(key);
  document.getElementById('golfImage').src='assets/golf/'+key+'.png';
  document.getElementById('golfImage').alt='右打ち・'+button.textContent+'：左が正面側、右が背面側';
  document.getElementById('golfCaption').textContent='右打ち・'+button.textContent+' ｜ 左：正面側 ／ 右：背面側';
 });
 </script>
 
+<script type="module">
+import {renderGolfOverlay} from './src/domain/golf-overlay.mjs';
+window.renderGolfOverlay=function(pose){
+ const key=pose||document.querySelector('#golfTabs button.on').dataset.pose;
+ document.getElementById('golfOverlay').innerHTML=renderGolfOverlay(key,result?.body?.[bodyTheme]?.score||{}, {flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},'legacy');
+};
+document.getElementById('golfOverlay').addEventListener('click',function(e){const hit=e.target.closest('.golf-region');if(hit){const [region,side]=hit.dataset.region.split('|');showBodyBasis(region,side);}});
+window.renderGolfOverlay();
+</script>
 </body>
 </html>
