@@ -1,5 +1,5 @@
 import './style.css';
-export const metadata = { title: 'ニーズフィジカルチェック', robots: { index: false, follow: false } };
+export const metadata = { title: 'NeeDS フィジカルチェック', robots: { index: false, follow: false } };
 export default function Layout({ children }) {
-  return <html lang="ja"><body><header><strong>ニーズフィジカルチェック</strong></header><main>{children}</main></body></html>;
+  return <html lang="ja"><body><header><strong>NeeDS フィジカルチェック</strong></header><main>{children}</main></body></html>;
 }

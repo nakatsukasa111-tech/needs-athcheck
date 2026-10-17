@@ -58,7 +58,8 @@ INS = dil(~ext, 1)
 
 # --- 6体に切り分ける（隣り合う図は手が触れているので、いちばん細いところで切る）
 cut = INS.copy()
-for c in PANEL_LINES: cut[:, c-8:c+9] = False
+# 補正原画は手が独立している。広い帯を削ると罫線付近の指まで欠ける。
+for c in PANEL_LINES: cut[:, c-1:c+2] = False
 cs = INS.sum(axis=0)
 for x0, x1 in [(2, PANEL_LINES[0]-2), (PANEL_LINES[0]+4, PANEL_LINES[1]-2), (PANEL_LINES[1]+4, W-3)]:
     a, b = x0 + int((x1-x0)*0.38), x0 + int((x1-x0)*0.62)
@@ -164,7 +165,8 @@ for c, nm in zip(comps, NAMES):
     d = 'M' + ' L'.join('%.1f,%.1f' % (120 + (x-cxs)*SC, top + (y-y0)*SC) for x, y in simp) + ' Z'
 
     # 線画（白＝線 の濃淡画像。SVGのマスクとして重ねる）
-    reg = dil(m, 4); pad = 4
+    # m は既に線幅を含む。追加の膨張は隣の指や罫線を取り込む。
+    reg = m; pad = 4
     bx0, bx1 = max(0, x0-pad), min(W-1, x1+pad)
     by0, by1 = max(0, y0-pad), min(H-1, y1+pad)
     al = np.clip(255 - G[by0:by1+1, bx0:bx1+1], 0, 255)
