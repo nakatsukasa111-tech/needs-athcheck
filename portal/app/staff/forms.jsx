@@ -33,7 +33,7 @@ export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }
     setDemoCount(n=>n+1);
   }
   return <form action={action} {...preserved}><input type="hidden" name="member_id" value={memberId}/><input type="hidden" name="record_id" value={recordId}/>
-    {demoEnabled&&<section className="card"><h2>架空会員用のデモ入力</h2><p>全測定項目と体重を、押すたびに別のデモ数値へ入れ替えます。入力済みの数値も上書きします。</p><button type="button" onClick={fillDemo} disabled={pending}>デモ数値を入れる</button><p className="muted">ボタンでは保存しません。確認後に下書き保存できます。</p><p role="status" aria-live="polite">{demoCount>0&&`デモ数値を入力しました（${demoCount}回目・${athlete.fields.length}項目）。`}</p></section>}
+    {demoEnabled&&<section className="card"><h2>デモ数値の入力</h2><p>全測定項目と体重を、押すたびに別のデモ数値へ入れ替えます。入力済みの数値も上書きします。</p><button type="button" onClick={fillDemo} disabled={pending}>デモ数値を入れる</button><p className="muted">ボタンでは保存しません。確認後に下書き保存できます。</p><p role="status" aria-live="polite">{demoCount>0&&`デモ数値を入力しました（${demoCount}回目・${athlete.fields.length}項目）。`}</p></section>}
     <section className="card"><label htmlFor="date">測定日</label><input id="date" name="measured_on" type="date" defaultValue={today} max={today} required/>
       <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><input id="weight" name="weight" type="number" min="0.01" step="any" inputMode="decimal"/>
       <p>測定しなかった項目は空欄にしてください。0は測定済みとして採点されます。</p></section>

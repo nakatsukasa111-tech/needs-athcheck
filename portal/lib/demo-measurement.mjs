@@ -1,6 +1,6 @@
 import {athlete} from './measurement-input.mjs';
-// Existing synthetic member only. A matching display name never enables this.
-export function canFillDemo(member){return member?.id==='3b3b9a22-b335-4cda-8c4c-f14901036abd'&&member.company_id==='78318e46-276c-48a2-b6d4-b0fa279671fe';}
+// Explicitly approved members only. A matching display name never enables this.
+export function canFillDemo(member){return ['3b3b9a22-b335-4cda-8c4c-f14901036abd','d97c5190-57e9-50f7-af7c-64eedeb66b08','64992d17-7f10-5a69-aba4-883c40b0d219'].includes(member?.id)&&member.company_id==='78318e46-276c-48a2-b6d4-b0fa279671fe';}
 export function createDemoMeasurement(previous,random=Math.random){
  const integer=(min,max)=>min+Math.floor(random()*(max-min+1));
  const decimal=(min,max)=>integer(min*10,max*10)/10;
