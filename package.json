@@ -1,0 +1,10 @@
+{
+  "name": "needs-athcheck",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "scoring:generate": "node tools/extract-scoring.mjs",
+    "scoring:check": "node tools/extract-scoring.mjs --check"
+  },
+  "engines": { "node": ">=22" }
+}
