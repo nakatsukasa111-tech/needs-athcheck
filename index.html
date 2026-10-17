@@ -240,6 +240,7 @@ table.res tr:last-child td{border-bottom:0}
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .panel h2{font-size:20px}.partHead h2{font-size:22px}.golf-poses figure{margin:16px 0}.golf-poses figcaption{text-align:center;font-size:13px;color:var(--ink-2)}.bars .bar{margin-bottom:12px}
+.condition-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}.condition-layout>*{min-width:0}.condition-layout .golf-poses{border-left:1px solid var(--line);padding-left:24px}.condition-layout .bodyFigs{max-width:100%}@media(max-width:680px){.condition-layout{grid-template-columns:1fr}.condition-layout .golf-poses{border-left:0;border-top:1px solid var(--line);padding:16px 0 0}}
 </style>
 </head>
 <body>
@@ -412,10 +413,11 @@ table.res tr:last-child td{border-bottom:0}
       <b>部位をタップすると、その色の根拠になった種目と点数が出ます。</b>
       色がついていないところは、その部位を見る種目を測っていません。</p>
     <div class="tabs" id="bodyTabs"></div>
-    <div class="bodyFigs">
+    <div class="condition-layout"><div class="standing-condition"><h3>立位の正面・背面</h3><div class="bodyFigs">
       <div class="bodyFig"><h4>正面</h4><p class="lr">向かって左が選手の「右」</p><div id="bodyFront"></div></div>
       <div class="bodyFig"><h4>背面</h4><p class="lr">向かって右が選手の「右」</p><div id="bodyBack"></div></div>
     </div>
+    <div id="bodyQuality" hidden></div>
     <div class="bodyLegend">
       <span><i style="background:linear-gradient(90deg,rgba(59,143,104,.8),rgba(59,143,104,0))"></i>良好</span>
       <span><i style="background:linear-gradient(90deg,rgba(216,154,31,.8),rgba(216,154,31,0))"></i>普通</span>
@@ -428,9 +430,7 @@ table.res tr:last-child td{border-bottom:0}
     <p class="help" style="margin:12px 0 0">※ 測っているのは動作であって部位そのものではありません。
       どの種目がどの部位に効くと見なすかは、トレーナーの判断で決めた対応表によります（暫定）。
       トレーナーが触って得た所見と食い違うときは、所見のほうが正しいという前提で使ってください。</p>
-  </div>
-
-  <section class="panel golf-poses">
+    </div>  <section class="golf-poses">
     <h2>ゴルフの姿勢</h2>
     <div class="tabs" id="golfTabs" role="group" aria-label="ゴルフの局面">
       <button type="button" class="on" aria-pressed="true" data-pose="address">アドレス</button>
@@ -440,6 +440,9 @@ table.res tr:last-child td{border-bottom:0}
     <figure><img id="golfImage" src="assets/golf/address.png" width="1536" height="1024" alt="右打ち・アドレス：左が正面側、右が背面側" style="display:block;width:100%;height:auto"><figcaption id="golfCaption">右打ち・アドレス ｜ 左：正面側 ／ 右：背面側</figcaption></figure>
     <p class="help">姿勢の参考図です。スイングを測定・採点した結果ではありません。</p>
   </section>
+</div>
+  </div>
+
   <div id="r_parts"></div>
 
   <div class="panel">
@@ -2044,26 +2047,14 @@ function bodySexKey(){
 
 function renderBodyMap(d){
   var body = d.body || {};
-  if(!body[bodyTheme]) bodyTheme = 'flex';
-  var measured = BODY_THEMES.filter(function(t){
-    return body[t.key] && Object.keys(body[t.key].score).length > 0;
-  });
-  if(!measured.length){
-    $('bodyPanel').hidden = true;
-    return;
-  }
   $('bodyPanel').hidden = false;
-  // 何も測っていないタブが選ばれていたら、測ったタブへ移す
-  if(!body[bodyTheme] || !Object.keys(body[bodyTheme].score).length) bodyTheme = measured[0].key;
-
-  $('bodyTabs').innerHTML = BODY_THEMES.map(function(t){
-    var n = body[t.key] ? Object.keys(body[t.key].score).length : 0;
-    return '<button type="button" data-k="' + t.key + '"' +
-           (t.key === bodyTheme ? ' class="on"' : '') +
-           (n ? '' : ' disabled title="この見方に使う種目を測っていません"') +
-           '>' + esc(t.label) + (n ? '' : '<span class="n">未測定</span>') + '</button>';
-  }).join('');
-
+  var tabs=[{key:'flex',label:'柔軟'},{key:'strength',label:'筋力'},{key:'balance',label:'バランス'},{key:'quality',label:'動きの質'}];
+  $('bodyTabs').innerHTML=tabs.map(function(t){return '<button type="button" data-k="'+t.key+'" aria-pressed="'+(t.key===bodyTheme)+'"'+(t.key===bodyTheme?' class="on"':'')+'>'+t.label+'</button>';}).join('');
+  $('bodyQuality').hidden=bodyTheme!=='quality';
+  if(bodyTheme==='quality'){
+    var items=d.items.filter(function(i){return i.cat==='動きの質';});
+    $('bodyQuality').innerHTML='<h3>動きの質</h3><p class="help">部位への色分けは未設定です。測定した動作ごとの結果を表示します。</p>'+(items.length?'<ul>'+items.map(function(i){return '<li>'+esc(i.name)+'：'+esc(String(i.raw))+' / 3点</li>';}).join('')+'</ul>':'<p>この部門は未測定です。</p>');
+  }
   var scores = (body[bodyTheme] || {}).score || {};
   var sexKey = bodySexKey();
   $('bodyFront').innerHTML = buildBodyFigure('front', sexKey, scores);
