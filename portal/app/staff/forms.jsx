@@ -1,6 +1,7 @@
 'use client';
-import { useActionState, useEffect, useRef } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { registerMember, saveMeasurement, setPublication } from './actions';
+import {createDemoMeasurement} from '../../lib/demo-measurement.mjs';
 import { athlete, categories } from '../../lib/measurement-input.mjs';
 function Feedback({ state }) { return <div aria-live="polite">{state?.error && <p className="error" role="alert">{state.error}</p>}{state?.success && <p>{state.success}</p>}</div>; }
 function usePreservedForm(state) {
@@ -18,10 +19,21 @@ export function MemberForm({ companies, today }) {
     <label htmlFor="external">既存の顧客番号（任意）</label><input id="external" name="external_customer_no" maxLength={100}/>
     <Feedback state={state}/><button disabled={pending}>{pending ? '登録中…' : '会員を登録する'}</button></form>;
 }
-export function MeasurementForm({ memberId, recordId, today }) {
+export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }) {
   const [state, action, pending] = useActionState(saveMeasurement, null);
   const preserved=usePreservedForm(state);
+  const lastDemo=useRef(null);const [demoCount,setDemoCount]=useState(0);
+  function fillDemo(){
+    if(!demoEnabled||pending||!preserved.ref.current)return;
+    const data=createDemoMeasurement(lastDemo.current);lastDemo.current=data;
+    const fields=preserved.ref.current.elements;
+    fields.namedItem('weight').value=String(data.weight);
+    for(const [key,value]of Object.entries(data.values))fields.namedItem('value:'+key).value=String(value);
+    for(const key of athlete.fields){const checkbox=fields.namedItem('estimated:'+key);if(checkbox)checkbox.checked=false;}
+    setDemoCount(n=>n+1);
+  }
   return <form action={action} {...preserved}><input type="hidden" name="member_id" value={memberId}/><input type="hidden" name="record_id" value={recordId}/>
+    {demoEnabled&&<section className="card"><h2>架空会員用のデモ入力</h2><p>全測定項目と体重を、押すたびに別のデモ数値へ入れ替えます。入力済みの数値も上書きします。</p><button type="button" onClick={fillDemo} disabled={pending}>デモ数値を入れる</button><p className="muted">ボタンでは保存しません。確認後に下書き保存できます。</p><p role="status" aria-live="polite">{demoCount>0&&`デモ数値を入力しました（${demoCount}回目・${athlete.fields.length}項目）。`}</p></section>}
     <section className="card"><label htmlFor="date">測定日</label><input id="date" name="measured_on" type="date" defaultValue={today} max={today} required/>
       <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><input id="weight" name="weight" type="number" min="0.01" step="any" inputMode="decimal"/>
       <p>測定しなかった項目は空欄にしてください。0は測定済みとして採点されます。</p></section>
