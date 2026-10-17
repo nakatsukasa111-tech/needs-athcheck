@@ -12,8 +12,8 @@ export default async function MyPage() {
     if (result.error) throw new Error('記録を読み込めませんでした');
     records = result.data;
   }
-  return <><Link href="/">ホームへ</Link><h1>マイページ</h1><p>これまでの測定を振り返りましょう。</p><h2>測定履歴</h2>
+  return <><Link href="/">ホームへ</Link><div className="page-heading"><div><p className="eyebrow">MY PHYSICAL RECORD</p><h1>マイページ</h1></div></div><p>これまでの測定を振り返りましょう。</p><h2>測定履歴</h2>
     {records.length === 0 && <section className="card"><p>公開された測定結果はまだありません。</p></section>}
-    {records.map(row => <section className="card" key={row.id}><h2>{row.measured_on}</h2><p>{row.public_comment}</p><Link href={`/mypage/results/${row.id}`}>測定結果を見る →</Link></section>)}
+    {records.map(row => <section className="card history-card" key={row.id}><h2>{row.measured_on}</h2><p>{row.public_comment}</p><Link href={`/mypage/results/${row.id}`}>測定結果を見る →</Link></section>)}
   </>;
 }
