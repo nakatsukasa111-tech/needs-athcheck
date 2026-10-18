@@ -3,6 +3,7 @@ import ExerciseForm from './staff/exercise-form';
 import ExercisePicker from './staff/exercise-picker';
 import {methodbookCatalog} from '../lib/methodbook';
 import {mergeCatalog,fallbackDimensions,cleanNote} from '../lib/methodbook-data.mjs';
+import {customerLessonHref} from '../lib/customer-lesson.mjs';
 import ExerciseHeading from './exercise-heading';
 export default async function ExerciseSection({db,row,score,staff=false}){
  const selected=await db.from('athlete_exercise_assignments').select('lesson_id,trainer_note,confirmed').eq('measurement_id',row.id).eq('company_id',row.company_id);
@@ -13,7 +14,7 @@ export default async function ExerciseSection({db,row,score,staff=false}){
  if(lessons.error)throw Error('教材を読み込めませんでした。');
  const catalog=await methodbookCatalog();
  const dimensions=catalog?.dimensions??fallbackDimensions(lessons.data);
- lessons.data=mergeCatalog(lessons.data,catalog);
+ lessons.data=mergeCatalog(lessons.data,catalog).map(l=>({...l,member_url:l.member_url?customerLessonHref(l.id,row.id):null}));
  let candidates=[];
  if(staff){const rules=await db.from('athlete_exercise_rules').select('*').eq('company_id',row.company_id);if(rules.error)throw Error('提案ルールを読み込めませんでした。');candidates=exerciseProposals(row.company_id,row,score,lessons.data.filter(l=>!l.sourceMissing),rules.data);}
  const shown=staff?lessons.data.filter(l=>selected.data.some(a=>a.lesson_id===l.id)||candidates.some(c=>c.lessonId===l.id)):lessons.data;
