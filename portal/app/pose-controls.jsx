@@ -1,0 +1,3 @@
+'use client';
+import {sportPoses} from '../../src/domain/sport-poses.mjs';
+export default function PoseControls({sport,onSport,hand,onHand}){const batting=['golf','baseball-batter'].includes(sport),suffix=batting?'打ち':sport==='baseball-pitcher'?'投げ':'利き';return <div className="pose-controls"><select aria-label="競技の姿勢" value={sport} onChange={e=>onSport(e.target.value)}>{Object.entries(sportPoses).map(([key,s])=><option key={key} value={key}>{s.label}の姿勢</option>)}</select><select aria-label="動作の左右" value={hand} onChange={e=>onHand(e.target.value)}><option value="R">右{suffix}</option><option value="L">左{suffix}</option></select></div>;}

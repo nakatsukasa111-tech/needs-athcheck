@@ -16,3 +16,5 @@ test('side sex fallback affects drawing only',()=>{
  assert.match(renderSideFigure([], '/body/',{sex:'F'}),/side.png/);
  for(const sex of ['M','X',''])assert.match(renderSideFigure([], '/body/',{sex}),/side-male.png/);
 });
+
+test('left side mirrors the figure while preserving anatomical scores and readable labels',()=>{const left=renderSideFigure([], '/body/',{theme:'flex',side:'L',scores:{'shoulder|L':33},prefix:'left'});assert.match(left,/立位・左側面/);assert.match(left,/translate\(240 0\) scale\(-1 1\)/);assert.match(left,/shoulder\|L/);assert.doesNotMatch(renderSideFigure([], '/body/',{side:'R'}),/translate\(240 0\)/);});

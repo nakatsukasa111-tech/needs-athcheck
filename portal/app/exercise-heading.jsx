@@ -1,0 +1,2 @@
+import {classification} from '../lib/methodbook-data.mjs';
+export default function ExerciseHeading({lesson,dimensions}){return <div className="exercise-heading"><h3>{lesson.member_url?<a href={lesson.member_url} target="_blank" rel="noopener noreferrer">{lesson.title}</a>:lesson.title}</h3><span>目的：{classification(lesson,dimensions,'purposes')||'—'}</span><span>主要な部位：{classification(lesson,dimensions,'body_regions')||'—'}</span>{lesson.member_url&&<a href={lesson.member_url} target="_blank" rel="noopener noreferrer">NeeDS Method Book ↗</a>}</div>;}

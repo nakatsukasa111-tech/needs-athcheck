@@ -62,8 +62,8 @@ export function renderQualityMarks(assessments=[],pose='standing',view='front',m
 export function renderSideFigure(assessments=[],assetRoot='/body/',options={}){
  const {scores={},rules={},side='R',theme='quality',sex='M',prefix='side'}=options;
  const file=sex==='F'?'side.png':'side-male.png';
- const overlay=['flex','strength'].includes(theme)?renderSideOverlay(scores,rules,side,prefix):theme==='quality'?renderQualityMarks(assessments,'standing','side'):'';
- return `<svg viewBox="0 0 240 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="立位・横向き"><image href="${esc(assetRoot+file)}" x="-17" y="34" width="273" height="410" preserveAspectRatio="none"/>${overlay}</svg>`;
+ const overlay=['flex','strength'].includes(theme)?renderSideOverlay(scores,rules,side,prefix):theme==='quality'?renderQualityMarks(assessments,'standing','side',side==='L'):'';
+ return `<svg viewBox="0 0 240 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="立位・${side==='R'?'右側面':'左側面'}"><g transform="${side==='L'?'translate(240 0) scale(-1 1)':''}"><image href="${esc(assetRoot+file)}" x="-17" y="34" width="273" height="410" preserveAspectRatio="none"/>${overlay}</g></svg>`;
 }
 export function renderGolfFigure(pose,view,scores,rules,prefix,assessments,assetRoot='/golf/',mirror=false){
  if(!golfLandmarks[pose]||!['front','back'].includes(view))return '';
