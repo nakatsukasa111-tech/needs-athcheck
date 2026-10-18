@@ -2,7 +2,22 @@
   "name": "needs-athcheck-portal",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "test:db": "node --test tests/*.test.mjs" },
-  "dependencies": { "next": "^16.0.0", "react": "^19.0.0", "react-dom": "^19.0.0", "@supabase/ssr": "^0.8.0", "@supabase/supabase-js": "^2.0.0", "server-only": "^0.0.1" },
-  "devDependencies": { "@electric-sql/pglite": "^0.3.0" }
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test:db": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.0.0",
+    "server-only": "^0.0.1",
+    "sharp": "^0.34.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.0"
+  }
 }
