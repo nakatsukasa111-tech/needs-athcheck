@@ -1,0 +1,7 @@
+import Link from 'next/link';
+export default function MemberHome({names,records,linked,preview=false}){
+ const latest=records[0];const resultHref=row=>preview?'/demo':'/mypage/results/'+row.id;
+ return <div className="member-workspace"><div className="workspace-nav"><Link href={preview?'/preview/staff':'/'}>← {preview?'スタッフ画面の見本':'ホーム'}</Link><span>会員マイページ</span></div><div className="page-heading"><div><p className="eyebrow">フィジカルチェック</p><h1>マイページ</h1><p className="member-greeting">{names.length?names.join('・')+' さん':''}</p></div></div>
+ {latest?<section className="latest-record"><div><span className="record-kicker">最新の測定結果</span><h2>{latest.measured_on.replaceAll('-',' / ')}</h2><p>{latest.public_comment||'測定結果と推奨エクササイズを確認できます。'}</p></div><Link className="button" href={resultHref(latest)}>結果・エクササイズを見る <span aria-hidden="true">→</span></Link></section>:<section className="card"><h2>{linked?'測定結果の公開待ちです':'マイページの連携待ちです'}</h2><p>{linked?'担当トレーナーが測定結果を公開すると、ここに表示されます。':'担当トレーナーにメールアドレスの連携をご依頼ください。'}</p></section>}
+ <div className="history-title"><h2>測定履歴</h2><span>{records.length} 件</span></div><div className="record-list">{records.map((row,index)=><Link className="record-item" href={resultHref(row)} key={row.id}><div><time dateTime={row.measured_on}>{row.measured_on.replaceAll('-',' / ')}</time>{index===0&&<span className="record-new">最新</span>}<p>{row.public_comment||'測定結果を確認する'}</p></div><span className="record-open">結果を見る →</span></Link>)}</div></div>;
+}

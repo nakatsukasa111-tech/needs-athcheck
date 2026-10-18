@@ -1,0 +1,3 @@
+import MemberDirectory from '../../staff/member-directory';
+const members=[{id:'sample-1',display_name:'デモ会員（架空）',external_customer_no:'D001'},{id:'sample-2',display_name:'サンプル選手 A',external_customer_no:'D002'},{id:'sample-3',display_name:'サンプル選手 B',external_customer_no:'D003'}];
+export default function PreviewStaff(){return <div className="staff-workspace"><div className="workspace-nav"><span>スタッフ専用</span></div><div className="page-heading"><div><p className="eyebrow">会員管理</p><h1>会員一覧</h1><p className="muted">会員を選んで、測定と記録を確認します。</p></div><button disabled title="デザイン確認用のため登録できません">＋ 会員を登録</button></div><MemberDirectory members={members} links={{'sample-1':{active:true},'sample-2':{pending:true},'sample-3':{}}} preview/></div>;}
