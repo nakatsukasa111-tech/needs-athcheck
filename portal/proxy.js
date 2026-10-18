@@ -14,9 +14,9 @@ export async function proxy(request) {
         for (const { name, value, options } of items) response.cookies.set(name, value, options);
       },
     } });
-    await db.auth.getUser();
+    await db.auth.getClaims();
   }
   response.headers.set('Cache-Control', 'private, no-store, max-age=0');
   return response;
 }
-export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'] };
+export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico|brand/|sports/|body/|golf/|api/photos(?:/|$)).*)'] };
