@@ -37,7 +37,7 @@ test('全評価を同時表示し、立位3方向と全ゴルフ局面で左右�
   assert.match(svg,/data-assessment="slide_sq_R"[^>]*data-color="#F04438"/);
   assert.match(svg,/data-assessment="slide_sq_L"[^>]*data-color="#12B76A"/);
  }
- assert.match(renderSideFigure(d.qualityAssessments),/side.png/);
+ assert.match(renderSideFigure(d.qualityAssessments),/side-male.png/);
  assert.ok(!renderGolfFigure('address','front',{}, {},'x',d.qualityAssessments).includes('radialGradient'));
  assert.equal(renderQualityMarks([]),'');
  assert.equal(renderQualityMarks(scorer.score({sq_quality:3}).qualityAssessments),'');

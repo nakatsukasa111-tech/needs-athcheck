@@ -1,0 +1,3 @@
+'use client';
+import {useState} from 'react';import ResultVisuals from '../result-visuals';
+export default function DemoVisuals({score,rules}){const [sex,setSex]=useState('M');return <><div className="toggles" role="group" aria-label="デモ線画の性別">{[['M','男性'],['F','女性']].map(([key,label])=><button key={key} aria-pressed={sex===key} onClick={()=>setSex(key)}>{label}の線画</button>)}</div><ResultVisuals initialTheme="quality" score={score} sex={sex} rules={rules} history={[]}/></>;}

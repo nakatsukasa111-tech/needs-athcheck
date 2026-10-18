@@ -1,6 +1,7 @@
 'use client';
 import { useActionState, useEffect, useRef, useState } from 'react';
-import { registerMember, saveMeasurement, setPublication } from './actions';
+import SportFields from './sport-fields';
+import { registerMember, saveMeasurement, setPublication, saveSportProfile } from './actions';
 import {createDemoMeasurement} from '../../lib/demo-measurement.mjs';
 import { athlete, categories } from '../../lib/measurement-input.mjs';
 function Feedback({ state }) { return <div aria-live="polite">{state?.error && <p className="error" role="alert">{state.error}</p>}{state?.success && <p>{state.success}</p>}</div>; }
@@ -16,7 +17,7 @@ export function MemberForm({ companies, today }) {
     <label htmlFor="name">氏名</label><input id="name" name="display_name" required maxLength={100}/>
     <label htmlFor="birth">生年月日</label><input id="birth" name="birth_date" type="date" min="1900-01-01" max={today} required/>
     <label htmlFor="sex">評価基準の性別</label><select id="sex" name="threshold_sex" required defaultValue=""><option value="" disabled>選択してください</option><option value="M">男性</option><option value="F">女性</option></select>
-    <label htmlFor="external">既存の顧客番号（任意）</label><input id="external" name="external_customer_no" maxLength={100}/>
+    <SportFields/><label htmlFor="external">既存の顧客番号（任意）</label><input id="external" name="external_customer_no" maxLength={100}/>
     <Feedback state={state}/><button disabled={pending}>{pending ? '登録中…' : '会員を登録する'}</button></form>;
 }
 export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }) {
@@ -45,3 +46,5 @@ export function PublicationForm({ id, published }) {
   const [state,action,pending]=useActionState(setPublication,null);
   return <form action={action}><input type="hidden" name="record_id" value={id}/><input type="hidden" name="published" value={published?'false':'true'}/><Feedback state={state}/><button disabled={pending}>{pending?'変更中…':published?'本人への公開を取り消す':'確認した結果を本人へ公開する'}</button></form>;
 }
+
+export function SportProfileForm({member}){const [state,action,pending]=useActionState(saveSportProfile,null);return <form action={action} className="card"><input type="hidden" name="member_id" value={member.id}/><SportFields profile={member}/><Feedback state={state}/><button disabled={pending}>競技プロフィールを保存</button></form>;}

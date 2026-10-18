@@ -2,7 +2,9 @@
 import { useId, useState } from 'react';
 import {renderQualityMarks,renderSideFigure} from '../../src/domain/quality-overlay.mjs';
 import ResultTrend from './result-trend';
-import GolfPoses from './golf-poses';
+import SportPoses from './sport-poses';
+import {sportPoses} from '../../src/domain/sport-poses.mjs';
+import {initialSport} from '../../src/domain/sports.mjs';
 import ResultInsights from './result-insights';
 import { palette,scoreColor } from '../lib/chart-colors.mjs';
 import { bodyRegions,createBodyRenderer } from '../../src/domain/bodymap.mjs';
@@ -29,22 +31,24 @@ function Bars({rows,points=false,rules={}}){
  </div>)}<div className="bar-guide"><div className="bar-scale">{ticks.map((v,i)=><span key={i} style={{left:`${v}%`}}>{points?i:fmt(v)}</span>)}</div><div className="bar-bands">{points?<><span>1点：要改善</span><span>2点：普通</span><span>3点：良好</span></>:<><span>要改善：{yellow}未満</span><span>普通：{yellow}〜</span><span>良好：{green}〜</span></>}</div></div></div>;
 }
 function Legend(){return <div className="chart-legend"><span><i style={{background:palette.red}}/>要改善</span><span><i style={{background:palette.amber}}/>普通</span><span><i style={{background:palette.green}}/>良好</span><span><i style={{background:palette.gray}}/>未測定</span></div>;}
-export default function ResultVisuals({score,sex,rules={},history=[],initialTheme='flex'}){
- const [theme,setTheme]=useState(initialTheme),[region,setRegion]=useState(''),[assessmentKey,setAssessmentKey]=useState('');
+export default function ResultVisuals({score,sex,rules={},history=[],initialTheme='flex',profile={}}){
+ const [theme,setTheme]=useState(initialTheme),[region,setRegion]=useState(''),[assessmentKey,setAssessmentKey]=useState(''),[side,setSide]=useState('R');
+ const [sport,setSport]=useState(()=>initialSport(profile));
  const prefix=useId();const draw=createBodyRenderer(rules,prefix);
  if(!score)return null;
  const assessments=score.qualityAssessments??[];const marks=theme==='quality'?assessments:undefined;
  const selected=assessments.find(a=>a.key===assessmentKey);
  const body=score.body?.[theme]??{score:{},basis:{}};
- const sexLabel=sex==='M'?'男性':sex==='F'?'女性':'中性';
+ const figureSex=sex==='F'?'F':'M';const sexLabel=figureSex==='F'?'女性':'男性';
  const label=k=>{const [r,s]=k.split('|');return `${bodyRegions.find(b=>b.key===r)?.label??r}${s==='R'?'・右':s==='L'?'・左':''}`;};
  return <>
   <section className="card"><h2>測定バランス</h2><div className="chart-layout overview-chart"><Bars rules={rules} rows={Object.entries(cats).map(([key,label])=>({label,value:score.cats[key],text:score.cats[key]==null?'未測定':'',color:scoreColor(score.cats[key],rules)}))}/><Radar title="5部門の得点率" rules={rules} axes={Object.entries(cats).map(([key,label])=>({label,value:score.cats[key]}))}/></div><Legend/><p className="muted">未測定の軸は図の中心に置いています。総合点の計算には含めません。</p></section>
   <section className="card" id="conditions"><div className="section-heading"><h2>部位別コンディション</h2><span className="body-type">{sexLabel}のボディマップ</span></div><p className="muted">測定した項目から、どの部位に出ているかを表示しています。部位を選ぶと評価の根拠を確認できます。</p><div className="toggles body-tabs" role="group" aria-label="ボディマップの切り替え">{conditionTabs.map(t=><button key={t.key} aria-pressed={theme===t.key} onClick={()=>{setTheme(t.key);setRegion('');}}>{t.label}</button>)}</div>
-   <div className="condition-layout" onClick={e=>{const mark=e.target.closest?.('.quality-mark');if(mark)setAssessmentKey(mark.dataset.assessment);}}><div className="standing-condition"><h3>立位の正面・背面・横向き</h3><div className="body-pair">{['front','back'].map(view=><figure key={view}><figcaption>{view==='front'?'正面':'背面'}</figcaption><div aria-label={`${sexLabel}・${view==='front'?'正面':'背面'}`} onClick={e=>{const hit=e.target.closest?.('.bodyHit');if(hit)setRegion(`${hit.dataset.k}|${hit.dataset.s}`);}} dangerouslySetInnerHTML={{__html:draw(view,sex,body.score).replace('</svg>',renderQualityMarks(marks,'standing',view)+'</svg>')}}/></figure>)}<figure><figcaption>横向き</figcaption><div dangerouslySetInnerHTML={{__html:renderSideFigure(marks)}}/></figure></div>
+   <div className="toggles sport-tabs" role="group" aria-label="競技の切り替え">{Object.entries(sportPoses).map(([key,s])=><button type="button" key={key} aria-pressed={sport===key} onClick={()=>setSport(key)}>{s.label}</button>)}</div>
+   <div className="condition-layout" onClick={e=>{const mark=e.target.closest?.('.quality-mark');if(mark)setAssessmentKey(mark.dataset.assessment);}}><div className="standing-condition"><h3>立位の正面・背面・横向き</h3><div className="body-pair">{['front','back'].map(view=><figure key={view}><figcaption>{view==='front'?'正面':'背面'}</figcaption><div aria-label={`${sexLabel}・${view==='front'?'正面':'背面'}`} onClick={e=>{const hit=e.target.closest?.('.bodyHit');if(hit)setRegion(`${hit.dataset.k}|${hit.dataset.s}`);}} dangerouslySetInnerHTML={{__html:draw(view,figureSex,body.score).replace('</svg>',renderQualityMarks(marks,'standing',view)+'</svg>')}}/></figure>)}<figure><figcaption>横向き</figcaption>{['flex','strength'].includes(theme)&&<div className="toggles" role="group" aria-label="横向きの評価側">{['R','L'].map(s=><button type="button" key={s} aria-pressed={side===s} onClick={()=>setSide(s)}>{s==='R'?'右':'左'}</button>)}</div>}<div onClick={e=>{const hit=e.target.closest?.('.golf-region');if(hit)setRegion(hit.dataset.region);}} dangerouslySetInnerHTML={{__html:renderSideFigure(marks,'/body/',{scores:body.score,rules,side,theme,sex:figureSex,prefix})}}/></figure></div>
    {theme==='quality'&&<div className="quality-condition"><p className="muted">縦線：スライドSQ ／ 回旋：ローテーションSQ・ドリル ／ 背面の色：肩甲骨 ／ 横向き：SSP・骨盤</p>{!assessments.some(a=>!a.legacy&&a.test!=='sq_quality')&&<p>図に表示できる測定はまだありません。</p>}{assessments.some(a=>a.legacy)&&<p className="muted">旧評価は左右・方向が未分離のため、図には反映していません。</p>}{selected&&<p role="status"><strong>{selected.label}：{selected.pt}点</strong><br/>{selected.detail}</p>}</div>}
    <Legend/><p className="muted">{theme==='quality'?'測定済みの評価を同時に表示。マークを選ぶと項目名・点数が出ます。':'無色は未測定です。部位の対応は暫定です。'}</p>{theme!=='quality'&&<label>部位と評価の根拠<select value={region} onChange={e=>setRegion(e.target.value)}><option value="">部位を選択</option>{Object.keys(body.score).map(k=><option key={k} value={k}>{label(k)}：{fmt(body.score[k])}</option>)}</select></label>}{theme!=='quality'&&region&&<div role="status"><h3>{label(region)}：{fmt(body.score[region])}</h3>{(body.basis[region]??[]).length?<ul>{body.basis[region].map((b,i)=><li key={i}>{b.name}：{b.pt} / 3点（寄与 {b.w}）</li>)}</ul>:<p>この部位の測定はありません。</p>}</div>}
-  </div><GolfPoses scores={body.score} rules={rules} theme={theme} onRegion={setRegion} assessments={marks}/></div></section>
+  </div><SportPoses sport={sport} profile={profile} sex={figureSex} scores={body.score} rules={rules} theme={theme} onRegion={setRegion} assessments={marks}/></div></section>
   {Object.entries(cats).map(([key,name])=>{const items=score.items.filter(i=>i.cat===name);return <section className="card" key={key}><div className="section-heading"><h2>{name}</h2><strong className="category-score" style={{color:scoreColor(score.cats[key],rules)}}>{fmt(score.cats[key])}{score.cats[key]!=null&&<small> / 100</small>}</strong></div>{items.length?<details open={key!=='quality'} className="category-details"><summary>{name}の項目別評価（{items.length}件）</summary><div className={`chart-layout ${score.radars[key]?'':'bars-only'}`}>{score.radars[key]&&<Radar title={`${name}の部位別評価`} axes={score.radars[key]} rules={rules}/>}<div><Bars points rows={items.map(i=>({label:i.short??i.name,text:i.val,points:i.kind==='pts'?i.raw:i.pt,value:Math.round((i.kind==='pts'?i.raw:i.pt)/3*1000)/10,color:palette[i.color]??palette.gray}))}/><Legend/></div></div></details>:<p className="muted">この部門はまだ測定されていません。</p>}</section>;})}
   <ResultInsights score={score} rules={rules}/>
   <ResultTrend history={history} rules={rules}/>

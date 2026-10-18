@@ -2094,7 +2094,7 @@ var bodyTheme = 'flex';
 /* 会員登録の性別で体型を切り替える。未登録なら中性。 */
 function bodySexKey(){
   var sx = member && member.sex;
-  return sx === 'M' ? 'male' : (sx === 'F' ? 'female' : 'neutral');
+  return sx === 'F' ? 'female' : 'male';
 }
 
 function renderBodyMap(d){
@@ -2805,18 +2805,28 @@ document.getElementById('golfTabs').addEventListener('click',function(event){
 
 <script type="module">
 import {renderGolfFigure,renderQualityMarks,renderSideFigure} from './src/domain/quality-overlay.mjs';
-window.renderGolfOverlay=function(pose){
+import {imageReady} from './src/domain/image-ready.mjs';
+let golfRequest=0;let sideSelection='R';
+window.renderGolfOverlay=async function(pose){
+ const request=++golfRequest;const container=document.getElementById('golfOverlay');
  const key=pose||document.querySelector('#golfTabs button.on').dataset.pose;
+ container.style.visibility='hidden';
+ try{await imageReady('assets/golf/'+(member?.sex==='F'?'female':'male')+'/'+key+'.png');}catch{if(request===golfRequest){container.style.visibility='visible';container.textContent='線画を読み込めませんでした。局面を選び直してください。';}return;}
+ if(request!==golfRequest)return;
  const connection=bodyTheme==='quality'?(result?.qualityAssessments||[]):undefined;
- document.getElementById('golfOverlay').innerHTML=['front','back'].map(view=>'<div>'+renderGolfFigure(key,view,result?.body?.[bodyTheme]?.score||{}, {flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},'legacy',connection,'assets/golf/')+'</div>').join('');
+ document.getElementById('golfOverlay').innerHTML=['front','back'].map(view=>'<div>'+renderGolfFigure(key,view,result?.body?.[bodyTheme]?.score||{}, {flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},'legacy',connection,'assets/golf/'+(member?.sex==='F'?'female':'male')+'/')+'</div>').join('');
+ container.style.visibility='visible';
 };
 window.renderStandingLinks=function(){
  const marks=bodyTheme==='quality'?(result?.qualityAssessments||[]):[];
  ['front','back'].forEach(view=>{const el=document.getElementById(view==='front'?'bodyFront':'bodyBack');el.innerHTML=el.innerHTML.replace('</svg>',renderQualityMarks(marks,'standing',view)+'</svg>');});
- document.getElementById('bodySide').innerHTML=renderSideFigure(marks,'assets/body/');
+ const el=document.getElementById('bodySide');
+ const controls=['flex','strength'].includes(bodyTheme)?'<div class="toggles"><button type="button" data-side="R" aria-pressed="'+(sideSelection==='R')+'">右</button><button type="button" data-side="L" aria-pressed="'+(sideSelection==='L')+'">左</button></div>':'';
+ el.innerHTML=controls+renderSideFigure(marks,'assets/body/',{scores:result?.body?.[bodyTheme]?.score||{},rules:{flex_green_min:rule('flex_green_min',88.9),flex_yellow_min:rule('flex_yellow_min',66.7)},side:sideSelection,theme:bodyTheme,sex:member?.sex==='F'?'F':'M'});
 };
 document.getElementById('bodyPanel').addEventListener('click',function(e){const hit=e.target.closest('.quality-mark');if(hit){const a=(result?.qualityAssessments||[]).find(a=>a.key===hit.dataset.assessment);if(a)document.getElementById('qualityDetail').textContent=a.label+'：'+a.pt+'点 — '+a.detail;}});
 document.getElementById('golfOverlay').addEventListener('click',function(e){const hit=e.target.closest('.golf-region');if(hit){const [region,side]=hit.dataset.region.split('|');showBodyBasis(region,side);}});
+document.getElementById('bodySide').addEventListener('click',e=>{const button=e.target.closest('button[data-side]');if(button){sideSelection=button.dataset.side;if(result)renderBodyMap(result);}const hit=e.target.closest('.golf-region');if(hit){const [region,side]=hit.dataset.region.split('|');showBodyBasis(region,side);}});
 window.renderGolfOverlay();
 </script>
 </body>

@@ -1,14 +1,15 @@
 import {golfLandmarks,renderGolfOverlay} from './golf-overlay.mjs';
+import {renderSideOverlay} from './side-overlay.mjs';
 const colors={red:'#F04438',amber:'#F5C400',green:'#12B76A'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // Each glyph represents one direct observation, never a derived connection.
-export function renderQualityMarks(assessments=[],pose='standing',view='front'){
- if(!['front','back','side'].includes(view)|| (pose!=='standing'&&!golfLandmarks[pose]))return '';
- const golf=pose!=='standing',scale=golf?2.2:1;
+export function renderQualityMarks(assessments=[],pose='standing',view='front',mirror=false,custom=null){
+ if(!['front','back','side'].includes(view)|| (pose!=='standing'&&!golfLandmarks[pose]&&!custom))return '';
+ const golf=pose!=='standing',scale=custom?.scale??(golf?2.2:1);
  const marks=[];
- const landmarks=golf?golfLandmarks[pose][view]:null;
+ const landmarks=custom?.landmarks??(golf?golfLandmarks[pose][view]:null);
  const point=(side,part)=>{
-  if(golf){const p=landmarks[(part==='shoulder'?'shoulder|':view==='front'?'hip|':'glute|')+side];return p.slice(0,2);}
+  if(golf){if(mirror)side=side==='R'?'L':'R';const p=landmarks[(part==='shoulder'?'shoulder|':view==='front'?'hip|':'glute|')+side];return p.slice(0,2);}
   const x=(view==='front'?side==='R':side==='L')?86:154;
   return [x,part==='shoulder'?105:242];
  };
@@ -23,7 +24,7 @@ export function renderQualityMarks(assessments=[],pose='standing',view='front'){
   if(shape==='ssp')glyph=`<path d="M0,-40 Q${dir*22},-6 0,33"/><path d="M-5,27 L0,34 L6,28"/>`;
   if(shape==='spot')glyph=`<ellipse rx="18" ry="25" fill="${color}" opacity=".12" stroke="none"/><ellipse rx="13" ry="19" fill="${color}" opacity=".3" stroke="none"/><ellipse rx="8" ry="12" fill="${color}" opacity=".5" stroke="none"/>`;
   const labelY=shape==='line'?79:shape==='ssp'?49:shape==='spot'?35:25;
-  marks.push(`<g class="quality-mark" data-assessment="${esc(a.key)}" data-side="${esc(a.side)}" data-color="${color}" role="img" aria-label="${esc(a.label)}：${a.pt}点"><title>${esc(a.label)}：${a.pt}点。${esc(a.detail)}</title><g transform="translate(${x} ${y}) scale(${scale})"><g fill="none" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${shape==='spot'?'':glyph}</g><g fill="none" stroke="${color}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">${glyph}</g><text y="${labelY}" text-anchor="middle" font-size="10" font-family="sans-serif" font-weight="600" fill="#303740" stroke="white" stroke-width="3" paint-order="stroke">${esc(label)}</text></g></g>`);
+  marks.push(`<g class="quality-mark" data-assessment="${esc(a.key)}" data-side="${esc(a.side)}" data-color="${color}" role="img" aria-label="${esc(a.label)}：${a.pt}点"><title>${esc(a.label)}：${a.pt}点。${esc(a.detail)}</title><g transform="translate(${x} ${y}) scale(${scale})"><g fill="none" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${shape==='spot'?'':glyph}</g><g fill="none" stroke="${color}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">${glyph}</g><text transform="scale(${mirror?-1:1} 1)" y="${labelY}" text-anchor="middle" font-size="10" font-family="sans-serif" font-weight="600" fill="#303740" stroke="white" stroke-width="3" paint-order="stroke">${esc(label)}</text></g></g>`);
  }
  for(const a of assessments??[]){
   if(a.legacy||!Number.isInteger(a.pt)||a.pt<1||a.pt>3)continue;
@@ -58,12 +59,15 @@ export function renderQualityMarks(assessments=[],pose='standing',view='front'){
  }
  return marks.join('');
 }
-export function renderSideFigure(assessments=[],assetRoot='/body/'){
- return `<svg viewBox="0 0 240 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="立位・横向き"><image href="${esc(assetRoot+'side.png')}" x="-17" y="34" width="273" height="410" preserveAspectRatio="none"/>${renderQualityMarks(assessments,'standing','side')}</svg>`;
+export function renderSideFigure(assessments=[],assetRoot='/body/',options={}){
+ const {scores={},rules={},side='R',theme='quality',sex='M',prefix='side'}=options;
+ const file=sex==='F'?'side.png':'side-male.png';
+ const overlay=['flex','strength'].includes(theme)?renderSideOverlay(scores,rules,side,prefix):theme==='quality'?renderQualityMarks(assessments,'standing','side'):'';
+ return `<svg viewBox="0 0 240 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="立位・横向き"><image href="${esc(assetRoot+file)}" x="-17" y="34" width="273" height="410" preserveAspectRatio="none"/>${overlay}</svg>`;
 }
-export function renderGolfFigure(pose,view,scores,rules,prefix,assessments,assetRoot='/golf/'){
+export function renderGolfFigure(pose,view,scores,rules,prefix,assessments,assetRoot='/golf/',mirror=false){
  if(!golfLandmarks[pose]||!['front','back'].includes(view))return '';
- const box=view==='front'?'200 -40 500 1040':'850 -40 500 1040';
- const overlay=assessments?renderQualityMarks(assessments,pose,view):renderGolfOverlay(pose,scores,rules,prefix+'-'+view).replace(/^<svg[^>]*>/,'<g>').replace(/<\/svg>$/,'</g>');
- return `<svg viewBox="${box}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ゴルフ・${view==='front'?'正面':'背面'}"><image href="${esc(assetRoot+pose+'.png')}" width="1536" height="1024"/>${overlay}</svg>`;
+ const box=view==='front'?'0 -40 768 1040':'768 -40 768 1040';
+ const overlay=assessments?renderQualityMarks(assessments,pose,view,mirror):renderGolfOverlay(pose,scores,rules,prefix+'-'+view,mirror).replace(/^<svg[^>]*>/,'<g>').replace(/<\/svg>$/,'</g>');
+ return `<svg viewBox="${box}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ゴルフ・${view==='front'?'正面':'背面'}"><g transform="${mirror?`translate(${view==='front'?768:2304} 0) scale(-1 1)`: ''}"><image href="${esc(assetRoot+pose+'.png')}" width="1536" height="1024"/>${overlay}</g></svg>`;
 }

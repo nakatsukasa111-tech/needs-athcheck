@@ -1,4 +1,5 @@
 'use server';
+import {sportInput} from '../../../src/domain/sports.mjs';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { requireStaff, staffMember } from '../../lib/staff';
@@ -53,3 +54,5 @@ export async function setPublication(previous, form) {
   revalidatePath(`/staff/results/${id}`);
   return { success: '公開状態を更新しました。' };
 }
+
+export async function saveSportProfile(previous,form){try{const {db,member}=await staffMember(String(form.get('member_id')??''));const fields=sportInput(form);if(!fields.sport)throw Error('競技を選択してください。');const r=await db.from('athlete_members').update(fields).eq('id',member.id).eq('company_id',member.company_id);if(r.error)throw Error('競技プロフィールを保存できませんでした。');revalidatePath('/staff');revalidatePath('/staff/members/'+member.id);revalidatePath('/mypage','layout');return {success:'競技プロフィールを保存しました。'};}catch(e){if(e.digest?.startsWith('NEXT_REDIRECT'))throw e;return {error:e.message};}}

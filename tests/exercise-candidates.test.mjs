@@ -48,3 +48,5 @@ test('IDで指定でき、教材の表示名を変更しても対応は切れな
 test('教材IDの重複は、誤った教材を提示しないようエラーにする', () => {
   assert.throws(() => propose({ split: 1 }, { catalog: [lesson('a'), lesson('a')] }), /重複/);
 });
+
+test('recommendations are unique and globally capped at five, retaining all matching reasons',()=>{const catalog=Array.from({length:9},(_,i)=>lesson('lesson-'+i));const found=propose({split:1,aslr_R:1},{catalog,rules:[{...rule,limit:5},{...rule,id:'second',field:'aslr_R',limit:5}]});assert.equal(found.length,5);assert.equal(new Set(found.map(x=>x.lessonId)).size,5);assert.ok(found.every(x=>x.reasons.length===2));});

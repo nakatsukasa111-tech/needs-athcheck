@@ -1,3 +1,4 @@
+import {sportInput} from '../../src/domain/sports.mjs';
 import { createAthleteScorer } from '../../src/domain/athlete-scoring.mjs';
 
 export const athlete = createAthleteScorer();
@@ -16,7 +17,7 @@ export function memberInput(form) {
   if (!['M', 'F'].includes(threshold_sex)) throw new Error('評価基準の性別を選択してください。');
   const external_customer_no = String(form.get('external_customer_no') ?? '').trim();
   if (external_customer_no.length > 100) throw new Error('外部顧客番号は100文字以内で入力してください。');
-  return { display_name, birth_date, threshold_sex, external_customer_no: external_customer_no || null };
+  return { ...sportInput(form), display_name, birth_date, threshold_sex, external_customer_no: external_customer_no || null };
 }
 export function measurementInput(form, member, settings) {
   const measured_on = dateValue(form.get('measured_on'), '測定日');

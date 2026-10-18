@@ -28,3 +28,12 @@
 @media(max-width:680px){.condition-layout{grid-template-columns:1fr;--person-height:300px}.condition-layout .golf-poses{padding-left:0}.condition-layout .body-pair,.condition-layout .bodyFigs{margin-top:16px}.condition-layout .body-pair svg,.condition-layout .bodyFigs svg{height:auto;aspect-ratio:240/448}.condition-layout .golf-pair svg{height:auto;aspect-ratio:500/1040}}
 
 @media(max-width:680px){.condition-layout{--person-height:clamp(180px,calc((100vw - 88px)*.6222),340px)}.condition-layout .body-pair svg,.condition-layout .bodyFigs svg,.condition-layout .golf-pair svg{height:var(--person-height);aspect-ratio:auto}}
+
+/* Reserve the same figure height and keep side controls out of the image flow. */
+.condition-layout{--person-height:clamp(180px,20vw,240px)}
+.condition-layout .body-pair{margin-top:142px}
+.condition-layout .body-pair figure{position:relative}
+.condition-layout .body-pair figure>.toggles{position:absolute;top:-62px;left:0;right:0;justify-content:center}
+@media(max-width:680px){.condition-layout{--person-height:clamp(150px,calc((100vw - 88px)*.6222),240px)}.condition-layout .body-pair{margin-top:76px}}
+
+.sport-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0}.sport-tabs button{font-size:13px;padding:7px 10px}

@@ -9,8 +9,9 @@ export function proposeExerciseCandidates({ companyId, values, catalog, rules })
     byId.set(lesson.id, lesson);
   }
   const candidates = new Map();
+  const groups = [];
   const orderedRules = rules.filter(r => r.companyId === companyId && r.enabled === true && r.approved === true)
-    .sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100) || a.id.localeCompare(b.id));
+    .sort((a, b) => (values[a.field] ?? 4) - (values[b.field] ?? 4) || (a.priority ?? 100) - (b.priority ?? 100) || a.id.localeCompare(b.id));
   for (const rule of orderedRules) {
     const value = values[rule.field];
     // 空欄・未測定は悪い結果として扱わない。0点は初期段階では人の判断に戻す。
@@ -20,7 +21,7 @@ export function proposeExerciseCandidates({ companyId, values, catalog, rules })
     const ids = rule.lessonIds ?? [];
     const tags = rule.requiredTags ?? [];
     if (!ids.length && !tags.length) continue;
-    const limit = Number.isInteger(rule.limit) && rule.limit > 0 ? Math.min(rule.limit, 2) : 2;
+    const limit = Number.isInteger(rule.limit) && rule.limit > 0 ? Math.min(rule.limit, 5) : 5;
     const lessons = catalog.filter(lesson =>
       lesson.companyId === companyId && lesson.reviewStatus === 'approved' &&
       lesson.memberVisible === true && lesson.kind === 'exercise' &&
@@ -28,6 +29,7 @@ export function proposeExerciseCandidates({ companyId, values, catalog, rules })
       tags.every(tag => (lesson.tags ?? []).includes(tag)),
     ).sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100) || a.id.localeCompare(b.id))
       .slice(0, limit);
+    groups.push(lessons.map(l=>l.id));
     for (const lesson of lessons) {
       const reason = { ruleId: rule.id, field: rule.field, value, text: rule.reason };
       const existing = candidates.get(lesson.id);
@@ -36,5 +38,8 @@ export function proposeExerciseCandidates({ companyId, values, catalog, rules })
         status: 'candidate', requiresTrainerApproval: true, reasons: [reason] });
     }
   }
-  return [...candidates.values()];
+  // Take one candidate from each matching observation before filling remaining slots.
+  const ordered=[];
+  for(let i=0;i<5;i++)for(const ids of groups){const id=ids[i];if(id&&!ordered.includes(id))ordered.push(id);}
+  return ordered.slice(0,5).map(id=>candidates.get(id));
 }

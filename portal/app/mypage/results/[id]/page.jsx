@@ -24,10 +24,12 @@ export default async function Result({ params }) {
   if(history.error)throw Error('測定履歴を読み込めませんでした');
   const score = createAthleteScorer(settings.data ?? {}).score(row.values, { sex: row.threshold_sex, band: row.age_band,
     weight: row.weight == null ? undefined : Number(row.weight), est: Object.fromEntries(row.estimated_items.map(key => [key, true])) });
+  const profile=await db.from('athlete_members').select('sport,sport_other,sport_role,throwing_hand,batting_hand').eq('id',row.member_id).eq('company_id',row.company_id).single();
+  if(profile.error)throw Error('競技プロフィールを読み込めませんでした');
   return <><Link href="/mypage">測定履歴へ</Link><h1>{row.measured_on} の測定結果</h1>
     {!settings.data && <p role="status">評価基準が未登録のため、実測値による採点は表示できません。</p>}
     <section className="card"><p>総合スコア</p><div className="score">{settings.data && score.measured ? score.total : '—'}<small> / 100</small></div><p className="muted">現在の基準で計算しています。</p></section>
-    <ResultVisuals score={settings.data?score:null} sex={row.threshold_sex} rules={settings.data?.rules} history={historyView(history.data,settings.data)}/>
+    <ResultVisuals profile={profile.data} score={settings.data?score:null} sex={row.threshold_sex} rules={settings.data?.rules} history={historyView(history.data,settings.data)}/>
     <ExerciseSection db={db} row={row} score={score}/>
     <section className="card"><h2>項目ごとの結果</h2><table><thead><tr><th>項目</th><th>測定結果</th></tr></thead><tbody>{score.items.map((item, i) => <tr key={i}><td>{item.name}</td><td>{item.val}</td></tr>)}</tbody></table></section>
     {row.public_comment && <section className="card"><h2>トレーナーから</h2><p>{row.public_comment}</p></section>}
