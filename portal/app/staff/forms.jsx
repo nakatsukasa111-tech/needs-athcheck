@@ -1,4 +1,5 @@
 'use client';
+import MeasurementFields from './measurement-fields';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import SportFields from './sport-fields';
 import { registerMember, saveMeasurement, setPublication, saveSportProfile } from './actions';
@@ -38,7 +39,7 @@ export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }
     <section className="card"><label htmlFor="date">測定日</label><input id="date" name="measured_on" type="date" defaultValue={today} max={today} required/>
       <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><input id="weight" name="weight" type="number" min="0.01" step="any" inputMode="decimal"/>
       <p>測定しなかった項目は空欄にしてください。0は測定済みとして採点されます。</p></section>
-    {Object.entries(categories).map(([cat,label]) => <fieldset className="card" key={cat}><legend>{label}</legend><div className="grid">{athlete.fields.filter(k=>athlete.definitions[k].cat===cat).map(key=>{const d=athlete.definitions[key]; const side=key.endsWith('_R')?' 右':key.endsWith('_L')?' 左':''; return <div key={key}><label htmlFor={key}>{d.name}{side}（{d.unit}）</label>{d.kind==='pts' ? <select id={key} name={`value:${key}`} defaultValue=""><option value="">未測定</option>{[0,1,2,3].filter(v=>v>=(d.min||0)).map(v=><option key={v} value={v}>{v}点{cat==='quality'&&v>0?({1:'：十分に行えない',2:'：制限・途切れあり',3:'：滑らかに行える'})[v]:''}</option>)}</select> : <input id={key} type="number" name={`value:${key}`} min="0" step="any" inputMode="decimal"/>}{d.note&&<p className="muted">{d.note}</p>}{d.est && <label className="check"><input type="checkbox" name={`estimated:${key}`}/>推定1RM</label>}</div>;})}</div></fieldset>)}
+    <MeasurementFields/>
     <section className="card"><label htmlFor="comment">本人に公開するコメント（任意）</label><textarea id="comment" name="public_comment" rows={4} maxLength={2000}/><p>保存後の結果画面で確認してから、本人へ公開できます。</p><Feedback state={state}/><button disabled={pending}>{pending?'保存中…':'測定結果を下書き保存'}</button></section>
   </form>;
 }

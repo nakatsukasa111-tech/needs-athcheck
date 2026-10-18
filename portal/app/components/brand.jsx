@@ -1,1 +1,1 @@
-export default function Brand({light=false}){return <span className={'needs-brand'+(light?' needs-brand-light':'')}><img src={light?'/brand/needs-logo-white.png':'/brand/needs-logo.png'} alt="NeeDS" width="2134" height="975"/><span>フィジカルチェック</span></span>;}
+export default function Brand({light=false}){return <span className={'needs-brand'+(light?' needs-brand-light':'')}><img src={light?'/brand/needs-logo-white.png':'/brand/needs-logo.png'} alt="NeeDS" width="2134" height="975"/><span>NeeDS フィジカルチェック</span></span>;}
