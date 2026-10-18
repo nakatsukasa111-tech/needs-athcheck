@@ -1,3 +1,4 @@
+import {sportClipPoints} from './pose-crops.mjs';
 import {golfColor} from './golf-overlay.mjs';
 import {renderQualityMarks} from './quality-overlay.mjs';
 export const sportPoses={
@@ -57,5 +58,5 @@ export function renderSportFigure(sport,phase,view,scores={},rules={},prefix='sp
   marks+='<g class="golf-region" data-region="'+actual+'" data-value="'+v+'" data-color="'+color+'"><title>'+actual+'：'+v+'</title><ellipse cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" fill="url(#'+id+')"/></g>';
  }
  const row=view==='back'?500:0;
- return '<svg viewBox="-24 -24 560 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+sportPoses[sport].label+'・'+sportPoses[sport].phases[phase]+'・'+(view==='front'?'正面':'背面')+'"><defs>'+defs+'<clipPath id="clip-'+safe+'-'+view+'"><rect x="-12" y="-20" width="536" height="532"/></clipPath></defs><g transform="'+(mirror?'translate(512 0) scale(-1 1)':'')+'"><g clip-path="url(#clip-'+safe+'-'+view+')"><image href="/sports/'+sport+'/'+(sex==='F'?'female':'male')+'.png" x="'+(-phase*512)+'" y="'+(-row)+'" width="1536" height="1024"/></g>'+marks+'</g></svg>';
+ return '<svg viewBox="'+(sport==='baseball-pitcher'&&phase===1?'-88 -24 688 560':'-40 -24 592 560')+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+sportPoses[sport].label+'・'+sportPoses[sport].phases[phase]+'・'+(view==='front'?'正面':'背面')+'"><defs>'+defs+'<clipPath id="clip-'+safe+'-'+view+'"><polygon points="'+sportClipPoints(sport,phase,view,sex)+'"/></clipPath></defs><g transform="'+(mirror?'translate(512 0) scale(-1 1)':'')+'"><g clip-path="url(#clip-'+safe+'-'+view+')"><image href="/sports/'+sport+'/'+(sex==='F'?'female':'male')+'.png" x="'+(-phase*512)+'" y="'+(-row)+'" width="1536" height="1024"/></g>'+marks+'</g></svg>';
 }

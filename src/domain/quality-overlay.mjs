@@ -67,7 +67,8 @@ export function renderSideFigure(assessments=[],assetRoot='/body/',options={}){
 }
 export function renderGolfFigure(pose,view,scores,rules,prefix,assessments,assetRoot='/golf/',mirror=false){
  if(!golfLandmarks[pose]||!['front','back'].includes(view))return '';
+ const clip='golf-crop-'+String(prefix).replace(/[^a-zA-Z0-9_-]/g,'')+'-'+view;
  const box=view==='front'?'0 -40 768 1040':'768 -40 768 1040';
  const overlay=assessments?renderQualityMarks(assessments,pose,view,mirror):renderGolfOverlay(pose,scores,rules,prefix+'-'+view,mirror).replace(/^<svg[^>]*>/,'<g>').replace(/<\/svg>$/,'</g>');
- return `<svg viewBox="${box}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ゴルフ・${view==='front'?'正面':'背面'}"><g transform="${mirror?`translate(${view==='front'?768:2304} 0) scale(-1 1)`: ''}"><image href="${esc(assetRoot+pose+'.png')}" width="1536" height="1024"/>${overlay}</g></svg>`;
+ return `<svg viewBox="${box}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ゴルフ・${view==='front'?'正面':'背面'}"><defs><clipPath id="${clip}"><rect x="${view==='front'?0:768}" y="0" width="768" height="1024"/></clipPath></defs><g transform="${mirror?`translate(${view==='front'?768:2304} 0) scale(-1 1)`: ''}"><g clip-path="url(#${clip})"><image href="${esc(assetRoot+pose+'.png')}" width="1536" height="1024"/></g>${overlay}</g></svg>`;
 }
