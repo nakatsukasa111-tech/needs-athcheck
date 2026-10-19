@@ -12,7 +12,7 @@ export default async function ExerciseSection({db,row,score,staff=false}){
  if(!staff)query=query.in('id',selected.data.map(a=>a.lesson_id));
  const lessons=selected.data.length||staff?await query:{data:[]};
  if(lessons.error)throw Error('教材を読み込めませんでした。');
- const catalog=await methodbookCatalog();
+ const catalog=await methodbookCatalog(db);
  const dimensions=catalog?.dimensions??fallbackDimensions(lessons.data);
  lessons.data=mergeCatalog(lessons.data,catalog).map(l=>({...l,member_url:l.member_url?customerLessonHref(l.id,row.id):null}));
  let candidates=[];

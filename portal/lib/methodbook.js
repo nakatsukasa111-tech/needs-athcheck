@@ -1,15 +1,15 @@
 import 'server-only';
-import {unstable_cache} from 'next/cache';
 import {customerLesson} from './customer-lesson.mjs';
 import {normalizeCatalog} from './methodbook-data.mjs';
-// Only validated public metadata is cached. Never cache member records or source lesson bodies.
-const cached=unstable_cache(async()=>{
- const response=await fetch('https://project-iqw46.vercel.app/content-staff.json',{cache:'no-store',signal:AbortSignal.timeout(6000)});
- if(!response.ok)throw Error('Method Book unavailable');
- const text=await response.text();if(text.length>4000000)throw Error('Catalog too large');
- return normalizeCatalog(JSON.parse(text));
-},['methodbook-metadata-v1'],{revalidate:60});
-export async function methodbookCatalog(){try{return await cached();}catch{return null;}}
-
-const cachedCustomerLessons=unstable_cache(async()=>{const response=await fetch('https://project-iqw46.vercel.app/content-staff.json',{cache:'no-store',signal:AbortSignal.timeout(6000)});if(!response.ok)throw Error('Method Book unavailable');const raw=await response.json();normalizeCatalog(raw);return raw.lessons.map(customerLesson).filter(Boolean);},['methodbook-customer-lessons-v1'],{revalidate:60});
-export async function getCustomerLesson(id){try{return (await cachedCustomerLessons()).find(l=>l.id===id)??null;}catch{return null;}}
+// User-scoped authorization is checked on every request. Never cache bearer tokens or lessons.
+export async function methodbookRequest(db,params){
+ const {data:{session}}=await db.auth.getSession();if(!session?.access_token)throw Error('Login required');
+ const response=await fetch('https://project-iqw46.vercel.app/api/athcheck?'+new URLSearchParams(params),{headers:{Authorization:'Bearer '+session.access_token,'x-athcheck-key':process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY},cache:'no-store',signal:AbortSignal.timeout(20000)});
+ if(!response.ok)throw Error('Method Book unavailable');return response.json();
+}
+export async function methodbookCatalog(db){try{return normalizeCatalog(await methodbookRequest(db,{action:'catalog'}));}catch{return null;}}
+export async function getCustomerLesson(db,id,measurement){try{
+ const raw=await methodbookRequest(db,{action:'lesson',id,measurement}),lesson=customerLesson(raw);
+ if(!lesson)return null;const media=kind=>'/api/exercise-media?'+new URLSearchParams({id,measurement,kind});
+ return {...lesson,video:raw.hasVideo?media('demo'):null,poster:raw.hasPoster?media('poster'):null};
+}catch{return null;}}
