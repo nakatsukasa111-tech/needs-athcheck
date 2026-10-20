@@ -4,6 +4,7 @@ import {createPortal} from 'react-dom';
 import {savePool,uploadPhoto} from '../../lib/photo-transfer.mjs';
 import {fieldLabel,phaseLabels,MAX_PHOTO_BYTES} from '../../lib/photo-input.mjs';
 import {athlete} from '../../lib/measurement-input.mjs';
+import PhotoMarkup from './photo-markup';
 function localTime(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
 const photoFieldLabels=Object.fromEntries(athlete.fields.map(k=>[k,fieldLabel(k)]));
 function TestSelect({value,onChange,all=false,disabled=false}){return <select value={value} onChange={e=>onChange(e.target.value)} disabled={disabled}><option value="">{all?'すべて':'-'}</option>{Object.entries(photoFieldLabels).map(([key,label])=><option value={key} key={key}>{label}</option>)}</select>;}
@@ -43,7 +44,7 @@ export function PhotoCapture({memberId,recordId,onClose,onSaved,preview=false}){
 const stamp=value=>new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',dateStyle:'short',timeStyle:'short'}).format(new Date(value));
 export function PhotoGallery({memberId,recordId,refresh=0,initial}){
  const [photos,setPhotos]=useState(initial?.photos||[]),[phase,setPhase]=useState(''),[key,setKey]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(!initial),[more,setMore]=useState(initial?.hasMore||false),[selected,setSelected]=useState(null),[changing,setChanging]=useState(false);
- const [editPhase,setEditPhase]=useState(''),[editKey,setEditKey]=useState(''),[editMemo,setEditMemo]=useState('');
+ const [editPhase,setEditPhase]=useState(''),[editKey,setEditKey]=useState(''),[editMemo,setEditMemo]=useState(''),[annotationLoading,setAnnotationLoading]=useState(false);
  const generation=useRef(0),zoom=useRef(null),gallery=useRef(null),cache=useRef(new Map()),first=useRef(true);
  async function load(offset=0,version=generation.current,force=false){setBusy(true);setError('');const measuredStart=performance.now();try{
   const q=new URLSearchParams({memberId,offset:String(offset)});if(recordId)q.set('recordId',recordId);if(phase)q.set('phase',phase);if(key)q.set('fieldKey',key);
@@ -59,13 +60,20 @@ export function PhotoGallery({memberId,recordId,refresh=0,initial}){
  useEffect(()=>{const v=++generation.current;
   if(first.current){first.current=false;if(initial&&Date.now()-initial.loadedAt<30000){const q=new URLSearchParams({memberId,offset:'0'});if(recordId)q.set('recordId',recordId);cache.current.set(q.toString(),initial);setBusy(false);return()=>{generation.current++;};}}
   load(0,v);return()=>{generation.current++;};},[memberId,recordId,phase,key,refresh]);
- useEffect(()=>{if(selected){setEditPhase(selected.phase);setEditKey(selected.field_key||'');setEditMemo(selected.memo||'');zoom.current?.showModal();}},[selected?.id]);
+ useEffect(()=>{if(!selected)return;
+  const photoId=selected.id;let active=true;
+  setEditPhase(selected.phase);setEditKey(selected.field_key||'');setEditMemo(selected.memo||'');setAnnotationLoading(true);zoom.current?.showModal();
+  fetch('/api/photos?'+new URLSearchParams({memberId,photoId}),{cache:'no-store'}).then(async response=>{const body=await response.json();if(!response.ok)throw Error(body.error);return body;}).then(body=>{if(active)setSelected(previous=>previous?.id===photoId?{...previous,annotations:body.annotations,annotation_revision:body.annotation_revision}:previous);}).catch(e=>{if(active)setError(e.message||'線と印を読み込めませんでした。');}).finally(()=>{if(active)setAnnotationLoading(false);});
+  return()=>{active=false;};
+ },[selected?.id,memberId]);
  async function change(payload){setChanging(true);setError('');try{
   const response=await fetch('/api/photos',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({memberId,id:selected.id,...payload})});
   const result=await response.json();if(!response.ok)throw Error(result.error);
   cache.current.clear();await load(0,generation.current,true);
   if(payload.action==='edit')setSelected(previous=>({...previous,phase:payload.phase,field_key:payload.fieldKey||null,memo:payload.memo||null}));
- }catch(e){setError(e.message||'写真を変更できませんでした。');}finally{setChanging(false);}}
+  if(payload.action==='annotate')setSelected(previous=>({...previous,annotations:payload.annotations,annotation_revision:result.revision}));
+  return result;
+ }catch(e){setError(e.message||'写真を変更できませんでした。');return null;}finally{setChanging(false);}}
  const selectedIndex=selected?photos.findIndex(photo=>photo.id===selected.id):-1;
  const previous=selectedIndex>0&&photos[selectedIndex-1].session_id===selected.session_id?photos[selectedIndex-1]:null;
  const next=selectedIndex>=0&&selectedIndex<photos.length-1&&photos[selectedIndex+1].session_id===selected.session_id?photos[selectedIndex+1]:null;
@@ -74,7 +82,7 @@ export function PhotoGallery({memberId,recordId,refresh=0,initial}){
   <p className="muted">スタッフ専用・選手には非公開。日時は日本時間です。写真を押すと拡大・変更できます。</p>{error&&<p role="alert" className="error">{error}</p>}{!photos.length&&!busy&&!error&&<p>保存された写真はありません。</p>}
   <div className="photo-grid">{photos.map(photo=><button type="button" className="photo-tile" key={photo.id} onClick={()=>setSelected(photo)}><img src={photo.thumbnailUrl||photo.url} onError={e=>{if(e.currentTarget.getAttribute('src')!==photo.url)e.currentTarget.src=photo.url;}} alt={fieldLabel(photo.field_key)+' '+phaseLabels[photo.phase]} loading="lazy"/><span className={'photo-tag '+photo.phase}>{phaseLabels[photo.phase]}</span><strong>{fieldLabel(photo.field_key)}</strong>{photo.memo&&<span className="photo-memo">{photo.memo}</span>}<small>{photo.captured_at?'撮影 '+stamp(photo.captured_at):'撮影日時不明'}<br/>保存 {stamp(photo.uploaded_at)}</small></button>)}</div>
   {busy&&<p role="status">読み込み中…</p>}{more&&<button type="button" disabled={busy} onClick={()=>load(photos.length)}>さらに表示</button>}
-  {selected&&<dialog className="photo-dialog photo-zoom" ref={zoom} onCancel={()=>setSelected(null)}><div className="photo-dialog-head"><h2>{fieldLabel(selected.field_key)} · {phaseLabels[selected.phase]}</h2><button type="button" onClick={()=>setSelected(null)}>閉じる</button></div><img src={selected.url} alt={fieldLabel(selected.field_key)}/><p className="muted">{selected.captured_at?'撮影 '+stamp(selected.captured_at):'撮影日時不明'} ／ 保存 {stamp(selected.uploaded_at)}</p>
+  {selected&&<dialog className="photo-dialog photo-zoom" ref={zoom} onCancel={()=>setSelected(null)}><div className="photo-dialog-head"><h2>{fieldLabel(selected.field_key)} · {phaseLabels[selected.phase]}</h2><button type="button" onClick={()=>setSelected(null)}>閉じる</button></div>{selected.annotations?<PhotoMarkup key={selected.id} photo={selected} busy={changing} onSave={(annotations,revision)=>change({action:'annotate',annotations,revision})}/>:<img src={selected.url} alt={fieldLabel(selected.field_key)}/>}{annotationLoading&&<p role="status">線と印を読み込み中…</p>}<p className="muted">{selected.captured_at?'撮影 '+stamp(selected.captured_at):'撮影日時不明'} ／ 保存 {stamp(selected.uploaded_at)}</p>{error&&<p role="alert" className="error">{error}</p>}
    <div className="photo-edit"><label>区分<select value={editPhase} onChange={e=>setEditPhase(e.target.value)} disabled={changing}>{Object.entries(phaseLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label><label>テスト（任意）<TestSelect value={editKey} onChange={setEditKey} disabled={changing}/></label><label>メモ（任意）<textarea value={editMemo} onChange={e=>setEditMemo(e.target.value)} maxLength={500} rows={2} disabled={changing}/></label><button type="button" disabled={changing} onClick={()=>change({action:'edit',phase:editPhase,fieldKey:editKey,memo:editMemo})}>写真の情報を保存</button></div>
    <div className="photo-order"><button type="button" disabled={!previous||changing} onClick={()=>change({action:'reorder',otherId:previous.id})}>前へ移動</button><button type="button" disabled={!next||changing} onClick={()=>change({action:'reorder',otherId:next.id})}>後へ移動</button></div><p className="muted">同じ測定記録の写真を並び替えられます。</p>
   </dialog>}
