@@ -1,4 +1,4 @@
-export const annotationTools={pen:'手描き',line:'直線',arrow:'矢印',circle:'丸'};
+export const annotationTools={pen:'手書き',line:'直線',arrow:'矢印',circle:'丸',rectangle:'四角'};
 export const annotationColors={'#e53935':'赤','#e5ad00':'黄','#138a55':'緑','#0066ff':'青','#202832':'黒'};
 export const annotationWidths={3:'細',7:'中',14:'太',24:'極太'};
 

@@ -25,11 +25,33 @@ test('insert adds a complete row, swaps preserve ownership, manual holes stay em
  assert.deepEqual(moved.layout.other,['2']);assert.equal(moved.layout.rows[1].after,null);
  assert.throws(()=>movePhoto(moved.layout,'2',{kind:'slot',rowId:'missing',side:'before'},'unused'));
  removePhoto(moved.layout,'3');appendPhoto(moved.layout,photo('5','before'));
- assert.equal(moved.layout.rows[0].before,null);
+ assert.equal(moved.layout.rows.some(r=>!r.before&&!r.after),false);
+ assert.equal(moved.layout.rows.some(r=>r.id==='new'),false);
 });
 test('restoring a deleted row origin does not duplicate row identifiers',()=>{
  const p=photo('1','before'),layout=photoLayout(null,[p]);removePhoto(layout,p.id);appendPhoto(layout,p,{manual:true});
- assert.equal(new Set(layout.rows.map(r=>r.id)).size,2);
+ assert.equal(new Set(layout.rows.map(r=>r.id)).size,1);
+});
+test('empty rows disappear without shifting insertion targets or losing one-sided comparisons',()=>{
+ const initial=photoLayout(null,[photo('1','before'),photo('2','after'),photo('3','before',21)]);
+ const moved=movePhoto(initial,'3',{kind:'insert',side:'after',beforeRowId:initial.rows[0].id},'inserted').layout;
+ assert.deepEqual(moved.rows.map(r=>[r.before,r.after]),[[null,'3'],['1','2']]);
+ const filled=movePhoto(moved,'3',{kind:'slot',rowId:'inserted',side:'before'},'unused').layout;
+ assert.deepEqual(filled.rows.map(r=>[r.before,r.after]),[['3',null],['1','2']]);
+ const removed=movePhoto(filled,'3',{kind:'other',beforeId:null},'unused').layout;
+ assert.deepEqual(removed.rows.map(r=>[r.before,r.after]),[['1','2']]);
+ assert.deepEqual(removed.other,['3']);
+ const legacy=photoLayout({rows:[{id:'old',before:null,after:null},...removed.rows],other:removed.other},[photo('1','before'),photo('2','after'),photo('3','other')]);
+ assert.equal(legacy.rows.length,1);
+});
+test('rectangle annotations render four edges including reverse-direction drawing',async()=>{
+ const original=await sharp({create:{width:400,height:400,channels:3,background:'#ffffff'}}).png().toBuffer();
+ const marks=validateAnnotations([{tool:'rectangle',color:'#e53935',width:14,points:[[800,800],[200,200]]}]);
+ const result=await annotatedThumbnail(original,marks);
+ const {data,info}=await sharp(result).removeAlpha().raw().toBuffer({resolveWithObject:true});
+ const green=(x,y)=>data[(y*info.width+x)*info.channels+1];
+ for(const [x,y] of [[80,200],[320,200],[200,80],[200,320]])assert.ok(green(x,y)<140);
+ assert.ok(green(200,200)>230);
 });
 test('all four widths render on a separate preview and leave original bytes intact',async()=>{
  const original=await sharp({create:{width:400,height:200,channels:3,background:'#ffffff'}}).png().toBuffer();
