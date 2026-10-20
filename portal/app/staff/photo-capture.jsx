@@ -6,7 +6,7 @@ import {phaseLabels,MAX_PHOTO_BYTES} from '../../lib/photo-input.mjs';
 import {TestSelect} from './photo-shared';
 import {PhotoGallery} from './photo-gallery';
 export function PhotoCapture({memberId,recordId,onClose,onSaved,preview=false}){
- const dialog=useRef(null),camera=useRef(null),library=useRef(null),jobsRef=useRef([]),worker=useRef(false),urls=useRef([]);
+ const dialog=useRef(null),camera=useRef(null),library=useRef(null),jobsRef=useRef([]),worker=useRef(false),urls=useRef([]),acceptedClock=useRef(0);
  const [phase,setPhase]=useState('before'),[fieldKey,setFieldKey]=useState(''),[memo,setMemo]=useState(''),[jobs,setJobs]=useState([]),[error,setError]=useState(''),[refresh,setRefresh]=useState(0),[previewPhotos,setPreviewPhotos]=useState([]);
  const pending=jobs.some(j=>j.status==='queued'||j.status==='saving'),failed=jobs.filter(j=>j.status==='error');
  useEffect(()=>{dialog.current?.showModal();return()=>{urls.current.forEach(url=>URL.revokeObjectURL(url));};},[]);
@@ -37,8 +37,7 @@ export function PhotoCapture({memberId,recordId,onClose,onSaved,preview=false}){
   const chosen=Array.from(event.target.files||[]);event.target.value='';setError('');if(!chosen.length)return;
   if(chosen.length>8){setError('一度に選べる写真は8枚までです。');return;}
   if(chosen.some(f=>!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>MAX_PHOTO_BYTES)){setError('JPEG・PNG・WebP、1枚20MB以内で選んでください。HEICや動画はまだ対応していません。');return;}
-  const now=new Date().toISOString();
-  const added=chosen.map(file=>{const url=URL.createObjectURL(file);urls.current.push(url);return {id:crypto.randomUUID(),file,url,phase,fieldKey,memo,source,capturedAt:source==='camera'?now:null,acceptedAt:now,status:'queued',text:'写真を保存中…'};});
+  const added=chosen.map(file=>{const url=URL.createObjectURL(file);urls.current.push(url);acceptedClock.current=Math.max(Date.now(),acceptedClock.current+1);const acceptedAt=new Date(acceptedClock.current).toISOString();return {id:crypto.randomUUID(),file,url,phase,fieldKey,memo,source,capturedAt:source==='camera'?acceptedAt:null,acceptedAt,status:'queued',text:'写真を保存中…'};});
   jobsRef.current.push(...added);setJobs([...jobsRef.current]);processQueue();
  }
  function retry(job){update(job,{status:'queued',error:null,text:'写真を保存中…'});processQueue();}
