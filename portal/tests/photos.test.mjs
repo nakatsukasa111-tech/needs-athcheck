@@ -10,6 +10,7 @@ await db.exec(readFileSync(new URL('../../supabase/migrations/0001_athlete_accou
 await db.exec(readFileSync(new URL('../../supabase/migrations/0005_measurement_photos.sql',import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../../supabase/migrations/0006_photo_workflow.sql',import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../../supabase/migrations/0007_photo_annotations.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../../supabase/migrations/0008_photo_board.sql',import.meta.url),'utf8'));
 await db.exec(`insert into auth.users values ('${id(1)}'),('${id(2)}'),('${id(3)}');insert into athlete_companies(id,name)values('${id(10)}','A'),('${id(20)}','B');insert into athlete_staff(user_id,company_id,role,display_name)values('${id(1)}','${id(10)}','trainer','A'),('${id(2)}','${id(20)}','trainer','B');insert into athlete_members(id,company_id,display_name)values('${id(11)}','${id(10)}','fake A'),('${id(21)}','${id(20)}','fake B');insert into athlete_member_access(user_id,member_id,company_id)values('${id(3)}','${id(11)}','${id(10)}');insert into athlete_photo_sessions(id,company_id,member_id)values('${id(100)}','${id(10)}','${id(11)}');insert into athlete_photos(id,session_id,company_id,member_id,field_key,phase,source,created_by,object_path,mime_type,byte_size,status) values('${id(101)}','${id(100)}','${id(10)}','${id(11)}','banzai_R','before','camera','${id(1)}','fake.jpg','image/jpeg',500,'ready');`);
 async function asUser(n,run){await db.exec(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${id(n)}',true)`);try{await run();}finally{await db.exec('rollback');}}
 await asUser(1,async()=>{assert.equal((await db.query('select * from athlete_photos')).rows.length,1);await assert.rejects(db.query("update athlete_photos set phase='after'"));});
@@ -23,6 +24,19 @@ await db.exec(`insert into athlete_photos(id,session_id,company_id,member_id,fie
 assert.equal((await db.query(`select field_key,memo from athlete_photos where id='${id(102)}'`)).rows[0].memo,'自由記録');
 await db.exec('begin;set local role service_role');await db.query('select swap_athlete_photo_order($1,$2)',[id(101),id(102)]);await db.exec('commit');
 assert.equal((await db.query(`select id from athlete_photos order by sort_order desc`)).rows[0].id,id(101));
+const commit=async(revision,changes)=>db.query('select commit_athlete_photo_board($1,$2,$3,$4,$5,$6)',[id(100),id(10),id(11),revision,JSON.stringify({rows:[],other:[]}),JSON.stringify(changes)]);
+await commit(0,[{id:id(101),annotations:[{tool:'line',color:'#e53935',width:7,points:[[0,0],[1000,1000]]}],memo:'saved together',expected_revision:0}]);
+assert.equal((await db.query(`select memo from athlete_photos where id='${id(101)}'`)).rows[0].memo,'saved together');
+await assert.rejects(commit(0,[{id:id(101),delete:true}]));
+await assert.rejects(commit(1,[{id:id(101),expected_revision:0,annotations:[]}]));
+await commit(1,[{id:id(101),delete:true}]);
+await asUser(1,async()=>assert.equal((await db.query(`select * from athlete_photos where deleted_at is not null`)).rows.length,1));
+await commit(2,[{id:id(101),restore:true}]);
+assert.equal((await db.query(`select deleted_at from athlete_photos where id='${id(101)}'`)).rows[0].deleted_at,null);
+await db.exec(`update athlete_photos set deleted_at=now()-interval '31 days' where id='${id(101)}'`);
+await assert.rejects(commit(3,[{id:id(101),restore:true}]));
+await asUser(1,async()=>assert.equal((await db.query(`select * from athlete_photos where id='${id(101)}'`)).rows.length,0));
+await asUser(1,async()=>{await assert.rejects(commit(3,[]));});
 await assert.rejects(db.query(`insert into athlete_photos(id,session_id,company_id,member_id,phase,source,created_by,object_path,mime_type,byte_size) values('${id(103)}','${id(100)}','${id(10)}','${id(11)}','normal','camera','${id(1)}','old.jpg','image/jpeg',500)`));
 assert.equal((await db.query("select public from storage.buckets where id='athlete-photos'")).rows[0].public,false);
 }finally{await db.close();}});

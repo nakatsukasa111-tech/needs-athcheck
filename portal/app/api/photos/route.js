@@ -1,7 +1,10 @@
 import {NextResponse} from 'next/server';
 
 import sharp from 'sharp';
-import {thumbnail,thumbnailPath} from '../../../lib/photo-thumbnail.mjs';
+import {thumbnail,thumbnailPath,annotatedThumbnail} from '../../../lib/photo-thumbnail.mjs';
+import {randomUUID} from 'node:crypto';
+import {readBoard,commitBoard} from '../../../lib/photo-board-server';
+import {appendPhoto,removePhoto,movePhoto} from '../../../lib/photo-layout.mjs';
 import {readPhotoGallery} from '../../../lib/photo-gallery';
 import {client} from '../../../lib/supabase';
 import {adminClient} from '../../../lib/admin';
@@ -41,32 +44,47 @@ export async function POST(request){try{
 export async function PATCH(request){try{
  sameOrigin(request);const payload=await request.json();const {memberId,id}=payload;if(!uuid(id))throw Error('写真を確認できません。');
  const {admin,member}=await authorized(memberId);
- if(payload.action==='reorder'){
-  if(!uuid(payload.otherId))throw Error('並び替える写真を確認してください。');
-  const pair=await admin.from('athlete_photos').select('id,session_id,status').eq('company_id',member.company_id).eq('member_id',member.id).in('id',[id,payload.otherId]);
-  if(pair.error||pair.data?.length!==2||pair.data.some(p=>p.status!=='ready'||p.session_id!==pair.data[0].session_id))throw Error('同じ測定記録の写真だけ並び替えられます。');
-  const swapped=await admin.rpc('swap_athlete_photo_order',{first_id:id,second_id:payload.otherId});
-  if(swapped.error)throw Error('写真の並び順を変更できませんでした。');
-  return json({saved:true});
- }
  const result=await admin.from('athlete_photos').select('*').eq('id',id).eq('member_id',member.id).eq('company_id',member.company_id).single();
  if(result.error)throw Error('写真を確認できません。');const p=result.data;
- if(payload.action==='annotate'){
+ const action=payload.action||'finish';
+ if(p.deleted_at&&action!=='restore')throw Error('この写真はごみ箱にあります。');
+ if(['move','delete','restore','edit','annotate'].includes(action)){
   if(p.status!=='ready')throw Error('保存済みの写真を選んでください。');
-  if(!Number.isSafeInteger(payload.revision)||payload.revision!==p.annotation_revision)throw Error('他の変更がありました。写真一覧を読み直してください。');
-  const annotations=validateAnnotations(payload.annotations);
-  const updated=await admin.from('athlete_photos').update({annotations,annotation_revision:p.annotation_revision+1}).eq('id',id).eq('member_id',member.id).eq('company_id',member.company_id).eq('annotation_revision',p.annotation_revision).select('annotation_revision').maybeSingle();
-  if(updated.error||!updated.data)throw Error('他の変更がありました。写真一覧を読み直してください。');
-  return json({saved:true,revision:updated.data.annotation_revision});
+  let board=await readBoard(admin,member,p.session_id),layout=board.layout,changes,generated;
+  if(action==='move'){
+   if(payload.boardRevision!==board.layout_revision)throw Error('配置が変更されました。写真を読み直してください。');
+   const moved=movePhoto(layout,id,payload.target,randomUUID());layout=moved.layout;changes=moved.changes;
+  }else if(action==='delete'){removePhoto(layout,id);changes=[{id,delete:true}];}
+  else if(action==='restore'){
+   if(!p.deleted_at||Date.now()-new Date(p.deleted_at).getTime()>30*86400000)throw Error('復元できる期間を過ぎています。');
+   appendPhoto(layout,p,{manual:true});changes=[{id,restore:true}];
+  }else{
+   if(payload.revision!==p.annotation_revision)throw Error('写真が変更されました。開き直してください。');
+   const details=action==='annotate'?{fieldKey:p.field_key,memo:p.memo,phase:p.phase}:photoDetailsInput(payload);
+   const annotations=validateAnnotations(payload.annotations??p.annotations);
+   const marksChanged=JSON.stringify(annotations)!==JSON.stringify(p.annotations)||(annotations.length&&!p.preview_path);
+   let previewPath=p.preview_path;
+   if(marksChanged){
+    if(annotations.length){
+     let image=await admin.storage.from(PHOTO_BUCKET).download(thumbnailPath(p.object_path));
+     if(image.error)image=await admin.storage.from(PHOTO_BUCKET).download(p.object_path);
+     if(image.error)throw Error('元画像を読み込めませんでした。');
+     const marked=await annotatedThumbnail(Buffer.from(await image.data.arrayBuffer()),annotations);
+     generated=p.object_path+'.marked-'+randomUUID()+'.webp';
+     const upload=await admin.storage.from(PHOTO_BUCKET).upload(generated,marked,{contentType:'image/webp'});
+     if(upload.error)throw Error('線入り画像を保存できませんでした。');
+     previewPath=generated;
+    }else previewPath=null;
+   }
+   if(details.phase!==p.phase){removePhoto(layout,id);appendPhoto(layout,{...p,phase:details.phase},{manual:true});}
+   changes=[{id,expected_revision:payload.revision,field_key:details.fieldKey,memo:details.memo,phase:details.phase,annotations,preview_path:previewPath}];
+  }
+  try{await commitBoard(admin,member,board,layout,changes);}
+  catch(error){if(generated)await admin.storage.from(PHOTO_BUCKET).remove([generated]);throw error;}
+  if(generated||changes?.[0]?.preview_path===null){if(p.preview_path)await admin.storage.from(PHOTO_BUCKET).remove([p.preview_path]);}
+  return json({saved:true,revision:p.annotation_revision+1});
  }
- if(payload.action==='edit'){
-  if(p.status!=='ready')throw Error('保存済みの写真を選んでください。');
-  const details=photoDetailsInput(payload);
-  const updated=await admin.from('athlete_photos').update({field_key:details.fieldKey,phase:details.phase,memo:details.memo}).eq('id',id).eq('member_id',member.id).eq('company_id',member.company_id);
-  if(updated.error)throw Error('写真の情報を変更できませんでした。');
-  return json({saved:true});
- }
- if(payload.action!=null&&payload.action!=='finish')throw Error('操作を確認できません。');
+ if(action!=='finish')throw Error('操作を確認できません。');
  if(p.status==='ready')return json({saved:true});
  const file=await admin.storage.from(PHOTO_BUCKET).download(p.object_path);if(file.error)throw Error('写真の送信が完了していません。再試行してください。');
  const bytes=Buffer.from(await file.data.arrayBuffer());
@@ -75,15 +93,20 @@ export async function PATCH(request){try{
  const small=await thumbnail(bytes);
  const thumb=await admin.storage.from(PHOTO_BUCKET).upload(thumbnailPath(p.object_path),small,{contentType:'image/webp',upsert:true,cacheControl:'3600'});
  if(thumb.error)throw Error('一覧画像の準備に失敗しました。再試行してください。');
- const update=await admin.from('athlete_photos').update({status:'ready'}).eq('id',id).eq('company_id',member.company_id);
- if(update.error)throw Error('送信済み写真の保存確定に失敗しました。再試行してください。');
+ for(let attempt=0;attempt<5;attempt++){
+  const board=await readBoard(admin,member,p.session_id);
+  if(board.photos.find(item=>item.id===id)?.status==='ready')break;
+  appendPhoto(board.layout,p);
+  try{await commitBoard(admin,member,board,board.layout,[{id,status:'ready'}]);break;}
+  catch(error){if(!error.conflict||attempt===4)throw error;}
+ }
  return json({saved:true});
  }catch(e){return json({error:e.message?.includes('Input')?'写真を読み込めません。JPEG・PNG・WebPでお試しください。':e.message||'写真を保存できませんでした。'},400);}}
 export async function GET(request){try{
  const q=new URL(request.url).searchParams;const {db,admin,member}=await authorized(q.get('memberId'));
  if(q.has('photoId')){
   const photoId=q.get('photoId');if(!uuid(photoId))throw Error('写真を確認できません。');
-  const detail=await db.from('athlete_photos').select('id,annotations,annotation_revision').eq('id',photoId).eq('member_id',member.id).eq('company_id',member.company_id).eq('status','ready').single();
+  const detail=await db.from('athlete_photos').select('id,annotations,annotation_revision,phase,field_key,memo').eq('id',photoId).eq('member_id',member.id).eq('company_id',member.company_id).eq('status','ready').is('deleted_at',null).single();
   if(detail.error||!detail.data)throw Error('写真を確認できません。');
   return json(detail.data);
  }
