@@ -26,7 +26,7 @@ export function MemberForm({ companies, today }) {
 export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }) {
   const [state, action, pending] = useActionState(saveMeasurement, null);
   const preserved=usePreservedForm(state);
-  const [photoField,setPhotoField]=useState(null);
+  const [photoOpen,setPhotoOpen]=useState(false);
   const lastDemo=useRef(null);const [demoCount,setDemoCount]=useState(0);
   function fillDemo(){
     if(!demoEnabled||pending||!preserved.ref.current)return;
@@ -42,7 +42,7 @@ export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }
     <section className="card"><label htmlFor="date">測定日</label><input id="date" name="measured_on" type="date" defaultValue={today} max={today} required/>
       <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><input id="weight" name="weight" type="number" min="0.01" step="any" inputMode="decimal"/>
       <p>測定しなかった項目は空欄にしてください。0は測定済みとして採点されます。</p></section>
-    <div className="measurement-photo-link"><Link href={`/staff/members/${memberId}/photos`} target="_blank" rel="noopener">保存した写真一覧 ↗</Link><span className="muted">写真はスタッフのみ閲覧できます</span></div><MeasurementFields onPhoto={setPhotoField}/>{photoField&&<PhotoCapture memberId={memberId} recordId={recordId} fieldKey={photoField} onClose={()=>setPhotoField(null)}/>}
+    <div className="measurement-photo-link"><button type="button" onClick={()=>setPhotoOpen(true)}>写真を追加</button><Link href={`/staff/members/${memberId}/photos`} target="_blank" rel="noopener">保存した写真一覧 ↗</Link><span className="muted">写真はスタッフのみ閲覧できます</span></div><MeasurementFields/>{photoOpen&&<PhotoCapture memberId={memberId} recordId={recordId} onClose={()=>setPhotoOpen(false)}/>}
     <section className="card"><label htmlFor="comment">本人に公開するコメント（任意）</label><textarea id="comment" name="public_comment" rows={4} maxLength={2000}/><p>保存後の結果画面で確認してから、本人へ公開できます。</p><Feedback state={state}/><button disabled={pending}>{pending?'保存中…':'測定結果を下書き保存'}</button></section>
   </form>;
 }
