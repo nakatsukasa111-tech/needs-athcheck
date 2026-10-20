@@ -8,8 +8,8 @@ export function photoDetailsInput(v){
  const phase=v.phase==='normal'?'other':v.phase;
  if(!Object.hasOwn(phaseLabels,phase))throw Error('写真の区分を選んでください。');
  const memo=v.memo??'';
- if(typeof memo!=='string'||memo.length>500||(phase!=='other'&&memo.trim()))throw Error('その他のメモは500文字以内で入力してください。');
- return {fieldKey:v.fieldKey||null,memo:phase==='other'?memo.trim():null,phase};
+ if(typeof memo!=='string'||memo.length>500)throw Error('メモは500文字以内で入力してください。');
+ return {fieldKey:v.fieldKey||null,memo:memo.trim()||null,phase};
 }
 export function photoInput(v){
  if(!uuid(v.memberId)||!uuid(v.recordId)||!uuid(v.id))throw Error('対象の測定画面を開き直してください。');
