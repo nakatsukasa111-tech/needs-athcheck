@@ -1,5 +1,7 @@
 'use client';
 import MeasurementFields from './measurement-fields';
+import ModeSelector from './mode-selector';
+import {getMode} from '../../lib/measurement-modes.mjs';
 import {PhotoCapture} from './photo-panel';
 import Link from 'next/link';
 import { useActionState, useEffect, useRef, useState } from 'react';
@@ -27,22 +29,24 @@ export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }
   const [state, action, pending] = useActionState(saveMeasurement, null);
   const preserved=usePreservedForm(state);
   const [photoOpen,setPhotoOpen]=useState(false);
+  const [mode,setMode]=useState('athlete');
   const lastDemo=useRef(null);const [demoCount,setDemoCount]=useState(0);
   function fillDemo(){
     if(!demoEnabled||pending||!preserved.ref.current)return;
     const data=createDemoMeasurement(lastDemo.current);lastDemo.current=data;
     const fields=preserved.ref.current.elements;
     fields.namedItem('weight').value=String(data.weight);
-    for(const [key,value]of Object.entries(data.values))fields.namedItem('value:'+key).value=String(value);
+    for(const [key,value]of Object.entries(data.values)){const el=fields.namedItem('value:'+key);if(el&&!el.disabled)el.value=String(value);}
+    if(mode==='basic')fields.namedItem('value:chair_stand_30').value=String(8+Math.floor(Math.random()*18));
     for(const key of athlete.fields){const checkbox=fields.namedItem('estimated:'+key);if(checkbox)checkbox.checked=false;}
     setDemoCount(n=>n+1);
   }
   return <form action={action} {...preserved}><input type="hidden" name="member_id" value={memberId}/><input type="hidden" name="record_id" value={recordId}/>
-    {demoEnabled&&<section className="card"><h2>デモ数値の入力</h2><p>全測定項目と体重を、押すたびに別のデモ数値へ入れ替えます。入力済みの数値も上書きします。</p><button type="button" onClick={fillDemo} disabled={pending}>デモ数値を入れる</button><p className="muted">ボタンでは保存しません。確認後に下書き保存できます。</p><p role="status" aria-live="polite">{demoCount>0&&`デモ数値を入力しました（${demoCount}回目・${athlete.fields.length}項目）。`}</p></section>}
+    <ModeSelector mode={mode} onChange={setMode} disabled={pending}/>{demoEnabled&&<section className="card"><h2>デモ数値の入力</h2><p>選択中のモードの測定項目と体重を、押すたびに別のデモ数値へ入れ替えます。入力済みの数値も上書きします。</p><button type="button" onClick={fillDemo} disabled={pending}>デモ数値を入れる</button><p className="muted">ボタンでは保存しません。確認後に下書き保存できます。</p><p role="status" aria-live="polite">{demoCount>0&&`デモ数値を入力しました（${demoCount}回目・${getMode(mode).fields.length}項目）。`}</p></section>}
     <section className="card"><label htmlFor="date">測定日</label><input id="date" name="measured_on" type="date" defaultValue={today} max={today} required/>
       <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><input id="weight" name="weight" type="number" min="0.01" step="any" inputMode="decimal"/>
-      <p>測定しなかった項目は空欄にしてください。0は測定済みとして採点されます。</p></section>
-    <div className="measurement-photo-link"><button type="button" onClick={()=>setPhotoOpen(true)}>写真を追加</button><Link href={`/staff/members/${memberId}/photos`} target="_blank" rel="noopener">保存した写真一覧 ↗</Link><span className="muted">写真はスタッフのみ閲覧できます</span></div><MeasurementFields/>{photoOpen&&<PhotoCapture memberId={memberId} recordId={recordId} onClose={()=>setPhotoOpen(false)}/>}
+      <p>測定しなかった項目は空欄にしてください。0は測定済みとして記録します。基準未設定の項目は採点対象外です。</p></section>
+    <div className="measurement-photo-link"><button type="button" onClick={()=>setPhotoOpen(true)}>写真を追加</button><Link href={`/staff/members/${memberId}/photos`} target="_blank" rel="noopener">保存した写真一覧 ↗</Link><span className="muted">写真はスタッフのみ閲覧できます</span></div><MeasurementFields mode={mode}/>{photoOpen&&<PhotoCapture mode={mode} memberId={memberId} recordId={recordId} onClose={()=>setPhotoOpen(false)}/>}
     <section className="card"><label htmlFor="comment">本人に公開するコメント（任意）</label><textarea id="comment" name="public_comment" rows={4} maxLength={2000}/><p>保存後の結果画面で確認してから、本人へ公開できます。</p><Feedback state={state}/><button disabled={pending}>{pending?'保存中…':'測定結果を下書き保存'}</button></section>
   </form>;
 }

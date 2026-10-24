@@ -46,6 +46,26 @@ async function asUser(user, fn, role = 'authenticated') {
 }
 const query = sql => db.query(sql);
 
+test('一般用2モードも定義版と判定設定を保存し、下書き・公開と会員境界を維持する',async()=>{
+ for(const mode of ['basic','active'])await asUser(2,async()=>{
+  const f=new FormData();f.set('measurement_mode',mode);f.set('measured_on','2026-10-24');f.set('value:split','2');
+  if(mode==='basic')f.set('value:chair_stand_30','12');
+  const payload=measurementInput(f,{birth_date:'1990-01-01',threshold_sex:'M'},masters());
+  const record=id(500);
+  await db.query('insert into athlete_measurements(id,company_id,member_id,measured_on,age_band,threshold_sex,definition_version,values,saved_score) values($1,$2,$3,$4,$5,$6,$7,$8,$9)',[record,id(10),id(11),payload.measured_on,payload.age_band,payload.threshold_sex,payload.definition_version,JSON.stringify(payload.values),JSON.stringify(payload.saved_score)]);
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  assert.equal((await db.query('select id from athlete_measurements where id=$1',[record])).rows.length,0);
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(2)}',true)`);
+  await db.query('update athlete_measurements set published=true where id=$1',[record]);
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(4)}',true)`);
+  const saved=(await db.query('select definition_version,values,saved_score from athlete_measurements where id=$1',[record])).rows[0];
+  assert.equal(saved.definition_version,payload.definition_version);assert.deepEqual(saved.values,payload.values);
+  assert.deepEqual(saved.saved_score.configuration.settings,payload.saved_score.configuration.settings);
+  await db.exec(`select set_config('request.jwt.claim.sub','${id(5)}',true)`);
+  assert.equal((await db.query('select id from athlete_measurements where id=$1',[record])).rows.length,0);
+ });
+});
+
 test('教材の承認・担当者確定・本人への公開と取消をDBで制御する',async()=>{
  await db.exec('begin');
  try{

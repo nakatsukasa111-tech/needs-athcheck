@@ -1,0 +1,340 @@
+{
+  "thresholds": {
+    "abj|M|adult": {
+      "red": 39,
+      "green": 55,
+      "direction": "high"
+    },
+    "abj|F|adult": {
+      "red": 30,
+      "green": 43,
+      "direction": "high"
+    },
+    "abj|M|junior": {
+      "red": 33,
+      "green": 47,
+      "direction": "high"
+    },
+    "abj|F|junior": {
+      "red": 27,
+      "green": 39,
+      "direction": "high"
+    },
+    "cmj|M|adult": {
+      "red": 35,
+      "green": 49,
+      "direction": "high"
+    },
+    "cmj|F|adult": {
+      "red": 27,
+      "green": 38,
+      "direction": "high"
+    },
+    "cmj|M|junior": {
+      "red": 30,
+      "green": 42,
+      "direction": "high"
+    },
+    "cmj|F|junior": {
+      "red": 24,
+      "green": 34,
+      "direction": "high"
+    },
+    "sqj|M|adult": {
+      "red": 31,
+      "green": 44,
+      "direction": "high"
+    },
+    "sqj|F|adult": {
+      "red": 24,
+      "green": 34,
+      "direction": "high"
+    },
+    "sqj|M|junior": {
+      "red": 26,
+      "green": 37,
+      "direction": "high"
+    },
+    "sqj|F|junior": {
+      "red": 22,
+      "green": 30,
+      "direction": "high"
+    },
+    "sl_cmj|M|adult": {
+      "red": 17,
+      "green": 24,
+      "direction": "high"
+    },
+    "sl_cmj|F|adult": {
+      "red": 13,
+      "green": 19,
+      "direction": "high"
+    },
+    "sl_cmj|M|junior": {
+      "red": 15,
+      "green": 21,
+      "direction": "high"
+    },
+    "sl_cmj|F|junior": {
+      "red": 12,
+      "green": 17,
+      "direction": "high"
+    },
+    "hop_rsi|M|adult": {
+      "red": 1.89,
+      "green": 2.6,
+      "direction": "high"
+    },
+    "hop_rsi|F|adult": {
+      "red": 1.49,
+      "green": 2.1,
+      "direction": "high"
+    },
+    "hop_rsi|M|junior": {
+      "red": 1.59,
+      "green": 2.2,
+      "direction": "high"
+    },
+    "hop_rsi|F|junior": {
+      "red": 1.39,
+      "green": 1.9,
+      "direction": "high"
+    },
+    "drop_rsi|M|adult": {
+      "red": 1.89,
+      "green": 2.6,
+      "direction": "high"
+    },
+    "drop_rsi|F|adult": {
+      "red": 1.49,
+      "green": 2.1,
+      "direction": "high"
+    },
+    "drop_rsi|M|junior": {
+      "red": 1.59,
+      "green": 2.2,
+      "direction": "high"
+    },
+    "drop_rsi|F|junior": {
+      "red": 1.39,
+      "green": 1.9,
+      "direction": "high"
+    },
+    "ab30s|M|adult": {
+      "red": 20,
+      "green": 28,
+      "direction": "high"
+    },
+    "ab30s|F|adult": {
+      "red": 16,
+      "green": 24,
+      "direction": "high"
+    },
+    "ab30s|M|junior": {
+      "red": 17,
+      "green": 25,
+      "direction": "high"
+    },
+    "ab30s|F|junior": {
+      "red": 14,
+      "green": 22,
+      "direction": "high"
+    },
+    "pl_basic|M|adult": {
+      "red": 14,
+      "green": 25,
+      "direction": "high"
+    },
+    "pl_basic|F|adult": {
+      "red": 12,
+      "green": 22,
+      "direction": "high"
+    },
+    "pl_basic|M|junior": {
+      "red": 12,
+      "green": 22,
+      "direction": "high"
+    },
+    "pl_basic|F|junior": {
+      "red": 10,
+      "green": 20,
+      "direction": "high"
+    },
+    "pushup|M|adult": {
+      "red": 20,
+      "green": 35,
+      "direction": "high"
+    },
+    "pushup|F|adult": {
+      "red": 10,
+      "green": 20,
+      "direction": "high"
+    },
+    "pushup|M|junior": {
+      "red": 14,
+      "green": 25,
+      "direction": "high"
+    },
+    "pushup|F|junior": {
+      "red": 7,
+      "green": 15,
+      "direction": "high"
+    },
+    "chinup|M|adult": {
+      "red": 5,
+      "green": 12,
+      "direction": "high"
+    },
+    "chinup|F|adult": {
+      "red": 1,
+      "green": 5,
+      "direction": "high"
+    },
+    "chinup|M|junior": {
+      "red": 3,
+      "green": 9,
+      "direction": "high"
+    },
+    "chinup|F|junior": {
+      "red": 0,
+      "green": 3,
+      "direction": "high"
+    },
+    "bp_1rm|M|adult": {
+      "red": 0.8,
+      "green": 1.21,
+      "direction": "high"
+    },
+    "bp_1rm|F|adult": {
+      "red": 0.52,
+      "green": 0.79,
+      "direction": "high"
+    },
+    "bp_1rm|M|junior": {
+      "red": 0.56,
+      "green": 0.85,
+      "direction": "high"
+    },
+    "bp_1rm|F|junior": {
+      "red": 0.36,
+      "green": 0.55,
+      "direction": "high"
+    },
+    "sq_1rm|M|adult": {
+      "red": 1.2,
+      "green": 1.75,
+      "direction": "high"
+    },
+    "sq_1rm|F|adult": {
+      "red": 0.96,
+      "green": 1.4,
+      "direction": "high"
+    },
+    "sq_1rm|M|junior": {
+      "red": 0.84,
+      "green": 1.23,
+      "direction": "high"
+    },
+    "sq_1rm|F|junior": {
+      "red": 0.67,
+      "green": 0.98,
+      "direction": "high"
+    },
+    "dl_1rm|M|adult": {
+      "red": 1.5,
+      "green": 2,
+      "direction": "high"
+    },
+    "dl_1rm|F|adult": {
+      "red": 1.2,
+      "green": 1.6,
+      "direction": "high"
+    },
+    "dl_1rm|M|junior": {
+      "red": 1.05,
+      "green": 1.4,
+      "direction": "high"
+    },
+    "dl_1rm|F|junior": {
+      "red": 0.84,
+      "green": 1.12,
+      "direction": "high"
+    },
+    "sl_sq|M|adult": {
+      "red": 5,
+      "green": 12,
+      "direction": "high"
+    },
+    "sl_sq|F|adult": {
+      "red": 4,
+      "green": 10,
+      "direction": "high"
+    },
+    "sl_sq|M|junior": {
+      "red": 4,
+      "green": 10,
+      "direction": "high"
+    },
+    "sl_sq|F|junior": {
+      "red": 3,
+      "green": 8,
+      "direction": "high"
+    },
+    "sl_stance|M|adult": {
+      "red": 29,
+      "green": 60,
+      "direction": "high"
+    },
+    "sl_stance|F|adult": {
+      "red": 29,
+      "green": 60,
+      "direction": "high"
+    },
+    "sl_stance|M|junior": {
+      "red": 29,
+      "green": 60,
+      "direction": "high"
+    },
+    "sl_stance|F|junior": {
+      "red": 29,
+      "green": 60,
+      "direction": "high"
+    },
+    "ground_touch_bal|M|adult": {
+      "red": 5,
+      "green": 10,
+      "direction": "high"
+    },
+    "ground_touch_bal|F|adult": {
+      "red": 5,
+      "green": 9,
+      "direction": "high"
+    },
+    "ground_touch_bal|M|junior": {
+      "red": 4,
+      "green": 9,
+      "direction": "high"
+    },
+    "ground_touch_bal|F|junior": {
+      "red": 4,
+      "green": 8,
+      "direction": "high"
+    }
+  },
+  "rules": {
+    "flex_green_min": 88.9,
+    "flex_yellow_min": 66.7,
+    "flex_lr_yellow": 1,
+    "flex_lr_red": 2,
+    "sqj_to_cmj_target": 10,
+    "cmj_to_abj_low": 5,
+    "cmj_to_abj_high": 11,
+    "slcmj_target_ratio": 50,
+    "slcmj_tolerance": 5,
+    "slcmj_red_ratio": 90,
+    "asym_flag": 10,
+    "rsi_diff_flag": 15,
+    "rsi_excellent": 3.1,
+    "age_band_border": 17
+  }
+}

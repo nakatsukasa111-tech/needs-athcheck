@@ -1,10 +1,10 @@
-import {athlete} from './measurement-input.mjs';
+import {allFields,definitions} from './measurement-modes.mjs';
 export const PHOTO_BUCKET='athlete-photos',MAX_PHOTO_BYTES=20*1024*1024;
 export const phaseLabels={before:'before',after:'after',other:'その他'};
 export const uuid=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
-export function fieldLabel(key){const d=athlete.definitions[key];return d?d.name+(key.endsWith('_R')?'・右':key.endsWith('_L')?'・左':''):'テスト未指定';}
+export function fieldLabel(key){const d=definitions[key];return d?d.name+(key.endsWith('_R')?'・右':key.endsWith('_L')?'・左':''):'テスト未指定';}
 export function photoDetailsInput(v){
- if(v.fieldKey!=null&&v.fieldKey!==''&&!athlete.fields.includes(v.fieldKey))throw Error('測定項目を確認してください。');
+ if(v.fieldKey!=null&&v.fieldKey!==''&&!allFields.includes(v.fieldKey))throw Error('測定項目を確認してください。');
  const phase=v.phase==='normal'?'other':v.phase;
  if(!Object.hasOwn(phaseLabels,phase))throw Error('写真の区分を選んでください。');
  const memo=v.memo??'';

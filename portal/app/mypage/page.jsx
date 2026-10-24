@@ -10,7 +10,7 @@ export default async function MyPage() {
   if(memberNames.error)throw new Error('会員情報を読み込めませんでした');
   let records = [];
   if (ids.length) {
-    const result = await db.from('athlete_measurements').select('id,measured_on,public_comment').in('member_id', ids).eq('published', true).order('measured_on', { ascending: false });
+    const result = await db.from('athlete_measurements').select('id,measured_on,public_comment,definition_version').in('member_id', ids).eq('published', true).order('measured_on', { ascending: false });
     if (result.error) throw new Error('記録を読み込めませんでした');
     records = result.data;
   }

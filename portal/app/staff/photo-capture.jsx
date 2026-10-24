@@ -5,7 +5,7 @@ import {uploadPhoto} from '../../lib/photo-transfer.mjs';
 import {phaseLabels,MAX_PHOTO_BYTES} from '../../lib/photo-input.mjs';
 import {TestSelect} from './photo-shared';
 import {PhotoGallery} from './photo-gallery';
-export function PhotoCapture({memberId,recordId,onClose,onSaved,preview=false}){
+export function PhotoCapture({memberId,recordId,onClose,onSaved,preview=false,mode}){
  const dialog=useRef(null),camera=useRef(null),library=useRef(null),jobsRef=useRef([]),worker=useRef(false),urls=useRef([]),acceptedClock=useRef(0);
  const [phase,setPhase]=useState('before'),[fieldKey,setFieldKey]=useState(''),[memo,setMemo]=useState(''),[jobs,setJobs]=useState([]),[error,setError]=useState(''),[refresh,setRefresh]=useState(0),[previewPhotos,setPreviewPhotos]=useState([]);
  const pending=jobs.some(j=>j.status==='queued'||j.status==='saving'),failed=jobs.filter(j=>j.status==='error');
@@ -44,7 +44,7 @@ export function PhotoCapture({memberId,recordId,onClose,onSaved,preview=false}){
  return createPortal(<dialog ref={dialog} className="photo-dialog photo-capture" onCancel={e=>{e.preventDefault();close();}}>
   <div className="photo-dialog-head"><div><h2>写真を追加</h2><span className="muted">{preview?'操作の見本・サーバーには保存しません':'撮影・選択後に自動保存します'}</span></div><button type="button" disabled={pending} onClick={close}>閉じる</button></div>
   <div className="photo-phase" role="group" aria-label="写真の区分">{Object.entries(phaseLabels).map(([value,label])=><button type="button" key={value} aria-pressed={phase===value} onClick={()=>setPhase(value)}>{label}</button>)}</div>
-  <div className="photo-details"><label>テスト（任意）<TestSelect value={fieldKey} onChange={setFieldKey}/></label><label>メモ（任意）<textarea value={memo} onChange={e=>setMemo(e.target.value)} maxLength={500} rows={2}/></label></div>
+  <div className="photo-details"><label>テスト（任意）<TestSelect mode={mode} value={fieldKey} onChange={setFieldKey}/></label><label>メモ（任意）<textarea value={memo} onChange={e=>setMemo(e.target.value)} maxLength={500} rows={2}/></label></div>
   <div className="photo-pick"><button type="button" onClick={()=>camera.current.click()}>カメラで撮影</button><button type="button" onClick={()=>library.current.click()}>端末から選ぶ</button><input hidden ref={camera} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={e=>pick(e,'camera')}/><input hidden ref={library} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e=>pick(e,'library')}/></div>
   {error&&<p className="error" role="alert">{error}</p>}
   <div className="photo-save-queue" aria-live="polite">{jobs.filter(j=>j.status!=='saved').map(job=><div key={job.id}><img src={job.url} alt="追加した写真"/><span>{phaseLabels[job.phase]} · {job.text}{job.error&&<small>{job.error}</small>}</span>{job.status==='error'&&<button type="button" onClick={()=>retry(job)}>再試行</button>}</div>)}</div>
