@@ -110,3 +110,62 @@ body>header{min-height:60px;padding-top:12px;padding-bottom:12px}.needs-brand{ga
 [hidden]{display:none!important}
 .condition-layout.condition-basic{grid-template-columns:minmax(0,1fr)}
 .mode-selector select{max-width:28rem}
+
+/* Keep each test and its directions together across all measurement courses. */
+.measurement-category{min-width:0}
+.measurement-category legend{font-size:21px;font-weight:700;padding:0 8px}
+.measurement-test{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,2fr);gap:10px 24px;padding:18px 0;border-top:1px solid var(--line)}
+.measurement-test:first-of-type{border-top:0;padding-top:6px}
+.measurement-test-title{align-self:center;min-width:0}
+.measurement-test-title h3{margin:0;font-size:17px}
+.measurement-test .muted{font-size:12px;line-height:1.5;margin:5px 0 0}
+.measurement-directions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;min-width:0}
+.measurement-single>.measurement-entry{grid-column:1/-1;max-width:340px;width:100%}
+.measurement-entry{min-width:0}
+.measurement-entry-heading{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0 0 6px;min-height:30px;font-size:13px;font-weight:600}
+.measurement-entry-heading>span:last-child:not(:first-child){color:var(--muted);font-weight:400}
+.measurement-test-note{grid-column:2}
+.measurement-guide{font-size:12px;color:var(--muted);margin:0 0 12px}
+.measurement-rating label{position:relative;display:block;margin:0;cursor:pointer}
+.measurement-rating input[type=radio]{position:absolute;width:1px;height:1px;padding:0;margin:0;opacity:0;clip-path:inset(50%)}
+.rating-options{display:grid;grid-template-columns:repeat(var(--rating-count),minmax(0,1fr));gap:5px}
+.rating-options label>span{display:flex;align-items:center;justify-content:center;gap:3px;min-height:48px;border:1px solid #cdd4dd;border-radius:3px;background:#fff;color:#262b31;font-size:20px;font-weight:600}
+.rating-options small{font-size:10px;font-weight:400}
+.rating-options input:checked+span{background:#0066ff;border-color:#0066ff;color:#fff}
+.measurement-rating input:focus-visible+span{outline:3px solid #111;outline-offset:2px}
+.measurement-rating .rating-unmeasured>span{display:block;border:1px solid transparent;border-radius:3px;padding:5px 7px;color:#707986;font-size:11px;font-weight:400;min-height:30px}
+.rating-unmeasured input:checked+span{background:#eef1f5;border-color:#d4dbe4;color:#364152}
+input.measurement-number{margin:0;min-height:52px;font-size:23px;font-weight:600;text-align:right;cursor:pointer;border-radius:3px;background:#fafcff;color:#111;padding:10px 12px;font-variant-numeric:tabular-nums}
+input.measurement-number::placeholder{font-size:13px;font-weight:400;color:#697586}
+.measurement-estimate{margin:6px 0 0!important;font-size:12px}
+.measurement-keypad{position:fixed;inset:auto 0 16px;margin:0 auto;width:min(430px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;padding:18px;border:1px solid #cdd4dd;border-radius:5px;background:#fff;color:#171b21;box-shadow:0 12px 50px #0003}
+.measurement-keypad::backdrop{background:#11182766}
+.keypad-heading{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.keypad-heading small{font-size:11px;color:#657080}
+.keypad-heading h2{font-size:19px;margin:3px 0;line-height:1.4}
+.keypad-heading h2 span{font-size:13px;font-weight:400}
+.measurement-keypad button{margin:0;border-radius:3px;touch-action:manipulation}
+.keypad-heading button{font-size:12px;min-height:40px;padding:6px 10px;background:white;color:#414b58;border-color:#cdd4dd;flex:none}
+.keypad-display{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 12px;margin-top:12px;background:#f3f6fa;border:1px solid #dbe2eb;border-radius:3px;font-variant-numeric:tabular-nums}
+.keypad-display output{font-size:32px;font-weight:700;overflow-wrap:anywhere;min-width:0}
+.keypad-display>span{font-size:14px;color:#566475}
+.keypad-hint{font-size:11px;color:#697586;line-height:1.4;margin:8px 0}
+.keypad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.keypad-grid button{min-height:57px;padding:5px;background:#fff;border-color:#c9d2dd;color:#171b21;font-size:27px;font-weight:500}
+.keypad-grid button:active{background:#e4efff;border-color:#0066ff}
+.keypad-grid button:disabled{opacity:.25;cursor:default}
+.measurement-keypad .keypad-clear{width:100%;min-height:40px;margin-top:8px;padding:7px;background:#eef1f5;color:#465365;border-color:#d9dfe7;font-size:13px}
+.keypad-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.keypad-actions button{min-height:48px;background:#0066ff;border-color:#0066ff;color:#fff;padding:9px;font-size:16px}
+.keypad-actions button:first-child{background:#1c2633;border-color:#1c2633}
+@media(max-width:680px){
+ .measurement-category{padding:14px 12px}
+ .measurement-test{grid-template-columns:1fr;gap:9px;padding:15px 0}
+ .measurement-test-title h3{font-size:16px}
+ .measurement-directions{gap:10px}
+ .measurement-test-note{grid-column:1}
+ .rating-options{gap:3px}
+ .rating-options label>span{font-size:18px;gap:1px}
+ .measurement-keypad{bottom:0;width:100%;max-height:95dvh;padding:14px 16px calc(14px + env(safe-area-inset-bottom));border-radius:5px 5px 0 0}
+}
+@media(max-height:600px){.keypad-grid button{min-height:40px}.keypad-hint{display:none}.keypad-display output{font-size:25px}.measurement-keypad{padding:10px;bottom:0}.keypad-actions button{min-height:40px}}

@@ -1,5 +1,6 @@
 'use client';
 import MeasurementFields from './measurement-fields';
+import MeasurementKeypad,{MeasurementNumber} from './measurement-keypad';
 import ModeSelector from './mode-selector';
 import {getMode} from '../../lib/measurement-modes.mjs';
 import {PhotoCapture} from './photo-panel';
@@ -12,7 +13,7 @@ import { athlete, categories } from '../../lib/measurement-input.mjs';
 function Feedback({ state }) { return <div aria-live="polite">{state?.error && <p className="error" role="alert">{state.error}</p>}{state?.success && <p>{state.success}</p>}</div>; }
 function usePreservedForm(state) {
   const ref=useRef(null);const snapshot=useRef(null);
-  useEffect(()=>{if(state?.error && snapshot.current && ref.current){for(const el of ref.current.elements){if(!el.name)continue;if(el.type==='checkbox')el.checked=snapshot.current.has(el.name);else if(snapshot.current.has(el.name))el.value=snapshot.current.get(el.name);}}},[state]);
+  useEffect(()=>{if(state?.error && snapshot.current && ref.current){for(const el of ref.current.elements){if(!el.name)continue;if(el.type==='radio')el.checked=snapshot.current.get(el.name)===el.value;else if(el.type==='checkbox')el.checked=snapshot.current.has(el.name);else if(snapshot.current.has(el.name))el.value=snapshot.current.get(el.name);}}},[state]);
   return {ref,onSubmit:e=>{snapshot.current=new FormData(e.currentTarget);}};
 }
 export function MemberForm({ companies, today }) {
@@ -36,7 +37,7 @@ export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }
     const data=createDemoMeasurement(lastDemo.current);lastDemo.current=data;
     const fields=preserved.ref.current.elements;
     fields.namedItem('weight').value=String(data.weight);
-    for(const [key,value]of Object.entries(data.values)){const el=fields.namedItem('value:'+key);if(el&&!el.disabled)el.value=String(value);}
+    for(const [key,value]of Object.entries(data.values)){const el=fields.namedItem('value:'+key);if(el&&getMode(mode).fields.includes(key))el.value=String(value);}
     if(mode==='basic')fields.namedItem('value:chair_stand_30').value=String(8+Math.floor(Math.random()*18));
     for(const key of athlete.fields){const checkbox=fields.namedItem('estimated:'+key);if(checkbox)checkbox.checked=false;}
     setDemoCount(n=>n+1);
@@ -44,9 +45,9 @@ export function MeasurementForm({ memberId, recordId, today, demoEnabled=false }
   return <form action={action} {...preserved}><input type="hidden" name="member_id" value={memberId}/><input type="hidden" name="record_id" value={recordId}/>
     <ModeSelector mode={mode} onChange={setMode} disabled={pending}/>{demoEnabled&&<section className="card"><h2>デモ数値の入力</h2><p>選択中のモードの測定項目と体重を、押すたびに別のデモ数値へ入れ替えます。入力済みの数値も上書きします。</p><button type="button" onClick={fillDemo} disabled={pending}>デモ数値を入れる</button><p className="muted">ボタンでは保存しません。確認後に下書き保存できます。</p><p role="status" aria-live="polite">{demoCount>0&&`デモ数値を入力しました（${demoCount}回目・${getMode(mode).fields.length}項目）。`}</p></section>}
     <section className="card"><label htmlFor="date">測定日</label><input id="date" name="measured_on" type="date" defaultValue={today} max={today} required/>
-      <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><input id="weight" name="weight" type="number" min="0.01" step="any" inputMode="decimal"/>
+      <label htmlFor="weight">測定日の体重（kg・1RM入力時は必須）</label><MeasurementNumber id="weight" name="weight" label="測定日の体重" unit="kg"/>
       <p>測定しなかった項目は空欄にしてください。0は測定済みとして記録します。基準未設定の項目は採点対象外です。</p></section>
-    <div className="measurement-photo-link"><button type="button" onClick={()=>setPhotoOpen(true)}>写真を追加</button><Link href={`/staff/members/${memberId}/photos`} target="_blank" rel="noopener">保存した写真一覧 ↗</Link><span className="muted">写真はスタッフのみ閲覧できます</span></div><MeasurementFields mode={mode}/>{photoOpen&&<PhotoCapture mode={mode} memberId={memberId} recordId={recordId} onClose={()=>setPhotoOpen(false)}/>}
+    <div className="measurement-photo-link"><button type="button" onClick={()=>setPhotoOpen(true)}>写真を追加</button><Link href={`/staff/members/${memberId}/photos`} target="_blank" rel="noopener">保存した写真一覧 ↗</Link><span className="muted">写真はスタッフのみ閲覧できます</span></div><MeasurementFields mode={mode}/><MeasurementKeypad/>{photoOpen&&<PhotoCapture mode={mode} memberId={memberId} recordId={recordId} onClose={()=>setPhotoOpen(false)}/>}
     <section className="card"><label htmlFor="comment">本人に公開するコメント（任意）</label><textarea id="comment" name="public_comment" rows={4} maxLength={2000}/><p>保存後の結果画面で確認してから、本人へ公開できます。</p><Feedback state={state}/><button disabled={pending}>{pending?'保存中…':'測定結果を下書き保存'}</button></section>
   </form>;
 }
